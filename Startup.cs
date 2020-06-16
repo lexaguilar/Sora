@@ -10,6 +10,7 @@ namespace sora
 {
     public class Startup
     {
+        private int i ;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
