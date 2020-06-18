@@ -12,6 +12,7 @@ import app from '../data/app';
 // application
 import Footer from './footer';
 import Header from './header';
+import Cuentas from './cuentas/Cuentas';
 
 function Layout(props) {
     const { match, headerLayout } = props;
@@ -33,6 +34,7 @@ function Layout(props) {
                 <div className="site__body">
                     <Switch>
                         <Route exact path={`${match.path}`} component={HomePage} />
+                        <Route exact path={`/cuentas`} component={Cuentas} />
                     </Switch>
                 </div>
 

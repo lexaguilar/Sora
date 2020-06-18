@@ -42,7 +42,7 @@ class IndicatorSearch extends Component {
                         onKeyDown={this.handleKeyDown}
                         className="drop-search__input"
                         name="search"
-                        placeholder="Search over 10,000 products"
+                        placeholder="Buscar cuenta"
                         aria-label="Site search"
                         type="text"
                         autoComplete="off"

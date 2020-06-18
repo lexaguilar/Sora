@@ -67,7 +67,39 @@ export default [{
     },*/
     {
         title: 'Catalogos',
-        url: '/shop/category-grid-3-columns-sidebar'
+        url: '/cuentas',
+        submenu: {
+            type: 'megamenu',
+            menu: {
+                size: 'nl',
+                columns: [{
+                        size: 6,
+                        links: [{
+                            title: 'Catalos de cuentas',
+                            url: '',
+                            links: [
+                                { title: 'Cuentas contables', url: '/cuentas' },
+                                { title: 'Naturaleza de las cuentas', url: '/cuenta/naturaleza' },
+                                { title: 'Grupo de cuentas', url: '/cuenta/grupo' },
+                                { title: 'Tipo de cuentas', url: '/cuenta/tipo' },
+                                { title: 'Clasificacion de cuentas', url: '/cuenta/clasificacion' }
+                            ],
+                        }, ]
+                    },
+                    {
+                        size: 6,
+                        links: [{
+                            title: 'Comprobantes',
+                            url: '',
+                            links: [
+                                { title: 'Tipos de comprobantes', url: '/comprobantes' },
+                            ],
+                        }, ]
+                    }
+                ]
+            }
+
+        },
     },
     {
         title: 'Comprobantes',

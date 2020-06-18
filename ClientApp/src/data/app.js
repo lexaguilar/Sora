@@ -1,5 +1,5 @@
 const app = {
-    Name: 'Sara Counting',
+    Name: 'Sora Counting',
     Version: '1.0.0',
     fullName: 'App Sara Counting',
     author: {

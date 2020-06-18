@@ -12,7 +12,7 @@ function Search() {
                 <input
                     className="search__input"
                     name="search"
-                    placeholder="Search over 10,000 products"
+                    placeholder="Buscar cuenta..."
                     aria-label="Site search"
                     autoComplete="off"
                 />
