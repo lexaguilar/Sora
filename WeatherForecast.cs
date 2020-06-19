@@ -1,6 +1,6 @@
 using System;
 
-namespace sora
+namespace Sora
 {
     public class WeatherForecast
     {

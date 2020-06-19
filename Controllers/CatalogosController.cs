@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using sora.Factory;
-using sora.Models.SaraModel;
+﻿using Microsoft.AspNetCore.Mvc;
+using Sora.Factory;
+using Sora.Models.SaraModel;
 
-namespace sora.Controllers
+namespace Sora.Controllers
 {  
      [Route("api/catalogos")]
     public class CatalogosController : Controller
@@ -20,36 +15,40 @@ namespace sora.Controllers
         [Route("clasificacion")]
         public IActionResult Clasificacion(){
 
-            var result = new ClasificacionFactory(db);
-
-            return Json(result.GetAll());
+            IGenericFactory<Clasificacion> factory = new GenericFactory<Clasificacion>();
+            return Json(factory.GetAll());
 
         }
 
         [Route("grupos")]
         public IActionResult Grupos(){
-
-            var result = new GruposFactory(db);
-
-            return Json(result.GetAll());
+          
+            IGenericFactory<Grupos> factory = new GenericFactory<Grupos>();
+            return Json(factory.GetAll());
 
         }
 
         [Route("naturaleza")]
         public IActionResult Naturaleza(){
 
-            var result = new NaturalezaFactory(db);
-
-            return Json(result.GetAll());
+            IGenericFactory<Naturaleza> factory = new GenericFactory<Naturaleza>();
+            return Json(factory.GetAll());
 
         }
 
         [Route("tipoCuenta")]
         public IActionResult TipoCuenta(){
 
-            var result = new TipoCuentaFactory(db);
+            IGenericFactory<TipoCuenta> factory = new GenericFactory<TipoCuenta>();
+            return Json(factory.GetAll());
 
-            return Json(result.GetAll());
+        }
+
+        [Route("tipoComprobantes")]
+        public IActionResult TipoComprobante(){
+
+            IGenericFactory<TipoComprobantes> factory = new GenericFactory<TipoComprobantes>();
+            return Json(factory.GetAll());
 
         }
 

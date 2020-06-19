@@ -4,22 +4,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using sora.Models.SaraModel;
-using sora.ViewModel;
+using Sora.Models.SaraModel;
+using Sora.ViewModel;
 
-namespace sora.Factory
+namespace Sora.Factory
 {  
-    public class CuentasFactory
+    public class CuentasFactory 
     {      
         private readonly SaraContext db;
         public CuentasFactory(SaraContext _db){
             db = _db;
         }
 
-        public Cuentas[] GetAll(){
-
-            return db.Cuentas.ToArray();
-
+        public Cuentas[] GetAll()
+        {
+             return db.Cuentas.ToArray();
         }
 
         public CuentaAsCatalog[] GetAsCatalog(){

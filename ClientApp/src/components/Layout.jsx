@@ -13,10 +13,16 @@ import app from '../data/app';
 import Footer from './footer';
 import Header from './header';
 import Cuentas from './cuentas/Cuentas';
+import Catalogo from './cuentas/Catalogos';
+import catalogos from '../data/catalogos';
 
 function Layout(props) {
     const { match, headerLayout } = props;
-
+    const PrintCatalogos = catalogos.map(c => {
+        return  <Route exact path={`/cuenta/${c}`} render={(props) => (
+                    <Catalogo {...props} catalogo={c} />
+        )} />
+    })
     return (
         <React.Fragment>
             <Helmet>
@@ -34,7 +40,9 @@ function Layout(props) {
                 <div className="site__body">
                     <Switch>
                         <Route exact path={`${match.path}`} component={HomePage} />
-                        <Route exact path={`/cuentas`} component={Cuentas} />
+                        <Route exact path={`/cuentas`} component={Cuentas} />                         
+                        {PrintCatalogos}
+                        <Route exact path={`/tipoComprobantes`} render={props => <Catalogo {...props} catalogo={'tipoComprobantes'} /> } />                         
                     </Switch>
                 </div>
 

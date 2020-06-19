@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using sora.Models.SaraModel;
+using Sora.Models.SaraModel;
 
-namespace sora
+namespace Sora
 {
     public class Startup
     {

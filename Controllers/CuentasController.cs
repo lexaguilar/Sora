@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using sora.Factory;
-using sora.Models.SaraModel;
+﻿using Microsoft.AspNetCore.Mvc;
+using Sora.Factory;
+using Sora.Models.SaraModel;
 
-namespace sora.Controllers
+namespace Sora.Controllers
 {  
     public class CuentasController : Controller
     {      

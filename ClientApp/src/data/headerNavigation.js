@@ -80,8 +80,8 @@ export default [{
                             links: [
                                 { title: 'Cuentas contables', url: '/cuentas' },
                                 { title: 'Naturaleza de las cuentas', url: '/cuenta/naturaleza' },
-                                { title: 'Grupo de cuentas', url: '/cuenta/grupo' },
-                                { title: 'Tipo de cuentas', url: '/cuenta/tipo' },
+                                { title: 'Grupo de cuentas', url: '/cuenta/grupos' },
+                                { title: 'Tipo de cuentas', url: '/cuenta/tipoCuenta' },
                                 { title: 'Clasificacion de cuentas', url: '/cuenta/clasificacion' }
                             ],
                         }, ]
@@ -92,7 +92,7 @@ export default [{
                             title: 'Comprobantes',
                             url: '',
                             links: [
-                                { title: 'Tipos de comprobantes', url: '/comprobantes' },
+                                { title: 'Tipos de comprobantes', url: '/tipoComprobantes' },
                             ],
                         }, ]
                     }

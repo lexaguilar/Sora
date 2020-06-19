@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using sora.Models.SaraModel;
+using Sora.Models.SaraModel;
 
-namespace sora.ViewModel
+namespace Sora.ViewModel
 {  
     public class CuentaAsCatalog
     {      

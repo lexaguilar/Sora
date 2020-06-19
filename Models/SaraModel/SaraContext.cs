@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace sora.Models.SaraModel
+namespace Sora.Models.SaraModel
 {
     public partial class SaraContext : DbContext
     {

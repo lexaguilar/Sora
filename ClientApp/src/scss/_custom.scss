@@ -24,3 +24,9 @@
             max-width: 85%;
         }
     }
+    
+    @media (min-width: 576px) {
+        .small {
+            max-width: 40%;
+        }
+    }

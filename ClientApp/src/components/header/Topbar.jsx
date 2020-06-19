@@ -13,20 +13,17 @@ import DropdownLanguage from './DropdownLanguage';
 
 function Topbar() {
     const links = [
-        { title: <FormattedMessage id="topbar.aboutUs" defaultMessage="About Us" />, url: '/site/about-us' },
-        { title: <FormattedMessage id="topbar.contacts" defaultMessage="Contacts" />, url: '/site/contact-us' },
-        { title: <FormattedMessage id="topbar.storeLocation" defaultMessage="Store Location" />, url: '' },
-        { title: <FormattedMessage id="topbar.trackOrder" defaultMessage="Track Order" />, url: '/shop/track-order' },
-        { title: <FormattedMessage id="topbar.blog" defaultMessage="Blog" />, url: '/blog/category-classic' },
+        { title: <FormattedMessage id="topbar.Cuentas" defaultMessage="Cuentas" />, url: '/cuentas' },
+        // { title: <FormattedMessage id="topbar.contacts" defaultMessage="Contacts" />, url: '/site/contact-us' },
+        // { title: <FormattedMessage id="topbar.storeLocation" defaultMessage="Store Location" />, url: '' },
+        // { title: <FormattedMessage id="topbar.trackOrder" defaultMessage="Track Order" />, url: '/shop/track-order' },
+        // { title: <FormattedMessage id="topbar.blog" defaultMessage="Blog" />, url: '/blog/category-classic' },
     ];
 
-    const accountLinks = [
-        { title: 'Dashboard', url: '/account/dashboard' },
-        { title: 'Edit Profile', url: '/account/profile' },
-        { title: 'Order History', url: '/account/orders' },
-        { title: 'Addresses', url: '/account/addresses' },
+    const accountLinks = [        
+        { title: 'Editar Perfil', url: '/account/profile' },        
         { title: 'Password', url: '/account/password' },
-        { title: 'Logout', url: '/account/login' },
+        { title: 'Salir', url: '/account/login' },
     ];
 
     const linksList = links.map((item, index) => (
@@ -43,16 +40,10 @@ function Topbar() {
                     <div className="topbar__spring" />
                     <div className="topbar__item">
                         <Dropdown
-                            title={<FormattedMessage id="topbar.myAccount" defaultMessage="My Account" />}
+                            title={<FormattedMessage id="topbar.miCuenta" defaultMessage="Mi Cuenta" />}
                             items={accountLinks}
                         />
-                    </div>
-                    <div className="topbar__item">
-                        <DropdownCurrency />
-                    </div>
-                    <div className="topbar__item">
-                        <DropdownLanguage />
-                    </div>
+                    </div>                   
                 </div>
             </div>
         </div>
