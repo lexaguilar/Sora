@@ -46,7 +46,7 @@ const store = function (name) {
         },
         update: (id, catalog) => {
             return new Promise(resolve =>
-                http(uri[name].insert).asPost({ ...catalog, ...{ id } }).then(result => {
+                http(uri[name].insert).asPost({ ...catalog, ...{ id }}).then(result => {
                     notify(`Registro ${name} modificado`);
                     resolve(result);
                 })

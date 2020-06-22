@@ -8,9 +8,9 @@ namespace Sora.Controllers
     public class TipoComprobantesController : Controller
     {
         private IGenericFactory<TipoComprobantes> factory = null;
-        public TipoComprobantesController(SaraContext _db)
+        public TipoComprobantesController(SaraContext db)
         {
-            this.factory = new GenericFactory<TipoComprobantes>();
+            this.factory = new GenericFactory<TipoComprobantes>(db);
         }
 
         [Route("api/tipoComprobantes/get")]

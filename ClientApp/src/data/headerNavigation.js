@@ -130,6 +130,16 @@ export default [{
     },
     {
         title: 'Configuracion',
-        url: '/site/about-us'
+        submenu: {
+            type: 'menu',
+            menu: [
+                { title: 'Cortes', url: '/' },
+                { title: 'Balance General', url: '/' },
+                { title: 'Balanza de comprobacion', url: '/' },
+                { title: 'Libro diario', url: '/' },
+                { title: 'Libro Mayor Auxiliar', url: '/' },
+                { title: 'Cheques', url: '/' },
+            ],
+        },
     }
 ];

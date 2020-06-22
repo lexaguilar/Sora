@@ -8,9 +8,9 @@ namespace Sora.Controllers
     public class NaturalezaController : Controller
     {
         private IGenericFactory<Naturaleza> factory = null;
-        public NaturalezaController(SaraContext _db)
+        public NaturalezaController(SaraContext db)
         {
-            this.factory = new GenericFactory<Naturaleza>();
+            this.factory = new GenericFactory<Naturaleza>(db);
         }
 
         [Route("api/naturaleza/get")]

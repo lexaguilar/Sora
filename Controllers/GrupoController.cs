@@ -8,9 +8,9 @@ namespace Sora.Controllers
     public class GrupoController : Controller
     {
         private IGenericFactory<Grupos> factory = null;
-        public GrupoController(SaraContext _db)
+        public GrupoController(SaraContext db)
         {
-            this.factory = new GenericFactory<Grupos>();
+            this.factory = new GenericFactory<Grupos>(db);
         }
 
         [Route("api/grupos/get")]

@@ -8,9 +8,9 @@ namespace Sora.Controllers
     public class ClasificacionController : Controller
     {
         private IGenericFactory<Clasificacion> factory = null;
-        public ClasificacionController(SaraContext _db)
+        public ClasificacionController(SaraContext db)
         {
-            this.factory = new GenericFactory<Clasificacion>();
+            this.factory = new GenericFactory<Clasificacion>(db);
         }
 
         [Route("api/clasificacion/get")]
