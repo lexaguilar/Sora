@@ -1,6 +1,8 @@
 // react
 import React from 'react';
 
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 // third-party
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -9,9 +11,12 @@ import { Link } from 'react-router-dom';
 import Dropdown from './Dropdown';
 import DropdownCurrency from './DropdownCurrency';
 import DropdownLanguage from './DropdownLanguage';
+import { Component } from 'react';
+import DropdownCorte from './DropdownCorte';
 
 
 function Topbar() {
+
     const links = [
         { title: <FormattedMessage id="topbar.Cuentas" defaultMessage="Cuentas" />, url: '/cuentas' },
         // { title: <FormattedMessage id="topbar.contacts" defaultMessage="Contacts" />, url: '/site/contact-us' },
@@ -20,8 +25,8 @@ function Topbar() {
         // { title: <FormattedMessage id="topbar.blog" defaultMessage="Blog" />, url: '/blog/category-classic' },
     ];
 
-    const accountLinks = [        
-        { title: 'Editar Perfil', url: '/account/profile' },        
+    const accountLinks = [
+        { title: 'Editar Perfil', url: '/account/profile' },
         { title: 'Password', url: '/account/password' },
         { title: 'Salir', url: '/account/login' },
     ];
@@ -31,6 +36,7 @@ function Topbar() {
             <Link className="topbar-link" to={item.url}>{item.title}</Link>
         </div>
     ));
+
 
     return (
         <div className="site-header__topbar topbar">
@@ -43,11 +49,21 @@ function Topbar() {
                             title={<FormattedMessage id="topbar.miCuenta" defaultMessage="Mi Cuenta" />}
                             items={accountLinks}
                         />
+                    </div>
+                    {/* <div className="topbar__item">
+                            Corte : {corte[0].descripcion}
+                        </div> */}
+                    <div className="topbar__item">
+                        <DropdownCorte />
                     </div>                   
                 </div>
             </div>
         </div>
     );
+
 }
+
+
+
 
 export default Topbar;

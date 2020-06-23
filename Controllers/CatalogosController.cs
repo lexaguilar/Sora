@@ -15,7 +15,7 @@ namespace Sora.Controllers
         [Route("clasificacion")]
         public IActionResult Clasificacion(){
 
-            IGenericFactory<Clasificacion> factory = new GenericFactory<Clasificacion>(db);
+            var factory = new GenericFactory<Clasificacion>(db);
             return Json(factory.GetAll());
 
         }
@@ -23,7 +23,7 @@ namespace Sora.Controllers
         [Route("grupos")]
         public IActionResult Grupos(){
           
-            IGenericFactory<Grupos> factory = new GenericFactory<Grupos>(db);
+            var factory = new GenericFactory<Grupos>(db);
             return Json(factory.GetAll());
 
         }
@@ -31,7 +31,7 @@ namespace Sora.Controllers
         [Route("naturaleza")]
         public IActionResult Naturaleza(){
 
-            IGenericFactory<Naturaleza> factory = new GenericFactory<Naturaleza>(db);
+            var factory = new GenericFactory<Naturaleza>(db);
             return Json(factory.GetAll());
 
         }
@@ -39,7 +39,7 @@ namespace Sora.Controllers
         [Route("tipoCuenta")]
         public IActionResult TipoCuenta(){
 
-            IGenericFactory<TipoCuenta> factory = new GenericFactory<TipoCuenta>(db);
+            var factory = new GenericFactory<TipoCuenta>(db);
             return Json(factory.GetAll());
 
         }
@@ -47,7 +47,7 @@ namespace Sora.Controllers
         [Route("tipoComprobantes")]
         public IActionResult TipoComprobante(){
 
-            IGenericFactory<TipoComprobantes> factory = new GenericFactory<TipoComprobantes>(db);
+            var factory = new GenericFactory<TipoComprobantes>(db);
             return Json(factory.GetAll());
 
         }
@@ -59,6 +59,13 @@ namespace Sora.Controllers
 
             return Json(result.GetAsCatalog());
 
+        }
+
+        [Route("cortes")]
+        public IActionResult Cortes(){
+
+            var factory = new GenericFactory<Cortes>(db);
+            return Json(factory.GetAll());
         }
     }
 }

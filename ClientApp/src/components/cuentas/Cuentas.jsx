@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import TreeList, { Column, ColumnChooser, HeaderFilter, SearchPanel, Selection, Lookup, Editing,Form, Popup, Position } from 'devextreme-react/tree-list';
-import { store } from "./store";
+
 import { createStore } from "../../utils/proxy";
 import { Item } from 'devextreme-react/form';
+import { store } from "../../services/store";
+import uri from "../../utils/uri";
 
 class Cuentas extends Component {
     constructor(props) {
@@ -35,7 +37,13 @@ class Cuentas extends Component {
         return (
             <div className="container">
                 <TreeList
-                    dataSource={store}
+                    dataSource={store(
+                        {
+                            uri:uri.cuentas,
+                            msgInserted: 'Cuenta agregada correctamente',
+                            msgUpdated: 'Cuenta modificada correctamente',
+                            msgDeleted: 'Cuenta eliminada correctamente',
+                        })}
                     showBorders={true}
                     columnAutoWidth={true}
                     wordWrapEnabled={true}

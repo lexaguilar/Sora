@@ -6,7 +6,8 @@ const uri = {
     naturaleza: createProxy('naturaleza/get', 'naturaleza/post', id => `naturaleza/${id}/delete`),
     grupos: createProxy('grupos/get', 'grupos/post', id => `grupos/${id}/delete`),
     tipoCuenta: createProxy('tipoCuenta/get', 'tipoCuenta/post', id => `tipoCuenta/${id}/delete`),
-    tipoComprobantes: createProxy('tipoComprobantes/get', 'tipoComprobantes/post', id => `tipoComprobantes/${id}/delete`)
+    tipoComprobantes: createProxy('tipoComprobantes/get', 'tipoComprobantes/post', id => `tipoComprobantes/${id}/delete`),
+    cortes: createProxy('cortes/get', 'cortes/post', id => `cortes/${id}/delete`)
 };
 
 export default uri;
