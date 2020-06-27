@@ -103,7 +103,7 @@ export default [{
     },
     {
         title: 'Comprobantes',
-        url: '/account'
+        url: '/asientos'
     },
     {
         title: 'Cheques',
@@ -133,12 +133,8 @@ export default [{
         submenu: {
             type: 'menu',
             menu: [
-                { title: 'Cortes', url: '/' },
-                { title: 'Balance General', url: '/' },
-                { title: 'Balanza de comprobacion', url: '/' },
-                { title: 'Libro diario', url: '/' },
-                { title: 'Libro Mayor Auxiliar', url: '/' },
-                { title: 'Cheques', url: '/' },
+                { title: 'Cortes', url: '/configuracion/cortes' },
+                { title: 'Tasa de cambio', url: '/configuracion/tasa-cambio' },
             ],
         },
     }

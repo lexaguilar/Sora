@@ -2,6 +2,8 @@ import http from "./http";
 import CustomStore from 'devextreme/data/custom_store';
 
 const createProxy = (get = '', insert = '', remove = (id = 0) => '', getById = (id = 0) => '') => ({get, insert, remove, getById });
+const createProxyBase = root => createProxy(`${root}/get`, `${root}/post`, id => `${root}/${id}/delete`, id => `${root}/get/${id}`)
+
 
 /**
  * returna una url despues del prefijo api/catalogsCustom/ 
@@ -31,4 +33,4 @@ const createCustomStore = url => myStore => {
     }
 }
 
-export { createProxy, createStore, createCustomStore };
+export { createProxy, createProxyBase, createStore, createCustomStore };

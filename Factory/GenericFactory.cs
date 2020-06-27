@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -31,9 +32,19 @@ namespace Sora.Factory
             return entity.ToArray();
         }
 
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate)
+        {
+            return entity.Where(predicate).ToArray();
+        }
+
         public T GetById(int id)
         {
             return entity.Find(id);
+        }
+
+        public T FirstOrDefault(Expression<Func<T, bool>> predicate)
+        {
+            return entity.FirstOrDefault(predicate);
         }
 
         public void Insert(T obj)
@@ -41,10 +52,24 @@ namespace Sora.Factory
             entity.Add(obj);
         }
 
+        public void InsertRange(IEnumerable<T> obj)
+        {
+            foreach(var t in obj){
+                this.Insert(t);
+            }
+        }
+
         public void Update(T obj)
         {
             entity.Attach(obj);
             db.Entry(obj).State = EntityState.Modified;
+        }
+
+        public void UpdateRange(IEnumerable<T> obj)
+        {
+            foreach(var t in obj){
+                this.Update(t);
+            }
         }
 
         public void Delete(int id)
@@ -58,5 +83,6 @@ namespace Sora.Factory
             return db.SaveChanges();
         }
 
+        
     }
 }

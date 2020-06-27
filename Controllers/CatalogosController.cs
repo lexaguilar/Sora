@@ -67,5 +67,19 @@ namespace Sora.Controllers
             var factory = new GenericFactory<Cortes>(db);
             return Json(factory.GetAll());
         }
+
+        [Route("asientoEstado")]
+        public IActionResult AsientoEstado(){
+
+            var factory = new GenericFactory<AsientoEstado>(db);
+            return Json(factory.GetAll());
+        }
+
+        [Route("moneda")]
+        public IActionResult Moneda(){
+
+            var factory = new GenericFactory<Moneda>(db);
+            return Json(factory.GetAll());
+        }
     }
 }

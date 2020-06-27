@@ -66,8 +66,20 @@ const http = url => {
             return base(`${_url}${params}`, { method: 'DELETE' });
 
         },
+        asFile: (file = null) => {
+            return new Promise(resolve => {
+                let formData = new FormData();
+                formData.append('file', file);
+                fetch(_url, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(response => resolve(response))
+                    .catch(error => console.error('Error:', error));
+            })
+        },
     }
-
 }
 
 export { path };

@@ -9,9 +9,6 @@ import { Link } from 'react-router-dom';
 
 // application
 import Dropdown from './Dropdown';
-import DropdownCurrency from './DropdownCurrency';
-import DropdownLanguage from './DropdownLanguage';
-import { Component } from 'react';
 import DropdownCorte from './DropdownCorte';
 
 

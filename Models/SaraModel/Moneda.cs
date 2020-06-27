@@ -3,17 +3,15 @@ using System.Collections.Generic;
 
 namespace Sora.Models.SaraModel
 {
-    public partial class TipoComprobantes
+    public partial class Moneda
     {
-        public TipoComprobantes()
+        public Moneda()
         {
             Asientos = new HashSet<Asientos>();
         }
 
         public int Id { get; set; }
         public string Descripcion { get; set; }
-        public string Abrev { get; set; }
-
         public virtual ICollection<Asientos> Asientos { get; set; }
     }
 }

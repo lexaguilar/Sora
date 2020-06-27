@@ -7,24 +7,34 @@ import {
     HeaderFilter, 
     Column, 
     Export, 
-    Editing} from 'devextreme-react/data-grid';
+    Editing
+ } from 'devextreme-react/data-grid';
 
-import uri from '../../../utils/uri';
-import { store } from '../../../services/store';
-import Title from '../../shared/Title';
+import Title from '../shared/Title';
+import { store } from '../../services/store';
+import uri from '../../utils/uri';
+import Nuevo from './Nuevo';
 
-function Cortes(props) {
+
+function TasaCambio() {
+    let dataGrid = null;
+
+    const reload = function(){
+        dataGrid.instance.refresh();
+    }
 
     return (
         <div className="container small">
-           <Title title="Cortes"/>
+            <Title title="Tasa de cambio"/>
+            <Nuevo onSave={reload}  />
             <DataGrid id="gridContainer"
+                ref={(ref) => dataGrid = ref}
                 selection={{ mode: 'single' }}
                 dataSource={store({
-                    uri: uri.cortes, 
-                    msgInserted: 'Corte agregado correctamente',
-                    msgUpdated: 'Corte modificado correctamente',
-                    msgDeleted: 'Corte eliminado correctamente',}
+                    uri: uri.tasaCambio, 
+                    msgInserted: 'Tasa de cambio agregada correctamente',
+                    msgUpdated: 'Tasa de cambio modificada correctamente',
+                    msgDeleted: 'Tasa de cambio eliminada correctamente',}
                 )}
                 showBorders={true}
                 showRowLines={true}
@@ -38,11 +48,9 @@ function Cortes(props) {
                 />
                 <FilterRow visible={true} />
                 <HeaderFilter visible={true} />
-                <Export enabled={true} fileName="Cortes" allowExportSelectedData={true} />
-                <Column dataField="descripcion" width={200} />
-                <Column dataField="inicio" dataType="date"  format='dd/MM/yyyy'/>
-                <Column dataField="final" dataType="date" format='dd/MM/yyyy'/>
-                <Column dataField="activo" />
+                <Export enabled={true} fileName="TasaCambio" allowExportSelectedData={true} />
+                <Column dataField="fecha" dataType="date" format='dd/MM/yyyy'/>
+                <Column dataField="cambio" dataType="number"/>
                 <Editing
                     mode="batch"
                     allowUpdating={true}
@@ -56,4 +64,4 @@ function Cortes(props) {
 
 };
 
-export default Cortes; //connect(mapStateToProps, mapDispatchToProps)(GridSprintStart);
+export default TasaCambio; //connect(mapStateToProps, mapDispatchToProps)(GridSprintStart);

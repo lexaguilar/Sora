@@ -14,7 +14,11 @@ import Footer from './footer';
 import Header from './header';
 import Cuentas from './cuentas/Cuentas';
 import Catalogo from './cuentas/Catalogos';
+import Asientos from './asiento/Asientos';
 import catalogos from '../data/catalogos';
+import Cortes from './cuentas/configuracion/Cortes';
+import TasaCambio from './tasaDeCambio/TasaCambio';
+import TipoComprobante from './tipoComprobante/TipoComprobante';
 
 function Layout(props) {
     const { match, headerLayout } = props;
@@ -42,7 +46,10 @@ function Layout(props) {
                         <Route exact path={`${match.path}`} component={HomePage} />
                         <Route exact path={`/cuentas`} component={Cuentas} />                         
                         {PrintCatalogos}
-                        <Route exact path={`/tipoComprobantes`} render={props => <Catalogo {...props} catalogo={'tipoComprobantes'} /> } />                         
+                        <Route exact path={`/tipoComprobantes`} render={props => <TipoComprobante {...props} /> } />                         
+                        <Route exact path={`/asientos`} component={Asientos} />                         
+                        <Route exact path={`/configuracion/cortes`} component={Cortes} />                         
+                        <Route exact path={`/configuracion/tasa-cambio`} component={TasaCambio} />                         
                     </Switch>
                 </div>
 

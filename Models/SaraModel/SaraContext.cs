@@ -24,6 +24,7 @@ namespace Sora.Models.SaraModel
         public virtual DbSet<Entidades> Entidades { get; set; }
         public virtual DbSet<Grupos> Grupos { get; set; }
         public virtual DbSet<Naturaleza> Naturaleza { get; set; }
+        public virtual DbSet<TasaDeCambio> TasaDeCambio { get; set; }
         public virtual DbSet<TipoComprobantes> TipoComprobantes { get; set; }
         public virtual DbSet<TipoCuenta> TipoCuenta { get; set; }
         public virtual DbSet<Usuarios> Usuarios { get; set; }
@@ -93,6 +94,11 @@ namespace Sora.Models.SaraModel
                     .WithMany(p => p.Asientos)
                     .HasForeignKey(d => d.EstadoId)
                     .HasConstraintName("FK_Asientos_AsientoEstado");
+
+                entity.HasOne(d => d.Moneda)
+                    .WithMany(p => p.Asientos)
+                    .HasForeignKey(d => d.MonedaId)
+                    .HasConstraintName("FK_Asientos_Moneda");
 
                 entity.HasOne(d => d.TipoComprobante)
                     .WithMany(p => p.Asientos)

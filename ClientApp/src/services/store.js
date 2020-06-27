@@ -14,11 +14,11 @@ const store =
             msgInserted: '',
             msgUpdated: '',
             msgDeleted: '',
-
+            key: 'id'
         }
     ) => {
         const customStore = new CustomStore({
-            key: 'id',
+            key: model.key || 'id',
             load: (loadOptions) => {
                 return http(model.uri.get)
                     .asGet()

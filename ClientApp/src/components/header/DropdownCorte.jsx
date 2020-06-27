@@ -8,6 +8,7 @@ import { getCorte } from '../../store/corte/corteActions'
 import { Component } from 'react';
 
 import Dropdown from './Dropdown';
+import { updateUser } from '../../store/user/userActions';
 
 class DropdownCorte extends Component {
     constructor(props) {
@@ -24,7 +25,7 @@ class DropdownCorte extends Component {
    
     render(){
 
-        const { cortes, user } = this.props;
+        const { cortes, user, updateUser } = this.props;
 
         const corte = cortes.find(x => x.id == user.corteId);    
     
@@ -40,8 +41,8 @@ class DropdownCorte extends Component {
         return (
             <Dropdown
             title={title}
-            items={cortes.map(x =>({title:x.descripcion}))}
-            //onClick={(item) => changeCurrency(item.currency)}
+            items={cortes.map(corte =>({title:corte.descripcion, id:corte.id}))}
+            onClick={c =>updateUser({corteId: c.id})}
             />
             );
         }
@@ -53,12 +54,14 @@ DropdownCorte.propTypes = {
 }
 
 const mapDispatchToPros = ({
-    getCorte
+    getCorte,
+    updateUser,
 });
 
 const mapStateToProps = (state) => ({     
         cortes: state.cortes,
         user: state.user,
+        
 });
 
 export default connect(mapStateToProps, mapDispatchToPros)(DropdownCorte);

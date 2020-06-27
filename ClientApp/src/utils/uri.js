@@ -1,13 +1,17 @@
-import { createProxy } from "./proxy";
+import { createProxy, createProxyBase } from "./proxy";
 
 const uri = {
-    cuentas: createProxy('cuentas/get', 'cuentas/post', id => `cuentas/${id}/delete`, id => `cuentas/get/${id}`),
-    clasificacion: createProxy('clasificacion/get', 'clasificacion/post', id => `clasificacion/${id}/delete`),
-    naturaleza: createProxy('naturaleza/get', 'naturaleza/post', id => `naturaleza/${id}/delete`),
-    grupos: createProxy('grupos/get', 'grupos/post', id => `grupos/${id}/delete`),
-    tipoCuenta: createProxy('tipoCuenta/get', 'tipoCuenta/post', id => `tipoCuenta/${id}/delete`),
-    tipoComprobantes: createProxy('tipoComprobantes/get', 'tipoComprobantes/post', id => `tipoComprobantes/${id}/delete`),
-    cortes: createProxy('cortes/get', 'cortes/post', id => `cortes/${id}/delete`)
+    asientos: createProxyBase('asientos'),
+    clasificacion: createProxyBase('clasificacion'),
+    cortes: createProxyBase('cortes'),
+    cuentas: createProxyBase('cuentas'),
+    grupos: createProxyBase('grupos'),
+    naturaleza: createProxyBase('naturaleza'),
+    moneda: createProxyBase('moneda'),
+    tipoCuenta: createProxyBase('tipoCuenta'),
+    tipoComprobantes: createProxyBase('tipoComprobantes'),
+    tasaCambio: createProxyBase('TasaCambio'),
+    file: createProxy('', 'tasaCambio/post/file')
 };
 
 export default uri;

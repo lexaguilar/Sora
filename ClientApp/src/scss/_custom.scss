@@ -30,3 +30,23 @@
             max-width: 40%;
         }
     }
+    
+    .links {
+        color: #1976D2;
+        padding: 0;
+        height: 15px;
+        border: none;
+        position: relative;
+        top: -3px;
+    }
+    
+    .links>.dx-button-content {
+        padding: 0;
+    }
+    
+    // td[role="gridcell"].col-debe {
+    //     background-color: rgb(241, 131, 131);
+    // }
+    // td>div.col-summary {
+    //     background-color: transparent;
+    // }

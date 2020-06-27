@@ -14,6 +14,7 @@ namespace Sora.Models.SaraModel
         public string Descripcion { get; set; }
         public DateTime Inicio { get; set; }
         public DateTime Final { get; set; }
+        public bool Activo { get; set; }
 
         public virtual ICollection<Asientos> Asientos { get; set; }
     }

@@ -1,15 +1,13 @@
 import React, { Component } from "react";
-import TreeList, { Column, ColumnChooser, HeaderFilter, SearchPanel, Selection, Lookup, Editing,Form, Popup, Position } from 'devextreme-react/tree-list';
+import TreeList, { Column, ColumnChooser, HeaderFilter, SearchPanel, Selection, Lookup, Editing } from 'devextreme-react/tree-list';
 
 import { createStore } from "../../utils/proxy";
-import { Item } from 'devextreme-react/form';
 import { store } from "../../services/store";
 import uri from "../../utils/uri";
 
 class Cuentas extends Component {
     constructor(props) {
         super(props)
-        this.state = {editable:false};
         this.onInitNewRow = this.onInitNewRow.bind(this);
     }
 
@@ -33,7 +31,6 @@ class Cuentas extends Component {
     // }
 
     render() {
-        const dataSourceOptions = [];
         return (
             <div className="container">
                 <TreeList

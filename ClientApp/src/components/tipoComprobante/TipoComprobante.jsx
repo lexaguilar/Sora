@@ -65,16 +65,15 @@ import Title from '../shared/Title';
 // }
 
 
-function Catalogo(props) {
-    const { catalogo } = props;
+function TipoComprobante(props) {
 
     return (
         <div className="container small">
-            <Title title={catalogo}/>
+            <Title title="TipoComrobante"/>
           
             <DataGrid id="gridContainer"
                 selection={{ mode: 'single' }}
-                dataSource={store({uri:uri[catalogo]})}
+                dataSource={store({uri:uri.tipoComprobantes})}
                 showBorders={true}
                 showRowLines={true}
                 allowColumnResizing={true}
@@ -88,19 +87,21 @@ function Catalogo(props) {
                 <FilterRow visible={true} />
                 <HeaderFilter visible={true} />
                 <ColumnChooser enabled={true} />
-                <Export enabled={true} fileName="Catalogos" allowExportSelectedData={true} />
+                <Export enabled={true} fileName="TipoComprobantes" allowExportSelectedData={true} />
                 <Column dataField="descripcion" />
+                <Column dataField="abrev" width={80} />
                 <Editing
                     mode="popup"
                     allowUpdating={true}
                     allowDeleting={true}
                     allowAdding={true}
                 >
-                    <Popup title={toCapital(catalogo)} showTitle={true} width={500} height={220}>
+                    <Popup title="Tipo Comprobantes" showTitle={true} width={550} height={220}>
                         
                     </Popup>
                     <Form>
-                        <Item  dataField="descripcion" editorOptions={{ width:300 }} />                       
+                        <Item  dataField="descripcion" editorOptions={{ width:250 }} />                       
+                        <Item  dataField="abrev" editorOptions={{ width:80 }} />                       
                     </Form>
                 </Editing>
             </DataGrid>
@@ -109,4 +110,4 @@ function Catalogo(props) {
 
 };
 
-export default Catalogo; //connect(mapStateToProps, mapDispatchToProps)(GridSprintStart);
+export default TipoComprobante; //connect(mapStateToProps, mapDispatchToProps)(GridSprintStart);

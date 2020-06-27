@@ -14,16 +14,10 @@ namespace Sora.Controllers
         }
 
         [Route("api/cuentas/get")]
-        public IActionResult Get(){
-
-            var cuentasfactory = new CuentasFactory(db);
-
-            return Json(cuentasfactory.GetAll());
-
-        }
+        public IActionResult Get() => Json(factory.GetAll());
 
         [Route("api/cuentas/get/{id}")]
-        public IActionResult Get(int id){
+        public IActionResult GetById(int id){
 
             return Json(factory.GetById(id));
 
