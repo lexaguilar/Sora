@@ -16,6 +16,9 @@ namespace Sora.Controllers
         [Route("api/cuentas/get")]
         public IActionResult Get() => Json(factory.GetAll());
 
+         [Route("api/cuentas/get/nivel/{nivel}")]
+        public IActionResult GetByNivel(int nivel) => Json(factory.GetAll(x => x.Nivel == nivel));
+
         [Route("api/cuentas/get/{id}")]
         public IActionResult GetById(int id){
 

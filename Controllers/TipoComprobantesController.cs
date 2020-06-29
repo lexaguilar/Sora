@@ -14,7 +14,14 @@ namespace Sora.Controllers
         }
 
         [Route("api/tipoComprobantes/get")]
-        public IActionResult Get() => Json(factory.GetAll());       
+        public IActionResult Get() => Json(factory.GetAll());
+        
+        [Route("api/tipoComprobantes/get/{id}")]
+        public IActionResult GetById(int id){
+
+            return Json(factory.GetById(id));
+
+        }
 
         [HttpPost("api/tipoComprobantes/post")]
         public IActionResult Post([FromBody] TipoComprobantes tipoComprobantes)

@@ -31,7 +31,7 @@ class DropdownCorte extends Component {
     
         const title = (
             <React.Fragment>
-                <FormattedMessage id="topbar.corte" defaultMessage="Corte" />
+                <FormattedMessage id="topbar.periodo" defaultMessage="Periodo" />
                 {': '}
                 <span className="topbar__item-value">{corte?corte.descripcion:''}</span>
             </React.Fragment>

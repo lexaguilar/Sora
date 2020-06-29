@@ -78,6 +78,11 @@ namespace Sora.Factory
             entity.Remove(existing);
         }
 
+        public void Delete(T obj)
+        {
+            entity.Remove(obj);
+        }
+
         public int Save()
         {
             return db.SaveChanges();

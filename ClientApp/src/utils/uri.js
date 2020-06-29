@@ -2,6 +2,7 @@ import { createProxy, createProxyBase } from "./proxy";
 
 const uri = {
     asientos: createProxyBase('asientos'),
+    centroCosto: createProxyBase('centroCosto'),
     clasificacion: createProxyBase('clasificacion'),
     cortes: createProxyBase('cortes'),
     cuentas: createProxyBase('cuentas'),

@@ -81,5 +81,11 @@ namespace Sora.Controllers
             var factory = new GenericFactory<Moneda>(db);
             return Json(factory.GetAll());
         }
+        [Route("centroCosto")]
+        public IActionResult CentroCosto(){
+
+            var factory = new GenericFactory<CentroCosto>(db);
+            return Json(factory.GetAll());
+        }
     }
 }

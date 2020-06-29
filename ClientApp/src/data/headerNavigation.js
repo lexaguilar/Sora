@@ -93,6 +93,7 @@ export default [{
                             url: '',
                             links: [
                                 { title: 'Tipos de comprobantes', url: '/tipoComprobantes' },
+                                { title: 'Centro de costo', url: '/centro-costo' },
                             ],
                         }, ]
                     }

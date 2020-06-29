@@ -18,11 +18,13 @@ namespace Sora.Models.SaraModel
         public virtual DbSet<AsientoEstado> AsientoEstado { get; set; }
         public virtual DbSet<Asientos> Asientos { get; set; }
         public virtual DbSet<AsientosDetalle> AsientosDetalle { get; set; }
+        public virtual DbSet<CentroCosto> CentroCosto { get; set; }
         public virtual DbSet<Clasificacion> Clasificacion { get; set; }
         public virtual DbSet<Cortes> Cortes { get; set; }
         public virtual DbSet<Cuentas> Cuentas { get; set; }
         public virtual DbSet<Entidades> Entidades { get; set; }
         public virtual DbSet<Grupos> Grupos { get; set; }
+        public virtual DbSet<Moneda> Moneda { get; set; }
         public virtual DbSet<Naturaleza> Naturaleza { get; set; }
         public virtual DbSet<TasaDeCambio> TasaDeCambio { get; set; }
         public virtual DbSet<TipoComprobantes> TipoComprobantes { get; set; }
@@ -42,8 +44,6 @@ namespace Sora.Models.SaraModel
         {
             modelBuilder.Entity<AsientoEstado>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Descripcion)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -66,7 +66,7 @@ namespace Sora.Models.SaraModel
 
                 entity.Property(e => e.Concepto).HasMaxLength(500);
 
-                entity.Property(e => e.Fecha).HasColumnType("datetime");
+                entity.Property(e => e.Fecha).HasColumnType("date");
 
                 entity.Property(e => e.Observacion).HasMaxLength(500);
 
@@ -93,22 +93,28 @@ namespace Sora.Models.SaraModel
                 entity.HasOne(d => d.Estado)
                     .WithMany(p => p.Asientos)
                     .HasForeignKey(d => d.EstadoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Asientos_AsientoEstado");
 
                 entity.HasOne(d => d.Moneda)
                     .WithMany(p => p.Asientos)
                     .HasForeignKey(d => d.MonedaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Asientos_Moneda");
 
                 entity.HasOne(d => d.TipoComprobante)
                     .WithMany(p => p.Asientos)
                     .HasForeignKey(d => d.TipoComprobanteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Asientos_TipoComprobantes");
             });
 
             modelBuilder.Entity<AsientosDetalle>(entity =>
             {
                 entity.HasIndex(e => e.AsientoId);
+
+                entity.HasIndex(e => e.CentroCostoId)
+                    .HasName("IX_AsientosDetalle_CentroCosto");
 
                 entity.HasIndex(e => e.CuentaId);
 
@@ -121,6 +127,24 @@ namespace Sora.Models.SaraModel
                     .HasForeignKey(d => d.AsientoId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_AsientosDetalle_Asientos");
+
+                entity.HasOne(d => d.CentroCosto)
+                    .WithMany(p => p.AsientosDetalle)
+                    .HasForeignKey(d => d.CentroCostoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_AsientosDetalle_CentroCosto");
+            });
+
+            modelBuilder.Entity<CentroCosto>(entity =>
+            {
+                // entity.Property(e => e.Activo)
+                //     .IsRequired()
+                //     .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Clasificacion>(entity =>
@@ -202,6 +226,21 @@ namespace Sora.Models.SaraModel
                     .HasMaxLength(150);
             });
 
+            modelBuilder.Entity<Moneda>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Abrev)
+                    .IsRequired()
+                    .HasMaxLength(2)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<Naturaleza>(entity =>
             {
                 entity.Property(e => e.Descripcion)
@@ -209,8 +248,22 @@ namespace Sora.Models.SaraModel
                     .HasMaxLength(150);
             });
 
+            modelBuilder.Entity<TasaDeCambio>(entity =>
+            {
+                entity.HasIndex(e => e.Id)
+                    .HasName("IX_TasaDeCambio_Fecha")
+                    .IsUnique();
+
+                entity.Property(e => e.Fecha).HasColumnType("date");
+            });
+
             modelBuilder.Entity<TipoComprobantes>(entity =>
             {
+                entity.Property(e => e.Abrev)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Descripcion)
                     .IsRequired()
                     .HasMaxLength(150);

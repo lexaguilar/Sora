@@ -22,6 +22,7 @@ namespace Sora.Factory
         void Update(T obj);
         void UpdateRange(IEnumerable<T> obj);
         void Delete(int id);
+        void Delete(T obj);
         int Save();
     }
     

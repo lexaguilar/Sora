@@ -10,5 +10,13 @@ export const defaultComprobante = {
     observacion: '',
     tipoCambio: 0,
     referencia: '',
-    asientosDetalle: []
+    estadoId: 1
 }
+
+export const defaultComprobanteDetalle = [{
+    id: null,
+    cuentaId: null,
+    referencia: null,
+    debe: null,
+    haber: null
+}];

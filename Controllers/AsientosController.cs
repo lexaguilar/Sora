@@ -11,9 +11,11 @@ namespace Sora.Controllers
     {      
         private readonly SaraContext db;
          private IGenericFactory<Asientos> factory = null;
+         private IGenericFactory<AsientosDetalle> factoryDetalle = null;
         public AsientosController(SaraContext _db){
             db = _db;
             this.factory = new GenericFactory<Asientos>(db);
+            this.factoryDetalle = new GenericFactory<AsientosDetalle>(db);
         }
 
         [Route("api/asientos/get/cortes/{corteId}")]
@@ -37,16 +39,53 @@ namespace Sora.Controllers
         public IActionResult Post([FromBody] Asientos asiento){
 
 
-            if (asiento.Id > 0)
-                factory.Update(asiento);
+            if (asiento.Id > 0){
+                //Actializar encabezado
+                var asientoModificado = factory.FirstOrDefault(x => x.Id == asiento.Id);
+                asientoModificado.CopyFrom(asiento , x => new { 
+                    x.CorteId, 
+                    x.Fecha, 
+                    x.MonedaId, 
+                    x.Referencia,
+                    x.TipoComprobanteId, 
+                    x.Concepto,
+                    x.EstadoId,
+                    x.Observacion, 
+                    x.TipoCambio });
+                                
+                factory.Save();
+
+                var detalle = asiento.AsientosDetalle;
+
+                //eliminar registros anteriores
+                var oldAsientoDetalle = factoryDetalle.GetAll(x => x.AsientoId == asiento.Id);
+                foreach (var item in oldAsientoDetalle)                
+                    factoryDetalle.Delete(item);
+                factoryDetalle.Save();
+
+                //agregar nuevos registros
+                foreach (var item in detalle)  {
+
+                    factoryDetalle.Insert(new AsientosDetalle{
+                        Id =0,
+                        CuentaId = item.CuentaId,
+                        Debe = item.Debe,
+                        Haber= item.Haber,
+                        Referencia= item.Referencia,
+                        AsientoId =asiento.Id
+                    });
+                }
+                factoryDetalle.Save();
+
+                
+            }
             else{
 
                 asiento.Numero = getMax(asiento.CorteId);
-                asiento.EstadoId = 1;
                 factory.Insert(asiento);
+                factory.Save(); 
             }
 
-            factory.Save();
 
             return Json(asiento);
 

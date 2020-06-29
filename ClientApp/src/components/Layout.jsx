@@ -50,6 +50,7 @@ function Layout(props) {
                         <Route exact path={`/asientos`} component={Asientos} />                         
                         <Route exact path={`/configuracion/cortes`} component={Cortes} />                         
                         <Route exact path={`/configuracion/tasa-cambio`} component={TasaCambio} />                         
+                        <Route exact path={`/centro-costo`} render={props => <Catalogo {...props} catalogo="centroCosto" /> } />                         
                     </Switch>
                 </div>
 
