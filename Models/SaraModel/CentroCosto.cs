@@ -12,6 +12,7 @@ namespace Sora.Models.SaraModel
 
         public int Id { get; set; }
         public string Descripcion { get; set; }
+        public string Cuenta { get; set; }
 
         public virtual ICollection<AsientosDetalle> AsientosDetalle { get; set; }
     }

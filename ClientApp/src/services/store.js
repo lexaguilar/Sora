@@ -14,18 +14,23 @@ const store =
             msgInserted: '',
             msgUpdated: '',
             msgDeleted: '',
-            key: 'id'
+            cb: null,
         }
     ) => {
         const customStore = new CustomStore({
-            key: model.key || 'id',
             load: (loadOptions) => {
                 return http(model.uri.get)
                     .asGet()
                     .then((data) => {
+
+                        let resp = data;
+
+                        if (model.cb)
+                            resp = model.cb(data);
+
                         return {
-                            data: data,
-                            totalCount: data.length,
+                            data: resp,
+                            totalCount: resp.length,
                         };
                     })
                     .catch(() => { throw 'Data Loading Error'; });
@@ -38,19 +43,19 @@ const store =
                     })
                 )
             },
-            update: (id, dataModificada) => {
+            update: (data, dataModificada) => {
+
                 return new Promise(resolve =>
-                    customStore.byKey(id).then(data => {
-                        http(model.uri.insert).asPost({...data, ...dataModificada }).then(result => {
-                            notify(model.msgUpdated);
-                            resolve(result);
-                        })
+                    http(model.uri.insert).asPost({...data, ...dataModificada }).then(result => {
+                        notify(model.msgUpdated);
+                        resolve(result);
                     })
+
                 )
             },
-            remove: id => {
+            remove: catalogo => {
                 return new Promise(resolve =>
-                    http(model.uri.remove(id)).asGet().then(result => {
+                    http(model.uri.remove(catalogo.id)).asGet().then(result => {
                         notify(model.msgDeleted, 'error');
                         resolve(result);
                     })

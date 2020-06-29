@@ -1,3 +1,4 @@
+import numeral from 'numeral'
 /**
  * returna una cadena en tipo capital
  * @param {String} string -  cadena de texto a covertir en Capital
@@ -10,6 +11,9 @@ const toCapital = string => [...string].map((c, i) => i == 0 ? c.toUpperCase() :
  * @param {Date} date -  cadena de texto a covertir en Capital
  */
 const getTicks = date => ((date.getTime() * 10000) + 621355968000000000);
+
+export const cellRender = data => numeral(data.value).format('0,0.00');
+
 
 export { getTicks }
 export default toCapital

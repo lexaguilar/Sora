@@ -107,12 +107,26 @@ export default [{
         url: '/asientos'
     },
     {
-        title: 'Cheques',
-        url: '/blog/category-classic'
+        title: 'Libros',
+        url: '',
+        submenu: {
+            type: 'menu',
+            menu: [
+                { title: 'Libro mayor', url: '/libro/mayor' },
+                { title: 'Libro auxiliar', url: '/' },
+            ],
+        },
     },
     {
         title: 'Bancos',
-        url: '/site/about-us'
+        url: '',
+        submenu: {
+            type: 'menu',
+            menu: [
+                { title: 'Bancos', url: '/' },
+                { title: 'Cheques', url: '/' },
+            ],
+        },
     },
     {
         title: 'Reportes',

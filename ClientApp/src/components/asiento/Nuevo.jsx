@@ -11,7 +11,7 @@ import { Column, ColumnChooser, HeaderFilter, SearchPanel, Lookup, Editing, Summ
 import { DataGrid } from 'devextreme-react';
 import http from '../../utils/http';
 import uri from '../../utils/uri';
-import { getTicks } from '../../utils/common';
+import { getTicks, cellRender } from '../../utils/common';
 import notify from 'devextreme/ui/notify';
 import { connect } from 'react-redux';
 import { defaultComprobante } from '../../data/comprobante';
@@ -23,6 +23,7 @@ class Nuevo extends React.Component {
     super(props);
     this.asiento = null;
     this.asientosDetalle = [];
+    this.centroCostos = [];
     this.hideInfo = this.hideInfo.bind(this);
     this.save = this.save.bind(this);
     this.showPopup = this.showPopup.bind(this);
@@ -30,12 +31,24 @@ class Nuevo extends React.Component {
     this.onRowInserting = this.onRowInserting.bind(this);
     this.onRowInserted = this.onRowInserted.bind(this);
     this.onRowUpdated = this.onRowUpdated.bind(this);
+    this.getFilteredCentroCosto = this.getFilteredCentroCosto.bind(this);
 
     this.state = {
       popupVisible: false,
       comprobante: Object.assign({}, defaultComprobante),
       comprobanteDetalle: []
     };
+  }
+
+  componentDidMount(){
+    http('centrocosto/get').asGet().then(cc => this.centroCostos = cc);
+  }
+
+  getFilteredCentroCosto(options) {
+    return {
+      store:this.centroCostos,
+      filter : options.data ? ['cuenta', '=', String(options.cells[0].displayValue).substring(0, 2)] : null
+    } 
   }
 
   onRowInserting(e) {
@@ -176,12 +189,11 @@ class Nuevo extends React.Component {
       });
     })
   }
-
-  customizeDate = data => numeral(data.value).format('0,0.00');  
+ 
 
   render() {
 
-    const { isNew, data } = this.props;
+    const { isNew } = this.props;
     return (
       <div id="container">
 
@@ -258,7 +270,6 @@ class Nuevo extends React.Component {
                 <GroupItem>
                   <SimpleItem dataField="referencia"  >
                     <StringLengthRule max={50} message="Maximo 50 caracteres" />
-                    <RequiredRule message="La referencia es requerida" />
                   </SimpleItem>
                 </GroupItem>
                 <SimpleItem
@@ -310,27 +321,28 @@ class Nuevo extends React.Component {
                       displayExpr={item => item ? `${item.numero} - ${item.descripcion}` : ''}
                     >
                     </Lookup>
-                    {/* <RequiredRule /> */}
                   </Column>
-                  <Column dataField="referencia" width={100} >
-                    {/* <RequiredRule message="La ferencia es requerida" /> */}
+                  <Column dataField="centroCostoId" cssClass='cellDetail'>
+                    <Lookup
+                      dataSource={this.getFilteredCentroCosto}//{createStore('centrocosto')}
+                      valueExpr="id"
+                      displayExpr='descripcion'
+                    >
+                    </Lookup>
                   </Column>
-                  <Column dataField="debe" width={100} cssClass="col-debe" dataType="number" >
-                    {/* <RequiredRule message="El debe es requerido"/> */}
-                  </Column>
-                  <Column dataField="haber" width={100} cssClass="col-debe" dataType="number">
-                    {/* <RequiredRule message="El haber es requerido"/> */}
-                  </Column>
+                  <Column dataField="referencia" width={100} ></Column>
+                  <Column dataField="debe" width={100} cssClass="col-debe" dataType="number"  cellRender={cellRender}/>
+                  <Column dataField="haber" width={100} cssClass="col-debe" dataType="number" cellRender={cellRender}/>
                   <Summary recalculateWhileEditing={true} >
                     <TotalItem
                       column="debe"
                       summaryType="sum"
-                      customizeText={this.customizeDate}
+                      customizeText={cellRender}
                       valueFormat="currency" cssClass="col-summary" />
                     <TotalItem
                       column="haber"
                       summaryType="sum"
-                      customizeText={this.customizeDate}
+                      customizeText={cellRender}
                       valueFormat="currency" cssClass="col-summary" />
                   </Summary>
                 </DataGrid>

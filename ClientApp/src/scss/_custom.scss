@@ -31,6 +31,12 @@
         }
     }
     
+    @media (min-width: 576px) {
+        .medium {
+            max-width: 65%;
+        }
+    }
+    
     .links {
         color: #1976D2;
         padding: 0;

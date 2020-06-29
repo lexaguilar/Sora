@@ -19,6 +19,8 @@ import catalogos from '../data/catalogos';
 import Cortes from './cuentas/configuracion/Cortes';
 import TasaCambio from './tasaDeCambio/TasaCambio';
 import TipoComprobante from './tipoComprobante/TipoComprobante';
+import CentroCosto from './centroCosto/CentroCosto';
+import LibroMayor from './libros/LibroMayor';
 
 function Layout(props) {
     const { match, headerLayout } = props;
@@ -50,7 +52,8 @@ function Layout(props) {
                         <Route exact path={`/asientos`} component={Asientos} />                         
                         <Route exact path={`/configuracion/cortes`} component={Cortes} />                         
                         <Route exact path={`/configuracion/tasa-cambio`} component={TasaCambio} />                         
-                        <Route exact path={`/centro-costo`} render={props => <Catalogo {...props} catalogo="centroCosto" /> } />                         
+                        <Route exact path={`/centro-costo`} component={CentroCosto} />                         
+                        <Route exact path={`/libro/mayor`} component={LibroMayor} />                         
                     </Switch>
                 </div>
 

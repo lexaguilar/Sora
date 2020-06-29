@@ -1,9 +1,13 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sora.Factory;
 using Sora.Models.SaraModel;
+using Sora.ViewModel;
+using static Sora.Enumerators;
 
 namespace Sora.Controllers
 {  
@@ -110,6 +114,65 @@ namespace Sora.Controllers
 
         }
 
+
+        [HttpGet("api/asientos/cuenta/{cuentaId}/year/{year}/libro-mayor")]
+        public IActionResult LibroMayor(int cuentaId, int year)
+        {
+
+            var resultPrev = 
+            (from a in db.Asientos 
+            join ad in db.AsientosDetalle on a.Id equals ad.AsientoId
+            join c in db.Cuentas on ad.CuentaId equals c.Id
+            where a.Fecha.Year < year && ad.CuentaId == cuentaId && a.EstadoId == (int)Estados.Elaborado
+            select new { ad.CuentaId, c.NaturalezaId, ad.Debe, ad.Haber } into x
+            group x by new { x.CuentaId, x.NaturalezaId } into g
+            select new LibroMayorViewModel{
+                Periodo = "Saldo anterior",
+                Debe = 0,
+                Haber = 0,
+                Saldo = 0,
+                SaldoAcumulado = (g.Sum(x => x.Debe) - g.Sum(x => x.Haber)) * naturaleza((Naturalezas)g.Key.NaturalezaId)
+            }).ToArray();
+
+            var result = (from a in db.Asientos 
+            join ad in db.AsientosDetalle on a.Id equals ad.AsientoId            
+            where a.Fecha.Year == year && ad.CuentaId == cuentaId && a.EstadoId == (int)Estados.Elaborado
+            select new { a.Fecha.Month , ad.Debe, ad.Haber } into x
+            group x by new { x.Month } into g
+            select new LibroMayorViewModel {
+                Periodo = GetName(g.Key.Month),
+                Debe = g.Sum(x => x.Debe),
+                Haber = g.Sum(x => x.Haber),
+            }).ToArray();
+
+            var Months = new List<LibroMayorViewModel>();
+
+            foreach (var month in GetMonths())
+            {
+                Months.Add(new LibroMayorViewModel{
+                    Periodo = month,
+                    Debe = result.Where(r => r.Periodo == month).Select(r => r.Debe).FirstOrDefault(),
+                    Haber = result.Where(r => r.Periodo == month).Select(r => r.Haber).FirstOrDefault()
+                });
+            };           
+
+
+            return Json(resultPrev.Concat(Months));
+
+        }
+
+        private static string GetName(int month){
+            string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+            return monthName;
+        }
         
+        private static int naturaleza(Naturalezas naturalezas){
+            return naturalezas == Naturalezas.Deudora ? 1 : -1;
+        }
+
+        private static string[] GetMonths(){
+            string[] str = { "enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre" };
+            return str;
+        }
     }
 }

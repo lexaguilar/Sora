@@ -11,7 +11,7 @@ namespace Sora.Models.SaraModel
         public string Referencia { get; set; }
         public double Debe { get; set; }
         public double Haber { get; set; }
-        public int CentroCostoId { get; set; }
+        public int? CentroCostoId { get; set; }
 
         public virtual Asientos Asiento { get; set; }
         public virtual CentroCosto CentroCosto { get; set; }
