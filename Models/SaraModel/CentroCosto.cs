@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace sora.Models.SaraModel
+namespace Sora.Models.SaraModel
 {
     public partial class CentroCosto
     {
