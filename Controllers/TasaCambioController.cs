@@ -105,7 +105,7 @@ namespace Sora.Controllers
                         }
                         catch (FormatException ex)
                         {
-                            return BadRequest($"Un error ocurrio");
+                            return BadRequest($"Un error ocurrio "  + ex.Message);
                         }
                     }
 
