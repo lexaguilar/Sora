@@ -15,12 +15,42 @@ const store =
             msgUpdated: '',
             msgDeleted: '',
             cb: null,
+            remoteOperations: false
         }
     ) => {
         const customStore = new CustomStore({
             load: (loadOptions) => {
+
+                let params = {};
+                params.skip = loadOptions.skip || 0;
+                params.take = loadOptions.take || 10;
+
+                if (loadOptions.filter) {
+                    if (typeof loadOptions.filter[0] == 'object') {
+
+                        for (var filter in loadOptions.filter) {
+                            if (loadOptions.filter.hasOwnProperty(filter)) {
+                                const element = loadOptions.filter[filter];
+                                if (typeof element == 'object') {
+                                    if (typeof element[0] == 'object') {
+                                        var t = element[0];
+                                        if (!params[t[0]])
+                                            params[t[0]] = t[2];
+                                    } else {
+                                        if (!params[element[0]])
+                                            params[element[0]] = element[2];
+                                    }
+
+                                }
+                            }
+                        }
+                    } else {
+                        params[loadOptions.filter[0]] = loadOptions.filter[2];
+                    }
+                }
+
                 return http(model.uri.get)
-                    .asGet()
+                    .asGet(params)
                     .then((data) => {
 
                         let resp = data;
@@ -28,10 +58,16 @@ const store =
                         if (model.cb)
                             resp = model.cb(data);
 
-                        return {
-                            data: resp,
-                            totalCount: resp.length,
-                        };
+                        if (model.remoteOperations)
+                            return {
+                                data: resp.items,
+                                totalCount: resp.totalCount,
+                            }
+                        else
+                            return {
+                                data: resp,
+                                totalCount: resp.length,
+                            };
                     })
                     .catch(() => { throw 'Data Loading Error'; });
             },

@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Title from '../shared/Title';
 import { SelectBox, DataGrid } from 'devextreme-react';
 import { Column, Summary, TotalItem }
@@ -7,6 +8,8 @@ import { createCustomStore } from '../../utils/proxy';
 import { Export } from 'devextreme-react/bar-gauge';
 import { cellRender } from '../../utils/common';
 import { store } from '../../services/store';
+import { updateLibroMayor } from '../../store/libroMayor/libroMayorActions'
+import Detalle from './Detalle';
 
 class LibroMayor extends React.Component {
     constructor(props) {
@@ -19,6 +22,7 @@ class LibroMayor extends React.Component {
         }
         this.onValueChanged = this.onValueChanged.bind(this);
         this.onAnioChanged = this.onAnioChanged.bind(this);
+        this.onCellDblClick = this.onCellDblClick.bind(this);
     }
 
     onValueChanged(data) {
@@ -36,6 +40,21 @@ class LibroMayor extends React.Component {
         });
     }
 
+    onCellDblClick(e){
+        console.log(e);
+        let { updateLibroMayor } = this.props;
+
+        updateLibroMayor(
+            {
+                id: this.state.id, 
+                year: this.state.anio,
+                mes: e.data.periodoId,
+                debe: e.column.dataField == 'debe' ? true : false,
+                open: true
+            }
+        );
+    }
+
     render() {
 
         this.store = store(
@@ -51,6 +70,7 @@ class LibroMayor extends React.Component {
 
         return (
             <div className="container medium">
+                <Detalle />
                 <Title title="Libro mayor" />
                 <div className="dx-field" style={{width: 600}}>
                     <div className="dx-field-label">Cuenta contable</div>
@@ -74,19 +94,21 @@ class LibroMayor extends React.Component {
                     </div>
                 </div>
 
+
                 <DataGrid
                     dataSource={this.state.id > 0 && this.state.anio > 0 ? this.store : []}
                     showBorders={true}
                     showRowLines={true}
                     allowColumnResizing={true}
-                    allowColumnReordering={true}>
-
+                    allowColumnReordering={true} 
+                    onCellDblClick={this.onCellDblClick}>
+                    
                     <Export enabled={true} fileName="Cortes" allowExportSelectedData={true} />
-                    <Column dataField="periodo" />
-                    <Column dataField="debe" cellRender={cellRender} />
-                    <Column dataField="haber" cellRender={cellRender} />
-                    <Column dataField="saldo" cellRender={cellRender} />
-                    <Column dataField="saldoAcumulado" cellRender={cellRender} />
+                    <Column cssClass="libro" dataField="periodo" />
+                    <Column cssClass="libro" dataField="debe" cellRender={cellRender} />
+                    <Column cssClass="libro" dataField="haber" cellRender={cellRender} />
+                    <Column cssClass="libro" dataField="saldo" cellRender={cellRender} />
+                    <Column cssClass="libro" dataField="saldoAcumulado" cellRender={cellRender} />
                     <Summary recalculateWhileEditing={true} >
                     <TotalItem
                       column="debe"
@@ -110,4 +132,8 @@ class LibroMayor extends React.Component {
     }
 }
 
-export default LibroMayor;
+const mapDispatchToPros = ({
+    updateLibroMayor
+});
+
+export default connect(null, mapDispatchToPros)(LibroMayor);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json;
@@ -23,12 +24,35 @@ namespace Sora.Controllers
         }
 
         [Route("api/asientos/get/cortes/{corteId}")]
-        public IActionResult Get(int corteId)
+        public IActionResult Get(int corteId, int skip,int take, IDictionary<string, string> values) 
         {
-            var asientos = db.Asientos.Include(x => x.TipoComprobante).Where(x => x.CorteId == corteId);
-            return Json(asientos);
-        }
-        // => Json(factory.GetAll(x => x.CorteId == corteId));            
+            IQueryable<Asientos> asientos = db.Asientos
+            .Include(x => x.TipoComprobante)
+            .Where(x => x.CorteId == corteId)
+            .OrderByDescending(x => x.Id);
+
+            if(values.ContainsKey("numero")){
+                var numero = Convert.ToInt32(values["numero"]) ;
+                asientos = asientos.Where(x => x.Numero == numero);
+            }
+
+            if(values.ContainsKey("tipoComprobanteId")){
+                var tipoComprobanteId = Convert.ToInt32(values["tipoComprobanteId"]) ;
+                asientos = asientos.Where(x => x.TipoComprobanteId == tipoComprobanteId);
+            }
+
+            if(values.ContainsKey("estadoId")){
+                var estadoId = Convert.ToInt32(values["estadoId"]) ;
+                asientos = asientos.Where(x => x.EstadoId == estadoId);
+            }
+
+            var items = asientos.Skip(skip).Take(take);
+
+            return Json(new{
+                items,
+                totalCount =asientos.Count()
+            });
+        }         
 
 
         [Route("api/asientos/get/{id}")]
@@ -146,10 +170,12 @@ namespace Sora.Controllers
             }).ToArray();
 
             var Months = new List<LibroMayorViewModel>();
-
+            var PeriodoId = 0;
             foreach (var month in GetMonths())
             {
+                PeriodoId++;
                 Months.Add(new LibroMayorViewModel{
+                    PeriodoId=PeriodoId,
                     Periodo = month,
                     Debe = result.Where(r => r.Periodo == month).Select(r => r.Debe).FirstOrDefault(),
                     Haber = result.Where(r => r.Periodo == month).Select(r => r.Haber).FirstOrDefault()
@@ -158,6 +184,30 @@ namespace Sora.Controllers
 
 
             return Json(resultPrev.Concat(Months));
+
+        }
+
+
+         [HttpGet("api/asientos/cuenta/{cuentaId}/year/{year}/month/{month}/debe/{debe}/libro-mayor")]
+         
+        public IActionResult LibroMayorDetalle(int cuentaId, int year, int month, bool debe)
+        {
+         
+            var result = from a in db.Asientos
+                        join ad in db.AsientosDetalle on a.Id equals ad.AsientoId
+                        join tc in db.TipoComprobantes on a.TipoComprobanteId equals tc.Id
+                        where ad.CuentaId == cuentaId 
+                        && a.Fecha.Year == year 
+                        && a.Fecha.Month == month                        
+                        select new {
+                            a.Fecha,
+                            anio = year,
+                            tc.Descripcion,
+                            monto=debe? ad.Debe: ad.Haber,
+                            a.Concepto
+                        };
+
+            return Json(result.Where(x => x.monto > 0));
 
         }
 

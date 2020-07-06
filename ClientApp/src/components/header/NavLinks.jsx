@@ -14,7 +14,8 @@ import { ArrowRoundedDown9x6Svg } from '../../svg';
 import navLinks from '../../data/headerNavigation';
 
 
-function NavLinks() {
+function NavLinks(props) {
+    let { layout } = props;
     const handleMouseEnter = (event) => {
         const item = event.currentTarget;
         const megamenu = item.querySelector('.nav-links__megamenu');
@@ -32,7 +33,7 @@ function NavLinks() {
         }
     };
 
-    const linksList = navLinks.map((item, index) => {
+    const linksList = navLinks.filter(x => x.layout == layout).map((item, index) => {
         let arrow;
         let submenu;
 

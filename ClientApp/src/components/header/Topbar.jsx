@@ -15,11 +15,9 @@ import DropdownCorte from './DropdownCorte';
 function Topbar() {
 
     const links = [
-        { title: <FormattedMessage id="topbar.Cuentas" defaultMessage="Cuentas" />, url: '/cuentas' },
-        // { title: <FormattedMessage id="topbar.contacts" defaultMessage="Contacts" />, url: '/site/contact-us' },
-        // { title: <FormattedMessage id="topbar.storeLocation" defaultMessage="Store Location" />, url: '' },
-        // { title: <FormattedMessage id="topbar.trackOrder" defaultMessage="Track Order" />, url: '/shop/track-order' },
-        // { title: <FormattedMessage id="topbar.blog" defaultMessage="Blog" />, url: '/blog/category-classic' },
+        { title: <FormattedMessage id="topbar.caja" defaultMessage="Caja" />, url: '/caja' },
+        { title: <FormattedMessage id="topbar.inventario" defaultMessage="Inventario" />, url: '/inv' },
+        { title: <FormattedMessage id="topbar.contabilidad" defaultMessage="Contabilidad" />, url: '/conta' }
     ];
 
     const accountLinks = [
@@ -46,10 +44,7 @@ function Topbar() {
                             title={<FormattedMessage id="topbar.miCuenta" defaultMessage="Mi Cuenta" />}
                             items={accountLinks}
                         />
-                    </div>
-                    {/* <div className="topbar__item">
-                            Corte : {corte[0].descripcion}
-                        </div> */}
+                    </div>                   
                     <div className="topbar__item">
                         <DropdownCorte />
                     </div>                   
@@ -59,8 +54,5 @@ function Topbar() {
     );
 
 }
-
-
-
 
 export default Topbar;

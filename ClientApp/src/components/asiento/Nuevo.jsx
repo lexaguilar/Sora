@@ -1,12 +1,9 @@
 import React from 'react';
-import { Popup, ScrollView, Button } from 'devextreme-react';
-import Form, {
-  SimpleItem,
-  GroupItem
-} from 'devextreme-react/form';
+import { Popup, Button } from 'devextreme-react';
+import Form, { SimpleItem, GroupItem } from 'devextreme-react/form';
 import 'devextreme-react/text-area';
 import { createStore, createCustomStore } from '../../utils/proxy';
-import { Column, ColumnChooser, HeaderFilter, SearchPanel, Lookup, Editing, Summary, TotalItem, RequiredRule, StringLengthRule }
+import { Column, SearchPanel, Lookup, Editing, Summary, TotalItem, RequiredRule, StringLengthRule, Scrolling }
   from 'devextreme-react/data-grid';
 import { DataGrid } from 'devextreme-react';
 import http from '../../utils/http';
@@ -17,92 +14,104 @@ import { connect } from 'react-redux';
 import { defaultComprobante } from '../../data/comprobante';
 import moment from 'moment';
 import numeral from 'numeral';
+import { updateAsiento } from '../../store/asiento/asientoActions';
 
 class Nuevo extends React.Component {
   constructor(props) {
     super(props);
-    this.asiento = null;
-    this.asientosDetalle = [];
+
+    this.refAsiento = null;
+    this.refAsientosDetalle = [];
     this.centroCostos = [];
-    this.hideInfo = this.hideInfo.bind(this);
+
+    this.onShowing = this.onShowing.bind(this);
+    this.onHiding = this.onHiding.bind(this);
     this.save = this.save.bind(this);
-    this.showPopup = this.showPopup.bind(this);
     this.obtTasaCambio = this.obtTasaCambio.bind(this);
     this.onRowInserting = this.onRowInserting.bind(this);
     this.onRowInserted = this.onRowInserted.bind(this);
+    //this.onRowUpdating = this.onRowUpdating.bind(this);
     this.onRowUpdated = this.onRowUpdated.bind(this);
     this.getFilteredCentroCosto = this.getFilteredCentroCosto.bind(this);
-
     this.state = {
-      popupVisible: false,
+      loading: true,
       comprobante: Object.assign({}, defaultComprobante),
       comprobanteDetalle: []
     };
   }
 
-  componentDidMount(){
+  componentDidMount() {
     http('centrocosto/get').asGet().then(cc => this.centroCostos = cc);
   }
 
   getFilteredCentroCosto(options) {
     return {
-      store:this.centroCostos,
-      filter : options.data ? ['cuenta', '=', String(options.cells[0].displayValue).substring(0, 2)] : null
-    } 
+      store: this.centroCostos,
+      filter: options.data ? ['cuenta', '=', String(options.cells[0].displayValue).substring(0, 2)] : null
+    }
   }
 
-  onRowInserting(e) {
-
-
+  resetValues(e) {
     if (e.data.debe > 0)
       e.data.haber = 0;
 
     if (e.data.haber > 0)
       e.data.debe = 0;
+  }
+
+  onRowInserting(e) {
+
+    if (e.data.cuentaId == undefined){
+      e.cancel = true;
+      e.component.cancelEditData();
+    }
+    else    
+    this.resetValues(e);
+  
 
   }
 
   onRowInserted(e) {
 
-    if (e.data.debe > 0)
-      e.data.haber = 0;
-
-    if (e.data.haber > 0)
-      e.data.debe = 0;
+    this.resetValues(e);
 
     if (e.data.cuentaId > 0 && ((e.data.debe > 0 && e.data.haber == 0) || (e.data.debe == 0 && e.data.haber > 0))) {
 
-      let detalle = this.asientosDetalle.instance.option('dataSource');
+      let detalle = this.refAsientosDetalle.instance.option('dataSource');
       let pending = detalle.find(x => x.cuentaId == undefined);
 
       let row = 0;
       if (pending)
-        row = this.asientosDetalle.instance.getRowIndexByKey(pending);
+        row = this.refAsientosDetalle.instance.getRowIndexByKey(pending);
 
       if (detalle.filter(x => x.cuentaId == undefined).length == 0) {
+        e.component.saveEditData()
         e.component.addRow();
       }
 
-      let element = this.asientosDetalle.instance.getCellElement(row, 0);
-      this.asientosDetalle.instance.focus(element);
-      this.asientosDetalle.instance.editCell(row, 0);
+      let element = this.refAsientosDetalle.instance.getCellElement(row, 0);
+      this.refAsientosDetalle.instance.focus(element);
+      this.refAsientosDetalle.instance.editCell(row, 0);
 
     }
+
   }
 
-  onRowUpdated(e) {
+  onRowUpdated(e) { 
 
     this.onRowInserted(e);
 
   }
 
-  showPopup(e) {
+  onShowing(e) {
 
-    const { isNew, data } = this.props;
-    if (!isNew) {
-      http(uri.asientos.getById(data.id)).asGet().then(r => {
+    this.setState({ loading: true });
+
+    const { asiento } = this.props;
+    if (asiento.id > 0) {
+      http(uri.asientos.getById(asiento.id)).asGet().then(r => {
         this.setState({
-          popupVisible: true,
+          loading: false,
           comprobante: {
             id: r.id,
             numero: r.numero,
@@ -120,7 +129,7 @@ class Nuevo extends React.Component {
       })
     } else {
       this.setState({
-        popupVisible: true,
+        loading: false,
         comprobante: Object.assign({}, defaultComprobante),
         comprobanteDetalle: []
       });
@@ -128,15 +137,22 @@ class Nuevo extends React.Component {
 
   }
 
-  hideInfo({ cancel }) {
+  onHiding({ cancel }) {
 
     this.setState({
-      popupVisible: false,
       comprobante: Object.assign({}, defaultComprobante),
       comprobanteDetalle: []
     });
 
-    this.asientosDetalle.instance.saveEditData();
+    this.refAsientosDetalle.instance.saveEditData();
+
+    let { updateAsiento } = this.props;
+
+    updateAsiento({
+      id: 0,
+      open: false
+    });
+
 
     if (cancel) {
 
@@ -149,39 +165,38 @@ class Nuevo extends React.Component {
   save() {
 
     const { user } = this.props;
-    var result = this.asiento.instance.validate();
+    var result = this.refAsiento.instance.validate();
     if (result.isValid) {
-      let detalle = this.asientosDetalle.instance.option('dataSource').filter(x => x.cuentaId > 0);
+      let detalle = this.refAsientosDetalle.instance.option('dataSource').filter(x => x.cuentaId > 0);
 
       let debe = detalle.sum('debe');
       let haber = detalle.sum('haber');
 
       if (debe != haber)
-        notify({ message: "El comprobante debe de cuadrar" }, 'error')
+        notify({ message: "El comprobante no cuadra, revise los debe y haber" }, 'error')
       else {
 
 
-        let asiento = this.asiento.instance.option('formData');
+        let asiento = this.refAsiento.instance.option('formData');
 
         asiento.asientosDetalle = detalle;
         asiento.corteId = user.corteId;
 
         http(uri.asientos.insert).asPost(asiento).then(r => {
           notify({ message: "Registro guardado correctamente" });
-          this.hideInfo({ cancel: true });
+          this.onHiding({ cancel: true });
 
         });
       }
     }
 
-
   }
 
   obtTasaCambio(e) {
     let v = new Date(moment(e.value).format());
-    let ticks = getTicks(v)
+    let ticks = getTicks(v);
     http(`tasaCambio/firstOrDefault/${ticks}`).asGet().then(r => {
-      let asiento = this.asiento.instance.option('formData');
+      let asiento = this.refAsiento.instance.option('formData');
       let newState = { ...asiento, ...{ tipoCambio: r ? r.cambio : 0 } }
 
       this.setState({
@@ -189,177 +204,183 @@ class Nuevo extends React.Component {
       });
     })
   }
- 
+
+  onRowPrepared(e) {
+    if (e.rowType == "totalFooter" && (e.columnIndex == 3 || e.columnIndex == 4)) {
+      if (e.totalItem.summaryCells[3][0].value != e.totalItem.summaryCells[4][0].value) {
+        e.cellElement.classList.remove('asiento-cuadra');
+        e.cellElement.classList.add('asiento-nocuadra');
+      } else {
+        e.cellElement.classList.remove('asiento-nocuadra');
+        e.cellElement.classList.add('asiento-cuadra');
+      }
+    }
+  }
 
   render() {
 
-    const { isNew } = this.props;
+    const { asiento } = this.props;
     return (
       <div id="container">
 
-        <Button
-          className={`${isNew ? '' : 'links'}`}
-          width={(isNew ? 180 : 60)}
-          text={`${isNew ? 'Nuevo Asiento' : 'Editar'}`}
-          type="normal"
-          icon={`${isNew ? 'add' : ''}`}
-          stylingMode="contained"
-          onClick={this.showPopup}
-        />
-
         <Popup
-          width={850}
-          height={650}
-          title={`${isNew ? 'Nuevo asiento 000000' : `Editar comprobante ${numeral(this.state.comprobante.numero).format('000000')}`}`}
-          onHiding={this.hideInfo}
-          visible={this.state.popupVisible}
+          width={800}
+          height={550}
+          title={`${asiento.id == 0 ? 'Nuevo asiento 000000' : `Comprobante ${numeral(this.state.comprobante.numero).format('000000')}`}`}
+          onHiding={this.onHiding}
+          onShowing={this.onShowing}
+          visible={asiento.open}
         >
+          <Form id="scroll" formData={this.state.comprobante} ref={(ref) => this.refAsiento = ref}>
+            <GroupItem cssClass="first-group" colCount={2}>
 
-          <ScrollView width='100%' height='100%'>
-            <Form formData={this.state.comprobante} ref={(ref) => this.asiento = ref}>
-              <GroupItem cssClass="first-group" colCount={2}>
-
-                {/* <GroupItem>
-                  <SimpleItem dataField="numero" render={r => numeral(this.state.comprobante.numero).format('000000')} ></SimpleItem>
-                </GroupItem> */}
-                <GroupItem>
-                  <SimpleItem dataField="estadoId"
-                    editorType="dxSelectBox" editorOptions={{
-                      dataSource: createStore('asientoEstado'), valueExpr: "id", displayExpr: "descripcion"
-                    }} >
-                    <RequiredRule message="Seleccione el estado" />
-                  </SimpleItem>
-                </GroupItem>
-                <GroupItem>
-                  <GroupItem>
-                    <SimpleItem dataField="monedaId"
-                      editorType="dxSelectBox" editorOptions={{
-                        dataSource: createStore('moneda'), valueExpr: "id", displayExpr: "descripcion"
-                      }} >
-                      <RequiredRule message="Seleccione el comprobante" />
-                    </SimpleItem>
-                  </GroupItem>
-                </GroupItem>
+              <GroupItem>
+                <SimpleItem dataField="estadoId"
+                  editorType="dxSelectBox" editorOptions={{
+                    disabled: !asiento.editable,
+                    dataSource: createStore('asientoEstado'), valueExpr: "id", displayExpr: "descripcion"
+                  }} >
+                  <RequiredRule message="Seleccione el estado" />
+                </SimpleItem>
               </GroupItem>
-              <GroupItem cssClass="first-group" colCount={2}>
-                <GroupItem >
-
-                  <SimpleItem
-                    dataField="fecha"
-                    editorType="dxDateBox"
-                    editorOptions={{
-                      displayFormat: "dd/MM/yyyy", onValueChanged: this.obtTasaCambio
-                    }}
-                  >
-                    <RequiredRule message="Seleccione la fecha" />
-                  </SimpleItem>
-                </GroupItem>
-                <GroupItem >
-                  <SimpleItem dataField="tipoCambio" editorType="dxNumberBox" editorOptions={{ disabled: true }}></SimpleItem>
-                </GroupItem>
-              </GroupItem>
-              <GroupItem cssClass="second-group" colCount={2}>
+              <GroupItem>
                 <GroupItem>
-                  <SimpleItem dataField="tipoComprobanteId" label={{ text: "Tipo Comprobante" }}
+                  <SimpleItem dataField="monedaId"
                     editorType="dxSelectBox" editorOptions={{
-                      dataSource: createStore('tipoComprobantes'), valueExpr: "id", displayExpr: "descripcion",
+                      disabled: !asiento.editable,
+                      dataSource: createStore('moneda'), valueExpr: "id", displayExpr: "descripcion"
                     }} >
                     <RequiredRule message="Seleccione el comprobante" />
                   </SimpleItem>
                 </GroupItem>
-                <GroupItem>
-                  <SimpleItem dataField="referencia"  >
-                    <StringLengthRule max={50} message="Maximo 50 caracteres" />
-                  </SimpleItem>
-                </GroupItem>
-                <SimpleItem
+              </GroupItem>
+            </GroupItem>
+            <GroupItem cssClass="first-group" colCount={2}>
+              <GroupItem >
 
-                  colSpan={2}
-                  dataField="concepto"
-                  editorType="dxTextArea"
-                >
-                  <StringLengthRule max={500} message="Maximo 500 caracteres" />
-                </SimpleItem>
                 <SimpleItem
-                  colSpan={2}
-                  dataField="observacion"
-                  editorType="dxTextArea"
+                  dataField="fecha"
+                  editorType="dxDateBox"
+                  editorOptions={{
+                    disabled: !asiento.editable,
+                    displayFormat: "dd/MM/yyyy", onValueChanged: this.obtTasaCambio
+                  }}
                 >
-                  <StringLengthRule max={500} message="Maximo 500 caracteres" />
+                  <RequiredRule message="Seleccione la fecha" />
+                </SimpleItem>
+              </GroupItem>
+              <GroupItem >
+                <SimpleItem dataField="tipoCambio" editorType="dxNumberBox" editorOptions={{ disabled: true }}></SimpleItem>
+              </GroupItem>
+            </GroupItem>
+            <GroupItem cssClass="second-group" colCount={2}>
+              <GroupItem>
+                <SimpleItem dataField="tipoComprobanteId" label={{ text: "Tipo Comprobante" }}
+                  editorType="dxSelectBox" editorOptions={{
+                    disabled: !asiento.editable,
+                    dataSource: createStore('tipoComprobantes'), valueExpr: "id", displayExpr: "descripcion",
+                  }} >
+                  <RequiredRule message="Seleccione el comprobante" />
                 </SimpleItem>
               </GroupItem>
               <GroupItem>
-                <DataGrid
-                  id="gridAsientoDetalle"
-                  ref={(ref) => this.asientosDetalle = ref}
-                  dataSource={this.state.comprobanteDetalle}
-                  selection={{ mode: 'single' }}
-                  showBorders={true}
-                  showRowLines={true}
-                  allowColumnResizing={true}
-                  allowColumnReordering={true}
-                  onRowInserting={this.onRowInserting}
-                  onRowInserted={this.onRowInserted}
-                  onRowUpdated={this.onRowUpdated}
-
-                >
-                  <SearchPanel visible={true} />
-                  <Editing
-                    mode="cell"
-                    allowAdding={true}
-                    allowDeleting={true}
-                    allowUpdating={true}
-                    selectTextOnEditStart={true}
-                    useIcons={true}
-                  />
-                  <HeaderFilter visible={true} />
-                  <ColumnChooser enabled={true} />
-                  <Column dataField="cuentaId" cssClass='cellDetail'>
-                    <Lookup
-                      dataSource={createCustomStore('cuentas/get/nivel/4')()}
-                      valueExpr="id"
-                      displayExpr={item => item ? `${item.numero} - ${item.descripcion}` : ''}
-                    >
-                    </Lookup>
-                  </Column>
-                  <Column dataField="centroCostoId" cssClass='cellDetail'>
-                    <Lookup
-                      dataSource={this.getFilteredCentroCosto}//{createStore('centrocosto')}
-                      valueExpr="id"
-                      displayExpr='descripcion'
-                    >
-                    </Lookup>
-                  </Column>
-                  <Column dataField="referencia" width={100} ></Column>
-                  <Column dataField="debe" width={100} cssClass="col-debe" dataType="number"  cellRender={cellRender}/>
-                  <Column dataField="haber" width={100} cssClass="col-debe" dataType="number" cellRender={cellRender}/>
-                  <Summary recalculateWhileEditing={true} >
-                    <TotalItem
-                      column="debe"
-                      summaryType="sum"
-                      customizeText={cellRender}
-                      valueFormat="currency" cssClass="col-summary" />
-                    <TotalItem
-                      column="haber"
-                      summaryType="sum"
-                      customizeText={cellRender}
-                      valueFormat="currency" cssClass="col-summary" />
-                  </Summary>
-                </DataGrid>
+                <SimpleItem dataField="referencia" editorOptions={{
+                    disabled: !asiento.editable}} >
+                  <StringLengthRule max={50} message="Maximo 50 caracteres" />
+                </SimpleItem>
               </GroupItem>
-              <GroupItem>
-                <Button
-                  width={120}
-                  text="Guardar"
-                  type="success"
-                  icon="save"
-                  stylingMode="contained"
-                  onClick={this.save}
+              <SimpleItem
+                colSpan={2}
+                dataField="concepto"
+                editorType="dxTextArea"
+                editorOptions={{
+                  disabled: !asiento.editable
+                }}
+              >
+                <StringLengthRule max={500} message="Maximo 500 caracteres" />
+              </SimpleItem>
+              <SimpleItem
+                colSpan={2}
+                dataField="observacion"
+                editorType="dxTextArea"
+                editorOptions={{
+                  disabled: !asiento.editable
+                }}
+              >
+                <StringLengthRule max={500} message="Maximo 500 caracteres" />
+              </SimpleItem>
+            </GroupItem>
+            <GroupItem>
+              <DataGrid
+                id="gridAsientoDetalle"
+                height={250}
+                ref={(ref) => this.refAsientosDetalle = ref}
+                dataSource={this.state.comprobanteDetalle}
+                selection={{ mode: 'single' }}
+                showBorders={true}
+                showRowLines={true}
+                allowColumnResizing={true}
+                allowColumnReordering={true}
+                onRowInserting={this.onRowInserting}
+                onRowInserted={this.onRowInserted}
+                onRowUpdated={this.onRowUpdated}
+                onRowUpdating={this.onRowUpdating}
+                onCellPrepared={this.onRowPrepared}
+              >
+                <Scrolling mode="virtual" />
+                <SearchPanel visible={true} />
+                <Editing
+                  mode="cell"
+                  allowAdding={asiento.editable}
+                  allowDeleting={asiento.editable}
+                  allowUpdating={asiento.editable}
+                  selectTextOnEditStart={asiento.editable}
+                  useIcons={asiento.editable}
                 />
-              </GroupItem>
-            </Form>
-          </ScrollView>
-
+                <Column dataField="cuentaId" cssClass='cellDetail'>
+                  <Lookup
+                    dataSource={createCustomStore('cuentas/get/nivel/4')()}
+                    valueExpr="id"
+                    displayExpr={item => item ? `${item.numero} - ${item.descripcion}` : ''}
+                  >
+                  </Lookup>
+                </Column>
+                <Column dataField="centroCostoId" width={150} cssClass='cellDetail'>
+                  <Lookup
+                    dataSource={this.getFilteredCentroCosto}
+                    valueExpr="id"
+                    displayExpr='descripcion'
+                  >
+                  </Lookup>
+                </Column>
+                <Column dataField="referencia" width={100} ></Column>
+                <Column dataField="debe" width={90} cssClass="col-debe" dataType="number" cellRender={cellRender} />
+                <Column dataField="haber" width={90} cssClass="col-debe" dataType="number" cellRender={cellRender} />
+                <Summary recalculateWhileEditing={true}>
+                  <TotalItem
+                    column="debe"
+                    summaryType="sum"
+                    customizeText={cellRender}
+                    valueFormat="currency" cssClass="col-summary-ok" />
+                  <TotalItem
+                    column="haber"
+                    summaryType="sum"
+                    customizeText={cellRender}
+                    valueFormat="currency" cssClass="col-summary-ok" />
+                </Summary>
+              </DataGrid>
+            </GroupItem>
+          </Form>          
+          <Button
+            visible={asiento.editable}
+            width={120}
+            text="Guardar"
+            type="success"
+            icon="save"
+            stylingMode="contained"
+            className="m-1"
+            onClick={this.save}
+          />
         </Popup>
       </div>
     );
@@ -368,6 +389,11 @@ class Nuevo extends React.Component {
 
 const mapStateToProps = (state) => ({
   user: state.user,
+  asiento: state.asiento
 });
 
-export default connect(mapStateToProps)(Nuevo);
+const mapDispatchToPros = ({
+  updateAsiento
+});
+
+export default connect(mapStateToProps, mapDispatchToPros)(Nuevo);

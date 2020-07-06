@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Sora.Models.SaraModel
+namespace sora.Models.SaraModel
 {
     public partial class Cuentas
     {

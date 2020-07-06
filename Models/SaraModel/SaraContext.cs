@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Sora.Models.SaraModel
+namespace sora.Models.SaraModel
 {
     public partial class SaraContext : DbContext
     {
@@ -23,12 +23,17 @@ namespace Sora.Models.SaraModel
         public virtual DbSet<Cortes> Cortes { get; set; }
         public virtual DbSet<Cuentas> Cuentas { get; set; }
         public virtual DbSet<Entidades> Entidades { get; set; }
+        public virtual DbSet<Familia> Familia { get; set; }
         public virtual DbSet<Grupos> Grupos { get; set; }
+        public virtual DbSet<Inventario> Inventario { get; set; }
+        public virtual DbSet<InventarioEstado> InventarioEstado { get; set; }
         public virtual DbSet<Moneda> Moneda { get; set; }
         public virtual DbSet<Naturaleza> Naturaleza { get; set; }
+        public virtual DbSet<Presentacion> Presentacion { get; set; }
         public virtual DbSet<TasaDeCambio> TasaDeCambio { get; set; }
         public virtual DbSet<TipoComprobantes> TipoComprobantes { get; set; }
         public virtual DbSet<TipoCuenta> TipoCuenta { get; set; }
+        public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }
         public virtual DbSet<Usuarios> Usuarios { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -56,6 +61,8 @@ namespace Sora.Models.SaraModel
                 entity.HasIndex(e => e.CuentaId);
 
                 entity.HasIndex(e => e.EntidadId);
+
+                entity.HasIndex(e => e.Fecha);
 
                 entity.HasIndex(e => e.Numero);
 
@@ -131,15 +138,15 @@ namespace Sora.Models.SaraModel
                 entity.HasOne(d => d.CentroCosto)
                     .WithMany(p => p.AsientosDetalle)
                     .HasForeignKey(d => d.CentroCostoId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_AsientosDetalle_CentroCosto");
             });
 
             modelBuilder.Entity<CentroCosto>(entity =>
             {
-                // entity.Property(e => e.Activo)
-                //     .IsRequired()
-                //     .HasDefaultValueSql("((1))");
+                entity.Property(e => e.Cuenta)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Descripcion)
                     .IsRequired()
@@ -167,6 +174,9 @@ namespace Sora.Models.SaraModel
 
             modelBuilder.Entity<Cuentas>(entity =>
             {
+                entity.HasIndex(e => e.Numero)
+                    .HasName("IX_Cuentas");
+
                 entity.Property(e => e.Descripcion)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -219,11 +229,79 @@ namespace Sora.Models.SaraModel
                 entity.Property(e => e.Telefono).HasMaxLength(8);
             });
 
+            modelBuilder.Entity<Familia>(entity =>
+            {
+                entity.Property(e => e.Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Iva).HasColumnName("IVA");
+            });
+
             modelBuilder.Entity<Grupos>(entity =>
             {
                 entity.Property(e => e.Descripcion)
                     .IsRequired()
                     .HasMaxLength(150);
+            });
+
+            modelBuilder.Entity<Inventario>(entity =>
+            {
+                entity.HasIndex(e => e.EstadoId)
+                    .HasName("IX_Inventario_Estado");
+
+                entity.HasIndex(e => e.FamiliaId)
+                    .HasName("IX_Inventario_Familia");
+
+                entity.HasIndex(e => e.Nombre);
+
+                entity.HasIndex(e => e.Numero);
+
+                entity.HasIndex(e => e.UnidadMedidaId)
+                    .HasName("IX_Inventario_UM");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.Iva).HasColumnName("IVA");
+
+                entity.Property(e => e.Nombre)
+                    .IsRequired()
+                    .HasMaxLength(150);
+
+                entity.HasOne(d => d.Estado)
+                    .WithMany(p => p.Inventario)
+                    .HasForeignKey(d => d.EstadoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Inventario_InventarioEstado");
+
+                entity.HasOne(d => d.Familia)
+                    .WithMany(p => p.Inventario)
+                    .HasForeignKey(d => d.FamiliaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Inventario_Familia");
+
+                entity.HasOne(d => d.Presentacion)
+                    .WithMany(p => p.Inventario)
+                    .HasForeignKey(d => d.PresentacionId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Inventario_Presentacion");
+
+                entity.HasOne(d => d.UnidadMedida)
+                    .WithMany(p => p.Inventario)
+                    .HasForeignKey(d => d.UnidadMedidaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Inventario_UnidadMedida");
+            });
+
+            modelBuilder.Entity<InventarioEstado>(entity =>
+            {
+                entity.Property(e => e.Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<Moneda>(entity =>
@@ -246,6 +324,13 @@ namespace Sora.Models.SaraModel
                 entity.Property(e => e.Descripcion)
                     .IsRequired()
                     .HasMaxLength(150);
+            });
+
+            modelBuilder.Entity<Presentacion>(entity =>
+            {
+                entity.Property(e => e.Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<TasaDeCambio>(entity =>
@@ -274,6 +359,13 @@ namespace Sora.Models.SaraModel
                 entity.Property(e => e.Descripcion)
                     .IsRequired()
                     .HasMaxLength(150);
+            });
+
+            modelBuilder.Entity<UnidadMedida>(entity =>
+            {
+                entity.Property(e => e.Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<Usuarios>(entity =>

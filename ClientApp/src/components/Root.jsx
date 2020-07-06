@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import {
     BrowserRouter,
     Route,
-    Redirect,
     Switch,
+    Redirect,
 } from 'react-router-dom';
 import Layout from './Layout';
 
@@ -27,11 +27,24 @@ export default class Root extends Component {
             <BrowserRouter basename={process.env.PUBLIC_URL}>
                 <Switch>
                     <Route
-                            path="/"
+                            path="/conta"
                             render={(props) => (
-                                <Layout {...props}  />
+                                <Layout {...props} headerLayout='conta'  />
                             )}
                     />
+                    <Route
+                            path="/inv"
+                            render={(props) => (
+                                <Layout {...props} headerLayout='inv'/>
+                            )}
+                    />
+                    <Route
+                            path="/caja"
+                            render={(props) => (
+                                <Layout {...props} headerLayout='caja'/>
+                            )}
+                    />
+                    <Redirect to='/conta'/>
                 </Switch>
             </BrowserRouter>
         )

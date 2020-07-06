@@ -35,7 +35,7 @@ AppLink.propTypes = {
             hash: PropTypes.string,
             state: PropTypes.any,
         }),
-    ]).isRequired,
+    ]),
     replace: PropTypes.bool,
     innerRef: PropTypes.oneOfType([
         PropTypes.func,

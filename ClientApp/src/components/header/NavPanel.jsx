@@ -25,16 +25,16 @@ function NavPanel(props) {
 
     searchIndicator = <IndicatorSearch />;
 
-
+    var color = layout == 'conta' ? '#ffd333' : layout == 'inv' ? '#03A9F4' : '#4CAF50';
 
     return (
-        <div className="nav-panel">
+        <div className="nav-panel" style={{background : color}}>
             <div className="nav-panel__container container">
                 <div className="nav-panel__row">
                     {logo}                   
 
                     <div className="nav-panel__nav-links nav-links">
-                        <NavLinks />
+                        <NavLinks layout={layout} />
                     </div>
 
                     <div className="nav-panel__indicators">

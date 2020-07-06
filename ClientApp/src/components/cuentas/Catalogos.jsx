@@ -13,57 +13,10 @@ import {
     Popup,     
     Form } from 'devextreme-react/data-grid';
 
-import { Helmet } from 'react-helmet';
-import CustomStore from 'devextreme/data/custom_store';
-import http from '../../utils/http';
-import app from '../../data/app';
 import uri from '../../utils/uri';
-import notify from 'devextreme/ui/notify';
 import toCapital from '../../utils/common';
 import { store } from '../../services/store';
 import Title from '../shared/Title';
-
-// const store = function (name) {
-//     return new CustomStore({
-//         key: 'id',
-//         load: (loadOptions) => {
-//             return http(`catalogos/${name}`)
-//                 .asGet()
-//                 .then((data) => {
-//                     return {
-//                         data: data,
-//                         totalCount: data.length,
-//                     };
-//                 })
-//                 .catch(() => { throw 'Data Loading Error'; });
-//         },
-//         insert: catalog => {
-//             return new Promise(resolve =>
-//                 http(uri[name].insert).asPost(catalog).then(result => {
-//                     notify(`Registro ${name} agregado`);
-//                     resolve(result);
-//                 })
-//             )
-//         },
-//         update: (id, catalog) => {
-//             return new Promise(resolve =>
-//                 http(uri[name].insert).asPost({ ...catalog, ...{ id }}).then(result => {
-//                     notify(`Registro ${name} modificado`);
-//                     resolve(result);
-//                 })
-//             );
-//         },
-//         remove: id => {
-//             return new Promise(resolve =>
-//                 http(uri[name].remove(id)).asGet().then(result => {
-//                     notify(`Registro ${name} eliminado`, 'error');
-//                     resolve(result);
-//                 })
-//             )
-//         }
-//     });
-// }
-
 
 function Catalogo(props) {
     const { catalogo } = props;

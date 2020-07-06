@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import TreeList, { Column, ColumnChooser, HeaderFilter, SearchPanel, Selection, Lookup, Editing, Paging, Pager, FilterRow } 
+import TreeList, { Column, ColumnChooser, HeaderFilter, SearchPanel, Lookup, Editing, Paging, Pager, FilterRow } 
 from 'devextreme-react/tree-list';
 
 import { createStore } from "../../utils/proxy";
@@ -49,7 +49,6 @@ class Cuentas extends Component {
                     keyExpr="id"
                     parentIdExpr="cuentaPadreId"
                     onInitNewRow={this.onInitNewRow}
-                    id="tasks"
                 >
                     <SearchPanel visible={true} width={250} />
                     <HeaderFilter visible={true} />

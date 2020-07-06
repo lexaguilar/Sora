@@ -43,7 +43,12 @@
         height: 15px;
         border: none;
         position: relative;
-        top: -3px;
+        top: -5px;
+        background-color: transparent;
+    }
+    
+    .links:hover {
+        background-color: transparent;
     }
     
     .links>.dx-button-content {
@@ -52,6 +57,34 @@
     
     .cellDetail {
         font-size: 12px !important;
+    }
+    
+    .dx-toolbar-label .dx-toolbar-item-content>div {
+        overflow: visible;
+    }
+    
+    .dx-toolbar-label>div {
+        overflow: visible;
+    }
+    
+    .dx-datagrid-rowsview .dx-row.dx-row-lines:first-child>tr {
+        font-weight: bold;
+    }
+    
+    .dx-datagrid-rowsview .dx-row:first-child>td.libro {
+        font-weight: bold;
+    }
+    
+    .asiento-anulado {
+        background-color: #ffaeaea1;
+    }
+    
+    .asiento-cuadra {
+        background-color: #aeffb2a1;
+    }
+    
+    .asiento-nocuadra {
+        background-color: #ffaeaea1;
     }
     
     // td[role="gridcell"].col-debe {

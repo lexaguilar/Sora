@@ -1,73 +1,19 @@
-export default [{
+import { invalid } from "moment";
+
+export const CONTA = '/conta';
+export const INV = '/inv';
+
+
+
+const menuConta = [{
+        layout: 'conta',
         title: 'Inicio',
         url: ''
     },
-    /*{
-        title: 'Megamenu',
-        url: '',
-        submenu: {
-            type: 'megamenu',
-            menu: {
-                size: 'nl',
-                columns: [{
-                        size: 6,
-                        links: [{
-                                title: 'Power Tools',
-                                url: '',
-                                links: [
-                                    { title: 'Engravers', url: '' },
-                                    { title: 'Wrenches', url: '' },
-                                    { title: 'Wall Chaser', url: '' },
-                                    { title: 'Pneumatic Tools', url: '' },
-                                ],
-                            },
-                            {
-                                title: 'Machine Tools',
-                                url: '',
-                                links: [
-                                    { title: 'Thread Cutting', url: '' },
-                                    { title: 'Chip Blowers', url: '' },
-                                    { title: 'Sharpening Machines', url: '' },
-                                    { title: 'Pipe Cutters', url: '' },
-                                    { title: 'Slotting machines', url: '' },
-                                    { title: 'Lathes', url: '' },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        size: 6,
-                        links: [{
-                                title: 'Hand Tools',
-                                url: '',
-                                links: [
-                                    { title: 'Screwdrivers', url: '' },
-                                    { title: 'Handsaws', url: '' },
-                                    { title: 'Knives', url: '' },
-                                    { title: 'Axes', url: '' },
-                                    { title: 'Multitools', url: '' },
-                                    { title: 'Paint Tools', url: '' },
-                                ],
-                            },
-                            {
-                                title: 'Garden Equipment',
-                                url: '',
-                                links: [
-                                    { title: 'Motor Pumps', url: '' },
-                                    { title: 'Chainsaws', url: '' },
-                                    { title: 'Electric Saws', url: '' },
-                                    { title: 'Brush Cutters', url: '' },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-            },
-        },
-    },*/
     {
+        layout: 'conta',
         title: 'Catalogos',
-        url: '/cuentas',
+        url: `${CONTA}/cuentas`,
         submenu: {
             type: 'megamenu',
             menu: {
@@ -78,11 +24,11 @@ export default [{
                             title: 'Catalos de cuentas',
                             url: '',
                             links: [
-                                { title: 'Cuentas contables', url: '/cuentas' },
-                                { title: 'Naturaleza de las cuentas', url: '/cuenta/naturaleza' },
-                                { title: 'Grupo de cuentas', url: '/cuenta/grupos' },
-                                { title: 'Tipo de cuentas', url: '/cuenta/tipoCuenta' },
-                                { title: 'Clasificacion de cuentas', url: '/cuenta/clasificacion' }
+                                { title: 'Cuentas contables', url: `${CONTA}/cuentas` },
+                                { title: 'Naturaleza de las cuentas', url: `${CONTA}/cuenta/naturaleza` },
+                                { title: 'Grupo de cuentas', url: `${CONTA}/cuenta/grupos` },
+                                { title: 'Tipo de cuentas', url: `${CONTA}/cuenta/tipoCuenta` },
+                                { title: 'Clasificacion de cuentas', url: `${CONTA}/cuenta/clasificacion` }
                             ],
                         }, ]
                     },
@@ -92,8 +38,8 @@ export default [{
                             title: 'Comprobantes',
                             url: '',
                             links: [
-                                { title: 'Tipos de comprobantes', url: '/tipoComprobantes' },
-                                { title: 'Centro de costo', url: '/centro-costo' },
+                                { title: 'Tipos de comprobantes', url: `${CONTA}/tipoComprobantes` },
+                                { title: 'Centro de costo', url: `${CONTA}/centro-costo` },
                             ],
                         }, ]
                     }
@@ -103,54 +49,144 @@ export default [{
         },
     },
     {
+        layout: 'conta',
         title: 'Comprobantes',
-        url: '/asientos'
+        url: `${CONTA}/asientos`
     },
     {
+        layout: 'conta',
         title: 'Libros',
         url: '',
         submenu: {
             type: 'menu',
             menu: [
-                { title: 'Libro mayor', url: '/libro/mayor' },
-                { title: 'Libro auxiliar', url: '/' },
+                { title: 'Libro mayor', url: `${CONTA}/libro/mayor` },
+                { title: 'Libro auxiliar', url: `${CONTA}/` },
             ],
         },
     },
     {
+        layout: 'conta',
         title: 'Bancos',
         url: '',
         submenu: {
             type: 'menu',
             menu: [
-                { title: 'Bancos', url: '/' },
-                { title: 'Cheques', url: '/' },
+                { title: 'Bancos', url: `${CONTA}/` },
+                { title: 'Cheques', url: `${CONTA}/` },
             ],
         },
     },
     {
+        layout: 'conta',
         title: 'Reportes',
         url: '/site/about-us',
         submenu: {
             type: 'menu',
             menu: [
-                { title: 'Estado resultado', url: '/' },
-                { title: 'Balance General', url: '/' },
-                { title: 'Balanza de comprobacion', url: '/' },
-                { title: 'Libro diario', url: '/' },
-                { title: 'Libro Mayor Auxiliar', url: '/' },
-                { title: 'Cheques', url: '/' },
+                { title: 'Estado resultado', url: `${CONTA}/` },
+                { title: 'Balance General', url: `${CONTA}/` },
+                { title: 'Balanza de comprobacion', url: `${CONTA}/` },
+                { title: 'Libro diario', url: `${CONTA}/` },
+                { title: 'Libro Mayor Auxiliar', url: `${CONTA}/` },
+                { title: 'Cheques', url: `${CONTA}/` },
             ],
         },
     },
     {
+        layout: 'conta',
         title: 'Configuracion',
         submenu: {
             type: 'menu',
             menu: [
-                { title: 'Cortes', url: '/configuracion/cortes' },
-                { title: 'Tasa de cambio', url: '/configuracion/tasa-cambio' },
+                { title: 'Cortes', url: `${CONTA}/configuracion/cortes` },
+                { title: 'Tasa de cambio', url: `${CONTA}/configuracion/tasa-cambio` },
             ],
         },
     }
 ];
+
+const menuInv = [{
+        layout: 'inv',
+        title: 'Facturas',
+        url: '/facturas'
+    },
+    {
+        layout: 'inv',
+        title: 'Inventario',
+        url: `${INV}/asientos`
+    },
+    {
+        layout: 'inv',
+        title: 'Catalogos',
+        url: `${INV}/cuentas`,
+        submenu: {
+            type: 'megamenu',
+            menu: {
+                size: 'nl',
+                columns: [{
+                    size: 6,
+                    links: [{
+                        title: 'Catalos del inventario',
+                        url: '',
+                        links: [
+                            { title: 'Unidad medida', url: `${INV}/un` },
+                            { title: 'Laboratorio', url: `${INV}/laboratirio` },
+                            { title: 'Familias', url: `${INV}/cuenta/familias` },
+                        ],
+                    }]
+                }, {
+                    size: 6,
+                    links: [{
+                        title: 'Entidades',
+                        url: '',
+                        links: [
+                            { title: 'Clientes', url: `${CONTA}/clientes` },
+                            { title: 'Proveedores', url: `${CONTA}/proveedores` },
+                        ],
+                    }]
+                }, ]
+            }
+
+        },
+    },
+    {
+        layout: 'inv',
+        title: 'Compras',
+        url: '',
+        submenu: {
+            type: 'menu',
+            menu: [
+                { title: 'Compras', url: `${INV}/compras` },
+                { title: 'Entradas', url: `${INV}/entradas` },
+                { title: 'Salidas', url: `${INV}/salidas` },
+            ],
+        },
+    },
+    {
+        layout: 'inv',
+        title: 'Reportes',
+        url: '/site/about-us',
+        submenu: {
+            type: 'menu',
+            menu: [
+                { title: 'Inventario Stock', url: `${INV}/` },
+                { title: 'Existencias', url: `${INV}/` },
+                { title: 'Kardex', url: `${INV}/` },
+            ],
+        },
+    },
+    {
+        layout: 'inv',
+        title: 'Configuracion',
+        submenu: {
+            type: 'menu',
+            menu: [
+                { title: 'Unidades de conversion', url: `${INV}/configuracion/unidadcoversion` },
+                { title: 'Utilidades', url: `${INV}/configuracion/utilidades` },
+            ],
+        },
+    }
+];
+
+export default [...menuConta, ...menuInv];
