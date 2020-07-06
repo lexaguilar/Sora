@@ -81,10 +81,32 @@ namespace Sora.Controllers
             var factory = new GenericFactory<Moneda>(db);
             return Json(factory.GetAll());
         }
+
         [Route("centroCosto")]
         public IActionResult CentroCosto(){
 
             var factory = new GenericFactory<CentroCosto>(db);
+            return Json(factory.GetAll());
+        }
+
+        [Route("familia")]
+        public IActionResult Familia(){
+
+            var factory = new GenericFactory<Familia>(db);
+            return Json(factory.GetAll());
+        }
+
+        [Route("presentacion")]
+        public IActionResult Presentacion(){
+
+            var factory = new GenericFactory<Presentacion>(db);
+            return Json(factory.GetAll());
+        }
+
+        [Route("UnidadMedida")]
+        public IActionResult UnidadMedida(){
+
+            var factory = new GenericFactory<UnidadMedida>(db);
             return Json(factory.GetAll());
         }
     }
