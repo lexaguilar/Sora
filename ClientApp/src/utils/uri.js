@@ -12,7 +12,10 @@ const uri = {
     tipoCuenta: createProxyBase('tipoCuenta'),
     tipoComprobantes: createProxyBase('tipoComprobantes'),
     tasaCambio: createProxyBase('TasaCambio'),
-    file: createProxy('', 'tasaCambio/post/file')
+    file: createProxy('', 'tasaCambio/post/file'),
+    //inv
+    familia: createProxyBase('familia'),
+    unidadMedida: createProxyBase('unidadMedida'),
 };
 
 export default uri;

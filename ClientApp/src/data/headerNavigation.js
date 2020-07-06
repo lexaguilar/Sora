@@ -1,7 +1,7 @@
-import { invalid } from "moment";
-
-export const CONTA = '/conta';
-export const INV = '/inv';
+export const _path = {
+    CONTA: '/conta',
+    INV: '/inv'
+}
 
 
 
@@ -13,7 +13,7 @@ const menuConta = [{
     {
         layout: 'conta',
         title: 'Catalogos',
-        url: `${CONTA}/cuentas`,
+        url: `${_path.CONTA}/cuentas`,
         submenu: {
             type: 'megamenu',
             menu: {
@@ -24,11 +24,11 @@ const menuConta = [{
                             title: 'Catalos de cuentas',
                             url: '',
                             links: [
-                                { title: 'Cuentas contables', url: `${CONTA}/cuentas` },
-                                { title: 'Naturaleza de las cuentas', url: `${CONTA}/cuenta/naturaleza` },
-                                { title: 'Grupo de cuentas', url: `${CONTA}/cuenta/grupos` },
-                                { title: 'Tipo de cuentas', url: `${CONTA}/cuenta/tipoCuenta` },
-                                { title: 'Clasificacion de cuentas', url: `${CONTA}/cuenta/clasificacion` }
+                                { title: 'Cuentas contables', url: `${_path.CONTA}/cuentas` },
+                                { title: 'Naturaleza de las cuentas', url: `${_path.CONTA}/naturaleza` },
+                                { title: 'Grupo de cuentas', url: `${_path.CONTA}/grupos` },
+                                { title: 'Tipo de cuentas', url: `${_path.CONTA}/tipoCuenta` },
+                                { title: 'Clasificacion de cuentas', url: `${_path.CONTA}/clasificacion` }
                             ],
                         }, ]
                     },
@@ -38,8 +38,8 @@ const menuConta = [{
                             title: 'Comprobantes',
                             url: '',
                             links: [
-                                { title: 'Tipos de comprobantes', url: `${CONTA}/tipoComprobantes` },
-                                { title: 'Centro de costo', url: `${CONTA}/centro-costo` },
+                                { title: 'Tipos de comprobantes', url: `${_path.CONTA}/tipoComprobantes` },
+                                { title: 'Centro de costo', url: `${_path.CONTA}/centro-costo` },
                             ],
                         }, ]
                     }
@@ -51,7 +51,7 @@ const menuConta = [{
     {
         layout: 'conta',
         title: 'Comprobantes',
-        url: `${CONTA}/asientos`
+        url: `${_path.CONTA}/asientos`
     },
     {
         layout: 'conta',
@@ -60,8 +60,8 @@ const menuConta = [{
         submenu: {
             type: 'menu',
             menu: [
-                { title: 'Libro mayor', url: `${CONTA}/libro/mayor` },
-                { title: 'Libro auxiliar', url: `${CONTA}/` },
+                { title: 'Libro mayor', url: `${_path.CONTA}/libro/mayor` },
+                { title: 'Libro auxiliar', url: `${_path.CONTA}/` },
             ],
         },
     },
@@ -72,8 +72,8 @@ const menuConta = [{
         submenu: {
             type: 'menu',
             menu: [
-                { title: 'Bancos', url: `${CONTA}/` },
-                { title: 'Cheques', url: `${CONTA}/` },
+                { title: 'Bancos', url: `${_path.CONTA}/` },
+                { title: 'Cheques', url: `${_path.CONTA}/` },
             ],
         },
     },
@@ -84,12 +84,12 @@ const menuConta = [{
         submenu: {
             type: 'menu',
             menu: [
-                { title: 'Estado resultado', url: `${CONTA}/` },
-                { title: 'Balance General', url: `${CONTA}/` },
-                { title: 'Balanza de comprobacion', url: `${CONTA}/` },
-                { title: 'Libro diario', url: `${CONTA}/` },
-                { title: 'Libro Mayor Auxiliar', url: `${CONTA}/` },
-                { title: 'Cheques', url: `${CONTA}/` },
+                { title: 'Estado resultado', url: `${_path.CONTA}/` },
+                { title: 'Balance General', url: `${_path.CONTA}/` },
+                { title: 'Balanza de comprobacion', url: `${_path.CONTA}/` },
+                { title: 'Libro diario', url: `${_path.CONTA}/` },
+                { title: 'Libro Mayor Auxiliar', url: `${_path.CONTA}/` },
+                { title: 'Cheques', url: `${_path.CONTA}/` },
             ],
         },
     },
@@ -99,8 +99,8 @@ const menuConta = [{
         submenu: {
             type: 'menu',
             menu: [
-                { title: 'Cortes', url: `${CONTA}/configuracion/cortes` },
-                { title: 'Tasa de cambio', url: `${CONTA}/configuracion/tasa-cambio` },
+                { title: 'Cortes', url: `${_path.CONTA}/configuracion/cortes` },
+                { title: 'Tasa de cambio', url: `${_path.CONTA}/configuracion/tasa-cambio` },
             ],
         },
     }
@@ -114,12 +114,12 @@ const menuInv = [{
     {
         layout: 'inv',
         title: 'Inventario',
-        url: `${INV}/asientos`
+        url: `${_path.INV}/asientos`
     },
     {
         layout: 'inv',
         title: 'Catalogos',
-        url: `${INV}/cuentas`,
+        url: `${_path.INV}/cuentas`,
         submenu: {
             type: 'megamenu',
             menu: {
@@ -130,9 +130,9 @@ const menuInv = [{
                         title: 'Catalos del inventario',
                         url: '',
                         links: [
-                            { title: 'Unidad medida', url: `${INV}/un` },
-                            { title: 'Laboratorio', url: `${INV}/laboratirio` },
-                            { title: 'Familias', url: `${INV}/cuenta/familias` },
+                            { title: 'Unidad medida', url: `${_path.INV}/unidadMedida` },
+                            { title: 'Laboratorio', url: `${_path.INV}/laboratirio` },
+                            { title: 'Familias', url: `${_path.INV}/familia` },
                         ],
                     }]
                 }, {
@@ -141,8 +141,8 @@ const menuInv = [{
                         title: 'Entidades',
                         url: '',
                         links: [
-                            { title: 'Clientes', url: `${CONTA}/clientes` },
-                            { title: 'Proveedores', url: `${CONTA}/proveedores` },
+                            { title: 'Clientes', url: `${_path.INV}/clientes` },
+                            { title: 'Proveedores', url: `${_path.INV}/proveedores` },
                         ],
                     }]
                 }, ]
@@ -157,9 +157,9 @@ const menuInv = [{
         submenu: {
             type: 'menu',
             menu: [
-                { title: 'Compras', url: `${INV}/compras` },
-                { title: 'Entradas', url: `${INV}/entradas` },
-                { title: 'Salidas', url: `${INV}/salidas` },
+                { title: 'Compras', url: `${_path.INV}/compras` },
+                { title: 'Entradas', url: `${_path.INV}/entradas` },
+                { title: 'Salidas', url: `${_path.INV}/salidas` },
             ],
         },
     },
@@ -170,9 +170,9 @@ const menuInv = [{
         submenu: {
             type: 'menu',
             menu: [
-                { title: 'Inventario Stock', url: `${INV}/` },
-                { title: 'Existencias', url: `${INV}/` },
-                { title: 'Kardex', url: `${INV}/` },
+                { title: 'Inventario Stock', url: `${_path.INV}/` },
+                { title: 'Existencias', url: `${_path.INV}/` },
+                { title: 'Kardex', url: `${_path.INV}/` },
             ],
         },
     },
@@ -182,8 +182,8 @@ const menuInv = [{
         submenu: {
             type: 'menu',
             menu: [
-                { title: 'Unidades de conversion', url: `${INV}/configuracion/unidadcoversion` },
-                { title: 'Utilidades', url: `${INV}/configuracion/utilidades` },
+                { title: 'Unidades de conversion', url: `${_path.INV}/configuracion/unidadcoversion` },
+                { title: 'Utilidades', url: `${_path.INV}/configuracion/utilidades` },
             ],
         },
     }

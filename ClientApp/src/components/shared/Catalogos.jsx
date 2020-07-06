@@ -16,7 +16,7 @@ import {
 import uri from '../../utils/uri';
 import toCapital from '../../utils/common';
 import { store } from '../../services/store';
-import Title from '../shared/Title';
+import Title from './Title';
 
 function Catalogo(props) {
     const { catalogo } = props;

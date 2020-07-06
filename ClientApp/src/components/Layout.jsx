@@ -12,7 +12,6 @@ import app from '../data/app';
 import Footer from './footer';
 import Header from './header';
 import Cuentas from './cuentas/Cuentas';
-import Catalogo from './cuentas/Catalogos';
 import Asientos from './asiento/Asientos';
 import catalogos from '../data/catalogos';
 import Cortes from './cuentas/configuracion/Cortes';
@@ -20,12 +19,14 @@ import TasaCambio from './tasaDeCambio/TasaCambio';
 import TipoComprobante from './tipoComprobante/TipoComprobante';
 import CentroCosto from './centroCosto/CentroCosto';
 import LibroMayor from './libros/LibroMayor';
-import { CONTA } from '../data/headerNavigation';
+import Catalogo from './shared/Catalogos';
+import { _path } from '../data/headerNavigation';
+
 
 function Layout(props) {
     const { match, headerLayout } = props;
     const PrintCatalogos = catalogos.map(c => {
-        return  <Route key={c} exact path={`${CONTA}/cuenta/${c}`} render={(props) => (
+        return  <Route key={c} exact path={`${_path[String(headerLayout).toUpperCase()]}/${c}`} render={(props) => (
                     <Catalogo {...props} catalogo={c} />
         )} />
     })
@@ -46,14 +47,14 @@ function Layout(props) {
                 <div className="site__body">
                     <Switch>
                         <Route exact path={`${match.path}`} component={HomePage} />
-                        <Route exact path={`${CONTA}/cuentas`} component={Cuentas} />                         
+                        <Route exact path={`${_path.CONTA}/cuentas`} component={Cuentas} />                         
                         {PrintCatalogos}
-                        <Route exact path={`${CONTA}/tipoComprobantes`} render={props => <TipoComprobante {...props} /> } />                         
-                        <Route exact path={`${CONTA}/asientos`} component={Asientos} />                         
-                        <Route exact path={`${CONTA}/configuracion/cortes`} component={Cortes} />                         
-                        <Route exact path={`${CONTA}/configuracion/tasa-cambio`} component={TasaCambio} />                         
-                        <Route exact path={`${CONTA}/centro-costo`} component={CentroCosto} />                         
-                        <Route exact path={`${CONTA}/libro/mayor`} component={LibroMayor} />                         
+                        <Route exact path={`${_path.CONTA}/tipoComprobantes`} render={props => <TipoComprobante {...props} /> } />                         
+                        <Route exact path={`${_path.CONTA}/asientos`} component={Asientos} />                         
+                        <Route exact path={`${_path.CONTA}/configuracion/cortes`} component={Cortes} />                         
+                        <Route exact path={`${_path.CONTA}/configuracion/tasa-cambio`} component={TasaCambio} />                         
+                        <Route exact path={`${_path.CONTA}/centro-costo`} component={CentroCosto} />                         
+                        <Route exact path={`${_path.CONTA}/libro/mayor`} component={LibroMayor} />                         
                     </Switch>
                 </div>
 

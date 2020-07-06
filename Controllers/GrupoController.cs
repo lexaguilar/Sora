@@ -32,13 +32,6 @@ namespace Sora.Controllers
         }
       
         [HttpGet("api/grupos/{id}/delete")]
-        public IActionResult Delete(int id)
-        {
-
-            factory.Delete(id);
-            var n = factory.Save();
-            return Json(new { n });
-
-        }
+        public IActionResult Delete(int id) => Json(new { n = factory.DeleteAndSave(id) });
     }
 }

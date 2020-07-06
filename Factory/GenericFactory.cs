@@ -88,6 +88,11 @@ namespace Sora.Factory
             return db.SaveChanges();
         }
 
-        
+        public int DeleteAndSave(int id)
+        {
+            T existing = entity.Find(id);
+            entity.Remove(existing);
+            return db.SaveChanges();
+        }
     }
 }
