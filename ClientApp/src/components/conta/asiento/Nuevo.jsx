@@ -2,19 +2,19 @@ import React from 'react';
 import { Popup, Button } from 'devextreme-react';
 import Form, { SimpleItem, GroupItem } from 'devextreme-react/form';
 import 'devextreme-react/text-area';
-import { createStore, createCustomStore } from '../../utils/proxy';
+import { createStore, createCustomStore } from '../../../utils/proxy';
 import { Column, SearchPanel, Lookup, Editing, Summary, TotalItem, RequiredRule, StringLengthRule, Scrolling }
   from 'devextreme-react/data-grid';
 import { DataGrid } from 'devextreme-react';
-import http from '../../utils/http';
-import uri from '../../utils/uri';
-import { getTicks, cellRender } from '../../utils/common';
+import http from '../../../utils/http';
+import uri from '../../../utils/uri';
+import { getTicks, cellRender } from '../../../utils/common';
 import notify from 'devextreme/ui/notify';
 import { connect } from 'react-redux';
-import { defaultComprobante } from '../../data/comprobante';
+import { defaultComprobante } from '../../../data/comprobante';
 import moment from 'moment';
 import numeral from 'numeral';
-import { updateAsiento } from '../../store/asiento/asientoActions';
+import { updateAsiento } from '../../../store/asiento/asientoActions';
 
 class Nuevo extends React.Component {
   constructor(props) {

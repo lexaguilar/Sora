@@ -14,9 +14,9 @@ import {
     Form } from 'devextreme-react/data-grid';
 
 
-import uri from '../../utils/uri';
-import { store } from '../../services/store';
-import Title from '../shared/Title';
+import uri from '../../../utils/uri';
+import { store } from '../../../services/store';
+import Title from '../../shared/Title';
 
 
 function CentroCosto(props) {

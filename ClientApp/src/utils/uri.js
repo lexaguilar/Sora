@@ -16,6 +16,7 @@ const uri = {
     //inv
     familia: createProxyBase('familia'),
     unidadMedida: createProxyBase('unidadMedida'),
+    presentacion: createProxyBase('presentacion'),
 };
 
 export default uri;

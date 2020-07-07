@@ -11,16 +11,17 @@ import app from '../data/app';
 // application
 import Footer from './footer';
 import Header from './header';
-import Cuentas from './cuentas/Cuentas';
-import Asientos from './asiento/Asientos';
 import catalogos from '../data/catalogos';
-import Cortes from './cuentas/configuracion/Cortes';
+import Cuentas from './conta/cuentas/Cuentas';
+import Asientos from './conta/asiento/Asientos';
+import Cortes from './conta/cuentas/configuracion/Cortes';
 import TasaCambio from './tasaDeCambio/TasaCambio';
-import TipoComprobante from './tipoComprobante/TipoComprobante';
-import CentroCosto from './centroCosto/CentroCosto';
-import LibroMayor from './libros/LibroMayor';
+import TipoComprobante from './conta/tipoComprobante/TipoComprobante';
+import CentroCosto from './conta/centroCosto/CentroCosto';
+import LibroMayor from './conta/libros/LibroMayor';
 import Catalogo from './shared/Catalogos';
 import { _path } from '../data/headerNavigation';
+import Familia from './inv/familia/Familia';
 
 
 function Layout(props) {
@@ -55,6 +56,7 @@ function Layout(props) {
                         <Route exact path={`${_path.CONTA}/configuracion/tasa-cambio`} component={TasaCambio} />                         
                         <Route exact path={`${_path.CONTA}/centro-costo`} component={CentroCosto} />                         
                         <Route exact path={`${_path.CONTA}/libro/mayor`} component={LibroMayor} />                         
+                        <Route exact path={`${_path.INV}/familia`} component={Familia} />                         
                     </Switch>
                 </div>
 

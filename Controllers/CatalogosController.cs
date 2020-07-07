@@ -109,5 +109,12 @@ namespace Sora.Controllers
             var factory = new GenericFactory<UnidadMedida>(db);
             return Json(factory.GetAll());
         }
+
+        [Route("inventarioEstado")]
+        public IActionResult InventarioEstado(){
+
+            var factory = new GenericFactory<InventarioEstado>(db);
+            return Json(factory.GetAll());
+        }
     }
 }

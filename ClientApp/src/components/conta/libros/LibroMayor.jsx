@@ -1,15 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Title from '../shared/Title';
 import { SelectBox, DataGrid } from 'devextreme-react';
 import { Column, Summary, TotalItem }
   from 'devextreme-react/data-grid';
-import { createCustomStore } from '../../utils/proxy';
+import { createCustomStore } from '../../../utils/proxy';
 import { Export } from 'devextreme-react/bar-gauge';
-import { cellRender } from '../../utils/common';
-import { store } from '../../services/store';
-import { updateLibroMayor } from '../../store/libroMayor/libroMayorActions'
+import { cellRender } from '../../../utils/common';
+import { updateLibroMayor } from '../../../store/libroMayor/libroMayorActions'
 import Detalle from './Detalle';
+import Title from '../../shared/Title';
+import { store } from '../../../services/store';
 
 class LibroMayor extends React.Component {
     constructor(props) {
@@ -41,7 +41,7 @@ class LibroMayor extends React.Component {
     }
 
     onCellDblClick(e){
-        console.log(e);
+
         let { updateLibroMayor } = this.props;
 
         updateLibroMayor(

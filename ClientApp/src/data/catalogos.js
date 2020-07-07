@@ -1,4 +1,4 @@
-const catalogos = ['naturaleza', 'tipoCuenta', 'grupos', 'clasificacion', 'familia', 'unidadMedida'];
+const catalogos = ['naturaleza', 'tipoCuenta', 'grupos', 'clasificacion', 'presentacion', 'unidadMedida'];
 
 export const estadoAsiento = {
     elaborado: 1,

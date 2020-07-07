@@ -10,13 +10,13 @@ import {
 }
     from 'devextreme-react/data-grid';
 import { DataGrid, Button } from 'devextreme-react';
-import { createStore } from "../../utils/proxy";
-import { store } from "../../services/store";
+import { createStore } from "../../../utils/proxy";
+import { store } from "../../../services/store";
 import Nuevo from "./Nuevo";
 import numeral from 'numeral'
 import { connect } from 'react-redux';
-import { updateAsiento } from '../../store/asiento/asientoActions'
-import { estadoAsiento } from "../../data/catalogos";
+import { updateAsiento } from '../../../store/asiento/asientoActions'
+import { estadoAsiento } from "../../../data/catalogos";
 
 class Asientos extends Component {
 

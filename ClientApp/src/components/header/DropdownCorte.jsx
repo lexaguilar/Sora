@@ -60,8 +60,7 @@ const mapDispatchToPros = ({
 
 const mapStateToProps = (state) => ({     
         cortes: state.cortes,
-        user: state.user,
-        
+        user: state.user,        
 });
 
 export default connect(mapStateToProps, mapDispatchToPros)(DropdownCorte);

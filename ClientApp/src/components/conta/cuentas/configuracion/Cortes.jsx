@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { DataGrid } from 'devextreme-react';
 import { 
     Paging, 
@@ -8,10 +8,11 @@ import {
     Column, 
     Export, 
     Editing} from 'devextreme-react/data-grid';
+import Title from '../../../shared/Title';
+import { store } from '../../../../services/store';
+import uri from '../../../../utils/uri';
 
-import uri from '../../../utils/uri';
-import { store } from '../../../services/store';
-import Title from '../../shared/Title';
+
 
 function Cortes(props) {
 

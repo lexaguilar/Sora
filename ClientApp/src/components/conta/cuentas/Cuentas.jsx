@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import TreeList, { Column, ColumnChooser, HeaderFilter, SearchPanel, Lookup, Editing, Paging, Pager, FilterRow } 
 from 'devextreme-react/tree-list';
 
-import { createStore } from "../../utils/proxy";
-import { store } from "../../services/store";
-import uri from "../../utils/uri";
+import { createStore } from "../../../utils/proxy";
+import { store } from "../../../services/store";
+import uri from "../../../utils/uri";
 
 class Cuentas extends Component {
     constructor(props) {

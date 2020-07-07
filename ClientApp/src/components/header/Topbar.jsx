@@ -12,8 +12,8 @@ import Dropdown from './Dropdown';
 import DropdownCorte from './DropdownCorte';
 
 
-function Topbar() {
-
+function Topbar(props) {
+    let  { user } = props;
     const links = [
         { title: <FormattedMessage id="topbar.caja" defaultMessage="Caja" />, url: '/caja' },
         { title: <FormattedMessage id="topbar.inventario" defaultMessage="Inventario" />, url: '/inv' },
@@ -41,7 +41,7 @@ function Topbar() {
                     <div className="topbar__spring" />
                     <div className="topbar__item">
                         <Dropdown
-                            title={<FormattedMessage id="topbar.miCuenta" defaultMessage="Mi Cuenta" />}
+                            title={<FormattedMessage id="topbar.miCuenta" defaultMessage={<b>{user.username}</b>} />}
                             items={accountLinks}
                         />
                     </div>                   
@@ -55,4 +55,8 @@ function Topbar() {
 
 }
 
-export default Topbar;
+const mapStateToProps = (state) => ({   
+    user: state.user,        
+});
+
+export default connect(mapStateToProps, null)(Topbar);

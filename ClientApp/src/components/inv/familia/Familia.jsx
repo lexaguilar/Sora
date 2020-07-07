@@ -14,20 +14,20 @@ import {
     Form } from 'devextreme-react/data-grid';
 
 
-import uri from '../../utils/uri';
-import { store } from '../../services/store';
-import Title from '../shared/Title';
+import uri from '../../../utils/uri';
+import { store } from '../../../services/store';
+import Title from '../../shared/Title';
 
 
-function TipoComprobante(props) {
+function Familia() {
 
     return (
         <div className="container small">
-            <Title title="TipoComrobante"/>
+            <Title title="Familias"/>
           
             <DataGrid id="gridContainer"
                 selection={{ mode: 'single' }}
-                dataSource={store({uri:uri.tipoComprobantes})}
+                dataSource={store({uri:uri.familia})}
                 showBorders={true}
                 showRowLines={true}
                 allowColumnResizing={true}
@@ -43,19 +43,19 @@ function TipoComprobante(props) {
                 <ColumnChooser enabled={true} />
                 <Export enabled={true} fileName="TipoComprobantes" allowExportSelectedData={true} />
                 <Column dataField="descripcion" />
-                <Column dataField="abrev" width={80} />
+                <Column dataField="iva" />
                 <Editing
                     mode="popup"
                     allowUpdating={true}
                     allowDeleting={true}
                     allowAdding={true}
                 >
-                    <Popup title="Tipo Comprobantes" showTitle={true} width={550} height={220}>
+                    <Popup title="Tipo Comprobantes" showTitle={true} width={550} height={180}>
                         
                     </Popup>
                     <Form>
                         <Item  dataField="descripcion" editorOptions={{ width:250 }} />                       
-                        <Item  dataField="abrev" editorOptions={{ width:80 }} />                       
+                        <Item  dataField="iva" editorOptions={{ width:80 }} />                       
                     </Form>
                 </Editing>
             </DataGrid>
@@ -64,4 +64,4 @@ function TipoComprobante(props) {
 
 };
 
-export default TipoComprobante; //connect(mapStateToProps, mapDispatchToProps)(GridSprintStart);
+export default Familia; //connect(mapStateToProps, mapDispatchToProps)(GridSprintStart);
