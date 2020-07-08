@@ -22,6 +22,7 @@ import LibroMayor from './conta/libros/LibroMayor';
 import Catalogo from './shared/Catalogos';
 import { _path } from '../data/headerNavigation';
 import Familia from './inv/familia/Familia';
+import Inventario from './inv/inventario/Inventario';
 
 
 function Layout(props) {
@@ -56,6 +57,8 @@ function Layout(props) {
                         <Route exact path={`${_path.CONTA}/configuracion/tasa-cambio`} component={TasaCambio} />                         
                         <Route exact path={`${_path.CONTA}/centro-costo`} component={CentroCosto} />                         
                         <Route exact path={`${_path.CONTA}/libro/mayor`} component={LibroMayor} />                         
+                        <Route exact path={`${_path.INV}/`} component={HomePage} />                   
+                        <Route exact path={`${_path.INV}/inventario`} component={Inventario} />                   
                         <Route exact path={`${_path.INV}/familia`} component={Familia} />                         
                     </Switch>
                 </div>

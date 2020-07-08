@@ -17,14 +17,15 @@ import {
 import uri from '../../../utils/uri';
 import { store } from '../../../services/store';
 import Title from '../../shared/Title';
+import BlockHeader from '../../shared/BlockHeader';
 
 
 function TipoComprobante(props) {
 
     return (
         <div className="container small">
-            <Title title="TipoComrobante"/>
-          
+            <Title title="Tipo de Comrobante"/>
+            <BlockHeader title="Tipo de Comrobante" />
             <DataGrid id="gridContainer"
                 selection={{ mode: 'single' }}
                 dataSource={store({uri:uri.tipoComprobantes})}

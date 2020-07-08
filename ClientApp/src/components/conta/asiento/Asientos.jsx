@@ -17,6 +17,7 @@ import numeral from 'numeral'
 import { connect } from 'react-redux';
 import { updateAsiento } from '../../../store/asiento/asientoActions'
 import { estadoAsiento } from "../../../data/catalogos";
+import BlockHeader from "../../shared/BlockHeader";
 
 class Asientos extends Component {
 
@@ -86,6 +87,7 @@ class Asientos extends Component {
 
         return (
             <div className="container">
+                <BlockHeader title="Comprobantes" />
                 <Nuevo onSave={this.reload} />
                 <DataGrid
                     ref={(ref) => this.dataGrid = ref}

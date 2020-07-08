@@ -109,12 +109,12 @@ const menuConta = [{
 const menuInv = [{
         layout: 'inv',
         title: 'Facturas',
-        url: '/facturas'
+        url: `${_path.INV}/facturas`
     },
     {
         layout: 'inv',
         title: 'Inventario',
-        url: `${_path.INV}/asientos`
+        url: `${_path.INV}/inventario`
     },
     {
         layout: 'inv',
@@ -131,7 +131,7 @@ const menuInv = [{
                         url: '',
                         links: [
                             { title: 'Unidad medida', url: `${_path.INV}/unidadMedida` },
-                            { title: 'Laboratorio', url: `${_path.INV}/laboratirio` },
+                            { title: 'Presentacion', url: `${_path.INV}/presentacion` },
                             { title: 'Familias', url: `${_path.INV}/familia` },
                         ],
                     }]

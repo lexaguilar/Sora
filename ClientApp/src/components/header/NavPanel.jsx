@@ -2,7 +2,6 @@
 import React from 'react';
 
 // third-party
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -45,15 +44,6 @@ function NavPanel(props) {
         </div>
     );
 }
-
-NavPanel.propTypes = {
-    /** one of ['default', 'compact'] (default: 'default') */
-    layout: PropTypes.oneOf(['default', 'compact']),
-};
-
-NavPanel.defaultProps = {
-    layout: 'default',
-};
 
 const mapStateToProps = (state) => ({
     wishlist: state.wishlist,

@@ -10,6 +10,7 @@ import { updateLibroMayor } from '../../../store/libroMayor/libroMayorActions'
 import Detalle from './Detalle';
 import Title from '../../shared/Title';
 import { store } from '../../../services/store';
+import BlockHeader from '../../shared/BlockHeader';
 
 class LibroMayor extends React.Component {
     constructor(props) {
@@ -70,8 +71,9 @@ class LibroMayor extends React.Component {
 
         return (
             <div className="container medium">
-                <Detalle />
                 <Title title="Libro mayor" />
+                <BlockHeader title ="Libro mayor" />
+                <Detalle />
                 <div className="dx-field" style={{width: 600}}>
                     <div className="dx-field-label">Cuenta contable</div>
                     <div className="dx-field-value">

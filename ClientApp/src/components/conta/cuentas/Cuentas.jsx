@@ -5,6 +5,7 @@ from 'devextreme-react/tree-list';
 import { createStore } from "../../../utils/proxy";
 import { store } from "../../../services/store";
 import uri from "../../../utils/uri";
+import BlockHeader from "../../shared/BlockHeader";
 
 class Cuentas extends Component {
     constructor(props) {
@@ -35,6 +36,7 @@ class Cuentas extends Component {
         const allowedPageSizes = [5, 10, 20];
         return (
             <div className="container">
+                <BlockHeader title="Cuentas contables" />
                 <TreeList
                     dataSource={store(
                         {

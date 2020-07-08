@@ -6,8 +6,19 @@ import {
     Redirect,
 } from 'react-router-dom';
 import Layout from './Layout';
+import { locale, loadMessages } from "devextreme/localization";
+import { esMessages } from '../data/dx.messages.es';
 
 export default class Root extends Component {
+
+    constructor(props) {
+        super(props);
+        loadMessages({
+            'es': esMessages
+        });
+        console.log(navigator.language);
+        locale(navigator.language);
+    }
 
     componentDidMount() {
         setTimeout(() => {

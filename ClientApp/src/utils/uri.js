@@ -14,6 +14,7 @@ const uri = {
     tasaCambio: createProxyBase('TasaCambio'),
     file: createProxy('', 'tasaCambio/post/file'),
     //inv
+    inventario: createProxyBase('inventario'),
     familia: createProxyBase('familia'),
     unidadMedida: createProxyBase('unidadMedida'),
     presentacion: createProxyBase('presentacion'),

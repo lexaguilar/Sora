@@ -17,6 +17,7 @@ import uri from '../../utils/uri';
 import toCapital from '../../utils/common';
 import { store } from '../../services/store';
 import Title from './Title';
+import BlockHeader from './BlockHeader';
 
 function Catalogo(props) {
     const { catalogo } = props;
@@ -24,7 +25,7 @@ function Catalogo(props) {
     return (
         <div className="container small">
             <Title title={catalogo}/>
-          
+            <BlockHeader title={toCapital(catalogo)}/>          
             <DataGrid id="gridContainer"
                 selection={{ mode: 'single' }}
                 dataSource={store({uri:uri[catalogo]})}
