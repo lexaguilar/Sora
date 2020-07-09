@@ -174,6 +174,8 @@ class Nuevo extends React.Component {
 
       if (debe != haber)
         notify({ message: "El comprobante no cuadra, revise los debe y haber" }, 'error')
+      else if (debe == 0 && haber == 0)
+        notify({ message: "Debe de registrar al menos un movimiento" }, 'error')
       else {
 
 
@@ -297,6 +299,7 @@ class Nuevo extends React.Component {
                   disabled: !asiento.editable
                 }}
               >
+                <RequiredRule message="Esta dato es requerido" />
                 <StringLengthRule max={500} message="Maximo 500 caracteres" />
               </SimpleItem>
               <SimpleItem

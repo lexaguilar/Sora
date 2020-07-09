@@ -11,7 +11,9 @@ import {
     Export, 
     Editing,
     Popup,     
-    Form } from 'devextreme-react/data-grid';
+    Form, 
+    RequiredRule,
+    StringLengthRule} from 'devextreme-react/data-grid';
 
 import uri from '../../utils/uri';
 import toCapital from '../../utils/common';
@@ -54,7 +56,10 @@ function Catalogo(props) {
                         
                     </Popup>
                     <Form>
-                        <Item  dataField="descripcion" editorOptions={{ width:300 }} />                       
+                        <Item  dataField="descripcion" editorOptions={{ width:300 }} >
+                            <RequiredRule message="La descripcion es requerida"/>
+                            <StringLengthRule max={50} min={2} message="Máximo de caracteres 50 y 2 mínimo"/>
+                        </Item>                    
                     </Form>
                 </Editing>
             </DataGrid>

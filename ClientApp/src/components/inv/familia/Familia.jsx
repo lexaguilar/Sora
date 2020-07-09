@@ -11,7 +11,10 @@ import {
     Export,
     Editing,
     Popup,
-    Form
+    Form,
+    NumericRule,
+    RequiredRule,
+    StringLengthRule
 } from 'devextreme-react/data-grid';
 
 
@@ -26,7 +29,7 @@ function Familia() {
     return (
         <div className="container small">
             <Title title="Familias" />
-            <BlockHeader title="Familas"/>
+            <BlockHeader title="Familas" />
             <DataGrid id="gridContainer"
                 selection={{ mode: 'single' }}
                 dataSource={store({ uri: uri.familia })}
@@ -58,8 +61,13 @@ function Familia() {
                     </Popup>
                     <Form>
                         <Item itemType="group" colCount={1} colSpan={1}>
-                            <Item dataField="descripcion" editorOptions={{ width: 250 }} />
-                            <Item dataField="prefijo" editorOptions={{ width: 100 }} />
+                            <Item dataField="descripcion" editorOptions={{ width: 250 }} >
+                                <RequiredRule message="La descripcion es requerida" />
+                                <StringLengthRule max={50} min={2} message="Máximo de caracteres 50 y 2 mínimo" />
+                            </Item>
+                            <Item dataField="prefijo" editorOptions={{ width: 100 }} >
+                                <RequiredRule message="El prefijo es requerido" />
+                            </Item>
                             <Item dataField="iva" editorOptions={{ width: 80 }} />
                         </Item>
                     </Form>

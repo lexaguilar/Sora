@@ -7,7 +7,8 @@ import {
     HeaderFilter, 
     Column, 
     Export, 
-    Editing
+    Editing,
+    RequiredRule
  } from 'devextreme-react/data-grid';
 
 import Title from '../shared/Title';
@@ -49,8 +50,12 @@ function TasaCambio() {
                 <FilterRow visible={true} />
                 <HeaderFilter visible={true} />
                 <Export enabled={true} fileName="TasaCambio" allowExportSelectedData={true} />
-                <Column dataField="fecha" dataType="date" format='dd/MM/yyyy'/>
-                <Column dataField="cambio" dataType="number"/>
+                <Column dataField="fecha" dataType="date" format='dd/MM/yyyy'>
+                    <RequiredRule/>
+                </Column>
+                <Column dataField="cambio" dataType="number">
+                    <RequiredRule/>
+                </Column>
                 <Editing
                     mode="batch"
                     allowUpdating={true}

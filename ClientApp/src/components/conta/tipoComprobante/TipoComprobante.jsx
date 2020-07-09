@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
 import { DataGrid } from 'devextreme-react';
 import { Item } from 'devextreme-react/form';
-import { 
-    Paging, 
-    Pager, 
-    FilterRow, 
-    HeaderFilter, 
-    ColumnChooser, 
-    Column, 
-    Export, 
+import {
+    Paging,
+    Pager,
+    FilterRow,
+    HeaderFilter,
+    ColumnChooser,
+    Column,
+    Export,
     Editing,
-    Popup,     
-    Form } from 'devextreme-react/data-grid';
+    Popup,
+    Form,
+    RequiredRule,
+    StringLengthRule
+} from 'devextreme-react/data-grid';
 
 
 import uri from '../../../utils/uri';
@@ -24,11 +27,11 @@ function TipoComprobante(props) {
 
     return (
         <div className="container small">
-            <Title title="Tipo de Comrobante"/>
+            <Title title="Tipo de Comrobante" />
             <BlockHeader title="Tipo de Comrobante" />
             <DataGrid id="gridContainer"
                 selection={{ mode: 'single' }}
-                dataSource={store({uri:uri.tipoComprobantes})}
+                dataSource={store({ uri: uri.tipoComprobantes })}
                 showBorders={true}
                 showRowLines={true}
                 allowColumnResizing={true}
@@ -52,11 +55,17 @@ function TipoComprobante(props) {
                     allowAdding={true}
                 >
                     <Popup title="Tipo Comprobantes" showTitle={true} width={550} height={220}>
-                        
+
                     </Popup>
                     <Form>
-                        <Item  dataField="descripcion" editorOptions={{ width:250 }} />                       
-                        <Item  dataField="abrev" editorOptions={{ width:80 }} />                       
+                        <Item dataField="descripcion" editorOptions={{ width: 250 }} >
+                            <RequiredRule message="La descripcion es requerida" />
+                            <StringLengthRule max={150} min={4} message="Máximo de caracteres 150 y 4 mínimo" />
+                        </Item>
+                        <Item dataField="abrev" editorOptions={{ width: 80 }} >
+                            <RequiredRule message="La descripcion es requerida" />
+                            <StringLengthRule max={50} min={2} message="Máximo de caracteres 50 y 2 mínimo" />
+                        </Item>
                     </Form>
                 </Editing>
             </DataGrid>

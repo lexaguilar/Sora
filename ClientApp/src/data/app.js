@@ -13,4 +13,6 @@ const app = {
     }
 }
 
+export const editorOptions = { stylingMode: "filled" };
+
 export default app;

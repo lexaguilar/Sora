@@ -13,7 +13,7 @@ namespace Sora.Models.SaraModel
         public int Id { get; set; }
         public string Descripcion { get; set; }
         public bool Iva { get; set; }
-        public string Prefijo { get; set; }
+        public int Prefijo { get; set; }
 
         public virtual ICollection<Inventario> Inventario { get; set; }
     }

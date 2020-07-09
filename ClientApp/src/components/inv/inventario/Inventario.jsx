@@ -8,7 +8,7 @@ import {
     Pager,
     Paging,
     Editing,
-    Popup, Form
+    Popup, Form, Export, StringLengthRule, RequiredRule
 }
     from 'devextreme-react/data-grid';
 import { DataGrid } from 'devextreme-react';
@@ -19,6 +19,7 @@ import { store } from "../../../services/store";
 import { createStore } from "../../../utils/proxy";
 import { Item } from 'devextreme-react/form';
 import BlockHeader from "../../shared/BlockHeader";
+import { editorOptions } from "../../../data/app";
 
 class Inventario extends Component {
 
@@ -43,6 +44,18 @@ class Inventario extends Component {
                     this.dataGrid.instance.addRow();
                 }
             }
+        });
+
+        e.toolbarOptions.items.unshift({
+            location: 'beore',
+            widget: 'dxButton',
+            options: {
+                icon: 'export',
+                text: 'Importar desde excel',
+                onClick: () => {
+                    this.dataGrid.instance.addRow();
+                }
+            }
         })
     }
 
@@ -55,7 +68,7 @@ class Inventario extends Component {
     // }
 
     onRowDblClick(e) {
-        this.openDialog(e.data.id);
+        this.dataGrid.instance.editRow(e.rowIndex);
     }
 
     render() {
@@ -90,48 +103,61 @@ class Inventario extends Component {
                         onRowDblClick={this.onRowDblClick}
                         onRowPrepared={this.onRowPrepared}
                     >
-                        <Pager allowedPageSizes={[10, 25, 50, 100]} showPageSizeSelector={true} />
-                        <Paging defaultPageSize={10} />
+                        <Pager allowedPageSizes={[10, 15, 25, 50]} showPageSizeSelector={true} />
+                        <Paging defaultPageSize={15} />
                         <SearchPanel visible={true} width={250} />
                         <FilterRow visible={true} />
                         <ColumnChooser enabled={true} />
+                        <Export enabled={true} fileName="Inventario" allowExportSelectedData={true} />
                         <Editing
                             mode="popup"
                             allowUpdating={true}
                             allowDeleting={true}
                             allowAdding={true}
                         >
-                            <Popup title="Inventario" showTitle={true} width={800} height={300}>
+                            <Popup title="Inventario" showTitle={true} width={400} height={450}>
                             </Popup>
                             <Form>
-                                <Item itemType="group" colCount={2} colSpan={2}>
-                                    <Item dataField="numero" editorOptions={{disabled : true}} colCount={2} colSpan={2}/>
-                                    <Item dataField="nombre" />
-                                    <Item dataField="descripcion" />
-                                    <Item dataField="familiaId" />
-                                    <Item dataField="presentacionId" />
-                                    <Item dataField="unidadMedidaId" />
-                                    <Item dataField="stockMinimo" />
-                                    <Item dataField="iva" />
-                                    <Item dataField="estadoId" />                                
+                                <Item itemType="group" colCount={1} colSpan={2} >
+                                    <Item dataField="numero" editorOptions={{readOnly : true}}/>
+                                    <Item dataField="nombre" editorOptions={editorOptions} />
+                                    <Item dataField="descripcion" editorOptions={editorOptions}/>
+                                    <Item dataField="familiaId" editorOptions={{...editorOptions, ...{displayExpr: data => data ? `${data.prefijo} - ${data.descripcion}` : null}}}/>
+                                    <Item dataField="presentacionId" editorOptions={editorOptions}/>
+                                    <Item dataField="unidadMedidaId" editorOptions={editorOptions}/>
+                                    <Item dataField="stockMinimo" editorOptions={editorOptions}/>
+                                    <Item dataField="iva" editorType="dxSwitch" editorOptions={{...editorOptions, ...{switchedOffText:"NO",switchedOnText:"SI",}}}/>
+                                    <Item dataField="estadoId" editorOptions={editorOptions}/>                                
                                 </Item>                           
                             </Form>
                         </Editing>
                         <Column dataField="numero" width={100} alignment="right" cellRender={ data => (<b>{data.data.numero}</b>)} />
-                        <Column dataField="nombre" width={260} />
-                        <Column dataField="descripcion" />
+                        <Column dataField="nombre" width={260} >
+                            <RequiredRule message="Esta dato es requerido" />
+                            <StringLengthRule max={150} message="Maximo 150 caracteres" />
+                        </Column>
+                        <Column dataField="descripcion" >
+                            <RequiredRule message="Esta dato es requerido" />
+                            <StringLengthRule max={250} message="Maximo 250 caracteres" />
+                        </Column>
                         <Column dataField="familiaId" width={150} caption="Familia">
+                            <RequiredRule message="Esta dato es requerido" />
                             <Lookup dataSource={createStore('familia')} valueExpr="id" displayExpr="descripcion" />
                         </Column>
                         <Column dataField="presentacionId" width={130} caption="Presentacion">
+                            <RequiredRule message="Esta dato es requerido" />
                             <Lookup disabled={true} dataSource={createStore('presentacion')} valueExpr="id" displayExpr="descripcion" />
                         </Column>
                         <Column dataField="unidadMedidaId" width={130} caption="Unidad Medidad">
+                            <RequiredRule message="Esta dato es requerido" />
                             <Lookup disabled={true} dataSource={createStore('unidadMedida')} valueExpr="id" displayExpr="descripcion" />
                         </Column>
-                        <Column dataField="stockMinimo" width={80} dataType="number" />
-                        <Column dataField="iva" width={60} dataType="boolean" />
+                        <Column dataField="stockMinimo" width={80} dataType="number">
+                            <RequiredRule message="Esta dato es requerido" />
+                        </Column>
+                        <Column dataField="iva" caption="Aplica IVA" width={60} dataType="boolean"/>
                         <Column dataField="estadoId" caption="Estado" width={80}>
+                            <RequiredRule message="Esta dato es requerido" />
                             <Lookup disabled={true} dataSource={createStore('inventarioEstado')} valueExpr="id" displayExpr="descripcion" />
                         </Column>
                     </DataGrid>

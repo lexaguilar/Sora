@@ -6,6 +6,7 @@ import { createStore } from "../../../utils/proxy";
 import { store } from "../../../services/store";
 import uri from "../../../utils/uri";
 import BlockHeader from "../../shared/BlockHeader";
+import { Export } from "devextreme-react/data-grid";
 
 class Cuentas extends Component {
     constructor(props) {
@@ -56,6 +57,7 @@ class Cuentas extends Component {
                     <HeaderFilter visible={true} />
                     <FilterRow visible={true} />                   
                     <ColumnChooser enabled={true} />
+                    <Export enabled={true} fileName="Cuentas contables" allowExportSelectedData={true} />                    
                     <Paging
                         enabled={true}
                         defaultPageSize={10} />

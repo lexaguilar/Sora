@@ -64,6 +64,13 @@ namespace Sora.Controllers
                 inventarios = inventarios.Where(x => x.EstadoId == estadoId);
             }
 
+            if (values.ContainsKey("iva"))
+            {
+                var iva = Convert.ToBoolean(values["iva"]);
+                inventarios = inventarios.Where(x => x.Iva == iva);
+            }
+
+
             var items = inventarios.Skip(skip).Take(take);
 
             return Json(new
@@ -128,31 +135,34 @@ namespace Sora.Controllers
         
         private int getMax(int familiaId)
         {
+            var familia = db.Familia.FirstOrDefault(x => x.Id == familiaId);
+
             const int rate = 100000;
 
             var maxresult = db.Inventario.Where(x => x.FamiliaId == familiaId);//
             if (maxresult.Count() > 0)
             {       
-                var min = familiaId * rate;
+                var min = familia.Prefijo * rate;
                 var max = Convert.ToInt32(maxresult.Max(x => x.Numero)) + 1;
                 var i = max;
 
                 while (i >  min)
                 {
-                    i--;
+                    
                     var _inventario = maxresult.FirstOrDefault(x => x.Numero == i);
-                    if(_inventario == null)
+                    if(_inventario == null && i < max)
                     {
                         max = i;
                         i = min;
-                    }                        
+                    }
+                    i--;         
                 }               
                 
                 return max;
 
             }
             else
-                return familiaId * rate + 1;
+                return familia.Prefijo * rate + 1;
         }
 
         [HttpGet("api/inventario/{id}/delete")]

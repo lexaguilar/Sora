@@ -7,6 +7,7 @@ import {
     Lookup,
     Pager,
     Paging,
+    Export,
 }
     from 'devextreme-react/data-grid';
 import { DataGrid, Button } from 'devextreme-react';
@@ -111,6 +112,7 @@ class Asientos extends Component {
                     <SearchPanel visible={true} width={250} />
                     <FilterRow visible={true} />
                     <ColumnChooser enabled={true} />
+                    <Export enabled={true} fileName="Comprobantes" allowExportSelectedData={true} />
                     <Column
                         dataField="id"
                         width={100}
