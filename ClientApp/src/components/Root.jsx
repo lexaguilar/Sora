@@ -38,22 +38,22 @@ export default class Root extends Component {
             <BrowserRouter basename={process.env.PUBLIC_URL}>
                 <Switch>
                     <Route
-                            path="/conta"
-                            render={(props) => (
-                                <Layout {...props} headerLayout='conta'  />
-                            )}
+                        path="/conta"
+                        render={(props) => (
+                            <Layout {...props} headerLayout='conta'  />
+                        )}
                     />
                     <Route
-                            path="/inv"
-                            render={(props) => (
-                                <Layout {...props} headerLayout='inv'/>
-                            )}
+                        path="/inv"
+                        render={(props) => (
+                            <Layout {...props} headerLayout='inv'/>
+                        )}
                     />
                     <Route
-                            path="/caja"
-                            render={(props) => (
-                                <Layout {...props} headerLayout='caja'/>
-                            )}
+                        path="/caja"
+                        render={(props) => (
+                            <Layout {...props} headerLayout='caja'/>
+                        )}
                     />
                     <Redirect to='/conta'/>
                 </Switch>
