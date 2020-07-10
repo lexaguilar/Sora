@@ -14,6 +14,7 @@ const getTicks = date => ((date.getTime() * 10000) + 621355968000000000);
 
 export const cellRender = data => numeral(data.value).format('0,0.00');
 
-
+export const phonePattern = /[-\s\./0-9]*$/g;
+export const phoneRules = { X: /[0-9]/ };
 export { getTicks }
 export default toCapital

@@ -23,6 +23,7 @@ import Catalogo from './shared/Catalogos';
 import { _path } from '../data/headerNavigation';
 import Familia from './inv/familia/Familia';
 import Inventario from './inv/inventario/Inventario';
+import Proveedores from './inv/Entidades/Proveedores';
 
 
 function Layout(props) {
@@ -60,7 +61,7 @@ function Layout(props) {
                         <Route exact path={`${_path.INV}/`} component={HomePage} />                   
                         <Route exact path={`${_path.INV}/inventario`} component={Inventario} />                   
                         <Route exact path={`${_path.INV}/familia`} component={Familia} />                    
-                        <Route exact path={`${_path.INV}/proveedores`} component={Familia} />                    
+                        <Route exact path={`${_path.INV}/proveedores`} component={Proveedores} />                    
                     </Switch>
                 </div>
 

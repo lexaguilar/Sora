@@ -16,7 +16,6 @@ export default class Root extends Component {
         loadMessages({
             'es': esMessages
         });
-        console.log(navigator.language);
         locale(navigator.language);
     }
 

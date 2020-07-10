@@ -19,6 +19,7 @@ const uri = {
     unidadMedida: createProxyBase('unidadMedida'),
     presentacion: createProxyBase('presentacion'),
     proveedores: createProxyBase('proveedores'),
+    formaPago: createProxyBase('formaPago'),
 };
 
 export default uri;

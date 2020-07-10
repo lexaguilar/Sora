@@ -14,7 +14,9 @@ import {
     Form,
     NumericRule,
     RequiredRule,
-    StringLengthRule
+    StringLengthRule,
+    EmailRule,
+    PatternRule
 } from 'devextreme-react/data-grid';
 
 
@@ -22,12 +24,13 @@ import uri from '../../../utils/uri';
 import { store } from '../../../services/store';
 import Title from '../../shared/Title';
 import BlockHeader from '../../shared/BlockHeader';
+import { phonePattern, phoneRules } from '../../../utils/common';
 
 
 function Proveedores() {
     const title = "Proveedores";
     return (
-        <div className="container small">
+        <div className="container medium">
             <Title title={title} />
             <BlockHeader title={title} />
             <DataGrid id="gridContainer"
@@ -47,8 +50,8 @@ function Proveedores() {
                 <HeaderFilter visible={true} />
                 <ColumnChooser enabled={true} />
                 <Export enabled={true} fileName="Familia" allowExportSelectedData={true} />
-                <Column dataField="nombre" width={250} />
-                <Column dataField="contacto"  />
+                <Column dataField="nombre" width={300} />
+                <Column dataField="contacto" width={300}  />
                 <Column dataField="telefono" />
                 <Column dataField="correo" />
                 <Editing
@@ -57,7 +60,7 @@ function Proveedores() {
                     allowDeleting={true}
                     allowAdding={true}
                 >
-                    <Popup title="Proveedor" showTitle={true} width={400} height={220}>
+                    <Popup title="Proveedor" showTitle={true} width={380} height={270}>
 
                     </Popup>
                     <Form>
@@ -69,11 +72,11 @@ function Proveedores() {
                             <Item dataField="contacto" editorOptions={{ width: 250 }} >
                                 <StringLengthRule max={150} message="150 caracteres como máximo" />
                             </Item>
-                            <Item dataField="telefono" editorOptions={{ width: 250 }} >
-                                <StringLengthRule min={8} max={8} message="Solo se permiten 8 caracteres" />
+                            <Item dataField="telefono" editorOptions={{ width: 250, mask:"0000-0000", maskRules: phoneRules }} >
+                                <PatternRule message="The phone must have a correct USA phone format" pattern={phonePattern} />
                             </Item>
                             <Item dataField="correo" editorOptions={{ width: 250 }} >
-                                <StringLengthRule max={50} message="50 caracteres como máximo" />
+                                <EmailRule message="Correo invalida" />
                             </Item>
                         </Item>
                     </Form>
