@@ -7,7 +7,7 @@ namespace Sora.Controllers
 {
     public class ClasificacionController : Controller
     {
-        private IGenericFactory<Clasificacion> factory = null;
+        private GenericFactory<Clasificacion> factory = null;
         public ClasificacionController(SaraContext db)
         {
             this.factory = new GenericFactory<Clasificacion>(db);

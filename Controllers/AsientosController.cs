@@ -15,8 +15,8 @@ namespace Sora.Controllers
     public class AsientosController : Controller
     {      
         private readonly SaraContext db;
-         private IGenericFactory<Asientos> factory = null;
-         private IGenericFactory<AsientosDetalle> factoryDetalle = null;
+         private GenericFactory<Asientos> factory = null;
+         private GenericFactory<AsientosDetalle> factoryDetalle = null;
         public AsientosController(SaraContext _db){
             db = _db;
             this.factory = new GenericFactory<Asientos>(db);

@@ -5,6 +5,11 @@ namespace Sora.Models.SaraModel
 {
     public partial class Inventario
     {
+        public Inventario()
+        {
+            ComprasDetalle = new HashSet<ComprasDetalle>();
+        }
+
         public int Id { get; set; }
         public int Numero { get; set; }
         public int FamiliaId { get; set; }
@@ -20,5 +25,6 @@ namespace Sora.Models.SaraModel
         public virtual Familia Familia { get; set; }
         public virtual Presentacion Presentacion { get; set; }
         public virtual UnidadMedida UnidadMedida { get; set; }
+        public virtual ICollection<ComprasDetalle> ComprasDetalle { get; set; }
     }
 }

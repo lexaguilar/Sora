@@ -8,6 +8,8 @@ import {
     Pager,
     Paging,
     Export,
+    Editing,
+    Button as ButtonGrid 
 }
     from 'devextreme-react/data-grid';
 import { DataGrid, Button } from 'devextreme-react';
@@ -107,38 +109,16 @@ class Asientos extends Component {
                     onRowDblClick={this.onRowDblClick}
                     onRowPrepared={this.onRowPrepared}
                 >
-                    <Pager allowedPageSizes={[10, 25, 50, 100]} showPageSizeSelector={true} />
-                    <Paging defaultPageSize={10} />
+                    <Pager allowedPageSizes={[10, 15, 30, 50]} showPageSizeSelector={true} showInfo={true} />
+                    <Paging defaultPageSize={15} />
                     <SearchPanel visible={true} width={250} />
                     <FilterRow visible={true} />
                     <ColumnChooser enabled={true} />
                     <Export enabled={true} fileName="Comprobantes" allowExportSelectedData={true} />
-                    <Column
-                        dataField="id"
-                        width={100}
-                        allowFiltering={false}
-                        allowSorting={false}
-                        cellRender={data => 
-                        <div>
-                            <Button
-                                className='links'
-                                width={30}
-                                text='Ver'
-                                type="normal"
-                                stylingMode="contained"
-                                onClick={e => this.openDialog(data.data.id, false)}
-                            /><Button
-                                className='links'
-                                width={50}
-                                text='Editar'
-                                type="normal"
-                                stylingMode="contained"
-                                onClick={e => this.openDialog(data.data.id, true)}
-                            />
-                        </div>
-                        }
-                    />
-
+                     <Column type="buttons">
+                        <ButtonGrid name="ver" text="Ver" onClick={e => this.openDialog(e.row.data.id, false)}/>
+                        <ButtonGrid name="modificar" text="Editar" onClick={e => this.openDialog(e.row.data.id, true)}/>
+                    </Column>
                     <Column dataField="numero" width={100} cellRender={data => `${data.data.tipoComprobante.abrev}-${numeral(data.value).format('000000')}`} />
                     <Column dataField="fecha" width={120} dataType="date" format="dd/MM/yyyy" />
                     <Column dataField="concepto" allowFiltering={false} />

@@ -1,0 +1,6 @@
+namespace Sora
+{
+    interface ICatalogo{
+        
+    }
+}

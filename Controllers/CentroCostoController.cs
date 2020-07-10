@@ -7,7 +7,7 @@ namespace Sora.Controllers
 {
     public class CentroCostoController : Controller
     {
-        private IGenericFactory<CentroCosto> factory = null;
+        private GenericFactory<CentroCosto> factory = null;
         public CentroCostoController(SaraContext db)
         {
             this.factory = new GenericFactory<CentroCosto>(db);

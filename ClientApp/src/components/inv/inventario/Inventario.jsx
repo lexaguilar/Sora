@@ -103,7 +103,7 @@ class Inventario extends Component {
                         onRowDblClick={this.onRowDblClick}
                         onRowPrepared={this.onRowPrepared}
                     >
-                        <Pager allowedPageSizes={[10, 15, 25, 50]} showPageSizeSelector={true} />
+                        <Pager allowedPageSizes={[10, 15, 30, 50]} showPageSizeSelector={true} showInfo={true} />
                         <Paging defaultPageSize={15} />
                         <SearchPanel visible={true} width={250} />
                         <FilterRow visible={true} />

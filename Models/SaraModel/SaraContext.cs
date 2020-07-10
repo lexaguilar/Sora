@@ -20,16 +20,21 @@ namespace Sora.Models.SaraModel
         public virtual DbSet<AsientosDetalle> AsientosDetalle { get; set; }
         public virtual DbSet<CentroCosto> CentroCosto { get; set; }
         public virtual DbSet<Clasificacion> Clasificacion { get; set; }
+        public virtual DbSet<CompraEstado> CompraEstado { get; set; }
+        public virtual DbSet<Compras> Compras { get; set; }
+        public virtual DbSet<ComprasDetalle> ComprasDetalle { get; set; }
         public virtual DbSet<Cortes> Cortes { get; set; }
         public virtual DbSet<Cuentas> Cuentas { get; set; }
         public virtual DbSet<Entidades> Entidades { get; set; }
         public virtual DbSet<Familia> Familia { get; set; }
+        public virtual DbSet<FormaPago> FormaPago { get; set; }
         public virtual DbSet<Grupos> Grupos { get; set; }
         public virtual DbSet<Inventario> Inventario { get; set; }
         public virtual DbSet<InventarioEstado> InventarioEstado { get; set; }
         public virtual DbSet<Moneda> Moneda { get; set; }
         public virtual DbSet<Naturaleza> Naturaleza { get; set; }
         public virtual DbSet<Presentacion> Presentacion { get; set; }
+        public virtual DbSet<Proveedores> Proveedores { get; set; }
         public virtual DbSet<TasaDeCambio> TasaDeCambio { get; set; }
         public virtual DbSet<TipoComprobantes> TipoComprobantes { get; set; }
         public virtual DbSet<TipoCuenta> TipoCuenta { get; set; }
@@ -161,6 +166,107 @@ namespace Sora.Models.SaraModel
                     .HasMaxLength(150);
             });
 
+            modelBuilder.Entity<CompraEstado>(entity =>
+            {
+                entity.Property(e => e.Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Compras>(entity =>
+            {
+                entity.HasIndex(e => e.EstadoId);
+
+                entity.HasIndex(e => e.FormaPagoId);
+
+                entity.HasIndex(e => e.ProveedorId);
+
+                entity.Property(e => e.Descuento).HasColumnType("money");
+
+                entity.Property(e => e.Fecha).HasColumnType("datetime");
+
+                entity.Property(e => e.Iva)
+                    .HasColumnName("IVA")
+                    .HasColumnType("money");
+
+                entity.Property(e => e.Observacion)
+                    .IsRequired()
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.SubTotal).HasColumnType("money");
+
+                entity.Property(e => e.Total).HasColumnType("money");
+
+                entity.HasOne(d => d.Estado)
+                    .WithMany(p => p.Compras)
+                    .HasForeignKey(d => d.EstadoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Compras_CompraEstado");
+
+                entity.HasOne(d => d.FormaPago)
+                    .WithMany(p => p.Compras)
+                    .HasForeignKey(d => d.FormaPagoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Compras_FormaPago");
+
+                entity.HasOne(d => d.Proveedor)
+                    .WithMany(p => p.Compras)
+                    .HasForeignKey(d => d.ProveedorId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Compras_Proveedores");
+            });
+
+            modelBuilder.Entity<ComprasDetalle>(entity =>
+            {
+                entity.HasIndex(e => e.CompraId);
+
+                entity.HasIndex(e => e.InventarioId);
+
+                entity.Property(e => e.Costo).HasColumnType("money");
+
+                entity.Property(e => e.CostoPromedio).HasColumnType("money");
+
+                entity.Property(e => e.DescuentoAverage).HasComment("% de descuento");
+
+                entity.Property(e => e.DescuentoMonto).HasColumnType("money");
+
+                entity.Property(e => e.Documento)
+                    .HasMaxLength(15)
+                    .HasComment("Numero de factura del proveedor");
+
+                entity.Property(e => e.Importe)
+                    .HasColumnType("money")
+                    .HasComment("Subtotal menos descuento");
+
+                entity.Property(e => e.IvaMonto).HasColumnType("money");
+
+                entity.Property(e => e.NuevoPrecio).HasColumnType("money");
+
+                entity.Property(e => e.Precio).HasColumnType("money");
+
+                entity.Property(e => e.SubTotal)
+                    .HasColumnType("money")
+                    .HasComment("Cantidad por el costo");
+
+                entity.Property(e => e.Total)
+                    .HasColumnType("money")
+                    .HasComment("Importe mas iva");
+
+                entity.Property(e => e.UltimoPrecio).HasColumnType("money");
+
+                entity.HasOne(d => d.Compra)
+                    .WithMany(p => p.ComprasDetalle)
+                    .HasForeignKey(d => d.CompraId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ComprasDetalle_Compras");
+
+                entity.HasOne(d => d.Inventario)
+                    .WithMany(p => p.ComprasDetalle)
+                    .HasForeignKey(d => d.InventarioId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ComprasDetalle_Inventario");
+            });
+
             modelBuilder.Entity<Cortes>(entity =>
             {
                 entity.Property(e => e.Descripcion)
@@ -238,11 +344,18 @@ namespace Sora.Models.SaraModel
                 entity.Property(e => e.Iva).HasColumnName("IVA");
             });
 
+            modelBuilder.Entity<FormaPago>(entity =>
+            {
+                entity.Property(e => e.Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<Grupos>(entity =>
             {
                 entity.Property(e => e.Descripcion)
                     .IsRequired()
-                    .HasMaxLength(150);
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<Inventario>(entity =>
@@ -255,10 +368,14 @@ namespace Sora.Models.SaraModel
 
                 entity.HasIndex(e => e.Nombre);
 
-                entity.HasIndex(e => e.Numero);
+                entity.HasIndex(e => e.Numero)
+                    .IsUnique();
+
+                entity.HasIndex(e => e.PresentacionId)
+                    .HasName("IX_Inventario_Presentacion");
 
                 entity.HasIndex(e => e.UnidadMedidaId)
-                    .HasName("IX_Inventario_UM");
+                    .HasName("IX_Inventario_UnidadMedida");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -331,6 +448,21 @@ namespace Sora.Models.SaraModel
                 entity.Property(e => e.Descripcion)
                     .IsRequired()
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Proveedores>(entity =>
+            {
+                entity.Property(e => e.Contacto).HasMaxLength(150);
+
+                entity.Property(e => e.Correo).HasMaxLength(50);
+
+                entity.Property(e => e.Nombre)
+                    .IsRequired()
+                    .HasMaxLength(150);
+
+                entity.Property(e => e.Telefono)
+                    .HasMaxLength(8)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<TasaDeCambio>(entity =>

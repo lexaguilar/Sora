@@ -59,7 +59,8 @@ function Layout(props) {
                         <Route exact path={`${_path.CONTA}/libro/mayor`} component={LibroMayor} />                         
                         <Route exact path={`${_path.INV}/`} component={HomePage} />                   
                         <Route exact path={`${_path.INV}/inventario`} component={Inventario} />                   
-                        <Route exact path={`${_path.INV}/familia`} component={Familia} />                         
+                        <Route exact path={`${_path.INV}/familia`} component={Familia} />                    
+                        <Route exact path={`${_path.INV}/proveedores`} component={Familia} />                    
                     </Switch>
                 </div>
 

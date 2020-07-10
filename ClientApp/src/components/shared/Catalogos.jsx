@@ -23,7 +23,7 @@ import BlockHeader from './BlockHeader';
 
 function Catalogo(props) {
     const { catalogo } = props;
-
+    
     return (
         <div className="container small">
             <Title title={catalogo}/>

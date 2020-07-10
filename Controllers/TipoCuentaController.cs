@@ -7,7 +7,7 @@ namespace Sora.Controllers
 {
     public class TipoCuentaController : Controller
     {
-        private IGenericFactory<TipoCuenta> factory = null;
+        private GenericFactory<TipoCuenta> factory = null;
         public TipoCuentaController(SaraContext db)
         {
             this.factory = new GenericFactory<TipoCuenta>(db);

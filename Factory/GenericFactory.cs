@@ -10,7 +10,7 @@ using Sora.Models.SaraModel;
 
 namespace Sora.Factory
 {  
-    public class GenericFactory<T> : IGenericFactory<T> where T : class
+    public class GenericFactory<T> where T : class
     {      
          private SaraContext db = null;
         private DbSet<T> entity = null;

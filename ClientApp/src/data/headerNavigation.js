@@ -133,6 +133,7 @@ const menuInv = [{
                             { title: 'Unidad medida', url: `${_path.INV}/unidadMedida` },
                             { title: 'Presentacion', url: `${_path.INV}/presentacion` },
                             { title: 'Familias', url: `${_path.INV}/familia` },
+                            { title: 'Formas de Pago', url: `${_path.INV}/formaPago` }
                         ],
                     }]
                 }, {

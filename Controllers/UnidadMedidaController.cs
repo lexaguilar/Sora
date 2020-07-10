@@ -7,7 +7,7 @@ namespace Sora.Controllers
 {
     public class UnidadMedidaController : Controller
     {
-        private IGenericFactory<UnidadMedida> factory = null;
+        private GenericFactory<UnidadMedida> factory = null;
         public UnidadMedidaController(SaraContext db)
         {
             this.factory = new GenericFactory<UnidadMedida>(db);

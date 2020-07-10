@@ -7,7 +7,7 @@ namespace Sora.Controllers
 {
     public class FamiliaController : Controller
     {
-        private IGenericFactory<Familia> factory = null;
+        private GenericFactory<Familia> factory = null;
         public FamiliaController(SaraContext db)
         {
             this.factory = new GenericFactory<Familia>(db);

@@ -7,7 +7,7 @@ namespace Sora.Controllers
 {
     public class GrupoController : Controller
     {
-        private IGenericFactory<Grupos> factory = null;
+        private GenericFactory<Grupos> factory = null;
         public GrupoController(SaraContext db)
         {
             this.factory = new GenericFactory<Grupos>(db);

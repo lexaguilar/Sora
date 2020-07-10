@@ -24,15 +24,15 @@ import Title from '../../shared/Title';
 import BlockHeader from '../../shared/BlockHeader';
 
 
-function Familia() {
-    const title = "Familias";
+function Proveedores() {
+    const title = "Proveedores";
     return (
         <div className="container small">
             <Title title={title} />
             <BlockHeader title={title} />
             <DataGrid id="gridContainer"
                 selection={{ mode: 'single' }}
-                dataSource={store({ uri: uri.familia })}
+                dataSource={store({ uri: uri.proveedores })}
                 showBorders={true}
                 showRowLines={true}
                 allowColumnResizing={true}
@@ -47,28 +47,34 @@ function Familia() {
                 <HeaderFilter visible={true} />
                 <ColumnChooser enabled={true} />
                 <Export enabled={true} fileName="Familia" allowExportSelectedData={true} />
-                <Column dataField="descripcion" width={250} />
-                <Column dataField="prefijo" dataType="number" />
-                <Column dataField="iva" />
+                <Column dataField="nombre" width={250} />
+                <Column dataField="contacto"  />
+                <Column dataField="telefono" />
+                <Column dataField="correo" />
                 <Editing
                     mode="popup"
                     allowUpdating={true}
                     allowDeleting={true}
                     allowAdding={true}
                 >
-                    <Popup title="Familia" showTitle={true} width={400} height={220}>
+                    <Popup title="Proveedor" showTitle={true} width={400} height={220}>
 
                     </Popup>
                     <Form>
                         <Item itemType="group" colCount={1} colSpan={1}>
-                            <Item dataField="descripcion" editorOptions={{ width: 250 }} >
-                                <RequiredRule message="La descripcion es requerida" />
-                                <StringLengthRule max={50} min={2} message="Máximo de caracteres 50 y 2 mínimo" />
+                            <Item dataField="nombre" editorOptions={{ width: 250 }} >
+                                <RequiredRule message="El nombre es requerido" />
+                                <StringLengthRule min={5} max={150} message="Mínimo de caracteres 5 y 150 máximo" />
                             </Item>
-                            <Item dataField="prefijo" editorOptions={{ width: 100 }} >
-                                <RequiredRule message="El prefijo es requerido" />
+                            <Item dataField="contacto" editorOptions={{ width: 250 }} >
+                                <StringLengthRule max={150} message="150 caracteres como máximo" />
                             </Item>
-                            <Item dataField="iva" editorOptions={{ width: 80 }} />
+                            <Item dataField="telefono" editorOptions={{ width: 250 }} >
+                                <StringLengthRule min={8} max={8} message="Solo se permiten 8 caracteres" />
+                            </Item>
+                            <Item dataField="correo" editorOptions={{ width: 250 }} >
+                                <StringLengthRule max={50} message="50 caracteres como máximo" />
+                            </Item>
                         </Item>
                     </Form>
                 </Editing>
@@ -78,4 +84,4 @@ function Familia() {
 
 };
 
-export default Familia; //connect(mapStateToProps, mapDispatchToProps)(GridSprintStart);
+export default Proveedores; //connect(mapStateToProps, mapDispatchToProps)(GridSprintStart);

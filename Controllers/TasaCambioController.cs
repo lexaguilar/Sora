@@ -14,7 +14,7 @@ namespace Sora.Controllers
 {
     public class TasaCambioController : Controller
     {
-        private IGenericFactory<TasaDeCambio> factory = null;
+        private GenericFactory<TasaDeCambio> factory = null;
         public TasaCambioController(SaraContext db)
         {
             this.factory = new GenericFactory<TasaDeCambio>(db);

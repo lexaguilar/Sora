@@ -8,7 +8,7 @@ namespace Sora.Controllers
 {
     public class CortesController : Controller
     {
-        private readonly IGenericFactory<Cortes> factory = null;
+        private readonly GenericFactory<Cortes> factory = null;
         private readonly SaraContext _db = null;
         public CortesController(SaraContext db)
         {

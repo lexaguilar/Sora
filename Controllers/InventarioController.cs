@@ -15,7 +15,7 @@ namespace Sora.Controllers
     public class InventarioController : Controller
     {
         private readonly SaraContext db;
-        private IGenericFactory<Inventario> factory = null;
+        private GenericFactory<Inventario> factory = null;
         public InventarioController(SaraContext _db)
         {
             db = _db;

@@ -7,7 +7,7 @@ namespace Sora.Controllers
 {
     public class NaturalezaController : Controller
     {
-        private IGenericFactory<Naturaleza> factory = null;
+        private GenericFactory<Naturaleza> factory = null;
         public NaturalezaController(SaraContext db)
         {
             this.factory = new GenericFactory<Naturaleza>(db);
