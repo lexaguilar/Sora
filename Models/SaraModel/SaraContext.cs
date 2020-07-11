@@ -21,6 +21,7 @@ namespace Sora.Models.SaraModel
         public virtual DbSet<CentroCosto> CentroCosto { get; set; }
         public virtual DbSet<Clasificacion> Clasificacion { get; set; }
         public virtual DbSet<CompraEstado> CompraEstado { get; set; }
+        public virtual DbSet<CompraEtapa> CompraEtapa { get; set; }
         public virtual DbSet<Compras> Compras { get; set; }
         public virtual DbSet<ComprasDetalle> ComprasDetalle { get; set; }
         public virtual DbSet<Cortes> Cortes { get; set; }
@@ -168,9 +169,21 @@ namespace Sora.Models.SaraModel
 
             modelBuilder.Entity<CompraEstado>(entity =>
             {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
                 entity.Property(e => e.Descripcion)
                     .IsRequired()
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<CompraEtapa>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Compras>(entity =>
@@ -193,6 +206,10 @@ namespace Sora.Models.SaraModel
                     .IsRequired()
                     .HasMaxLength(250);
 
+                entity.Property(e => e.Referencia)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.SubTotal).HasColumnType("money");
 
                 entity.Property(e => e.Total).HasColumnType("money");
@@ -202,6 +219,12 @@ namespace Sora.Models.SaraModel
                     .HasForeignKey(d => d.EstadoId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Compras_CompraEstado");
+
+                entity.HasOne(d => d.Etapa)
+                    .WithMany(p => p.Compras)
+                    .HasForeignKey(d => d.EtapaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Compras_CompraEtapa");
 
                 entity.HasOne(d => d.FormaPago)
                     .WithMany(p => p.Compras)
