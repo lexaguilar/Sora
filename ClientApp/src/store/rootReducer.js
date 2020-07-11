@@ -10,6 +10,7 @@ import userReducer from './user'
 import asientoReducer from './asiento'
 import libroMayorReducer from './libroMayor'
 import compraReducer from './compra'
+import app from './app';
 
 
 export default combineReducers({
@@ -22,4 +23,5 @@ export default combineReducers({
     asiento: asientoReducer,
     libroMayor: libroMayorReducer,
     compra: compraReducer,
+    appInfo: app,
 });

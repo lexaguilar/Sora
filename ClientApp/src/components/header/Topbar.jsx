@@ -2,7 +2,6 @@
 import React from 'react';
 
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 // third-party
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
