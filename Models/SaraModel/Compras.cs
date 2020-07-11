@@ -19,11 +19,13 @@ namespace Sora.Models.SaraModel
         public decimal Iva { get; set; }
         public decimal Total { get; set; }
         public string Observacion { get; set; }
+        public int EstadoId { get; set; }
         public string Referencia { get; set; }
         public int PlazoCredito { get; set; }
-        public int EstadoId { get; set; }
+        public int EtapaId { get; set; }
 
         public virtual CompraEstado Estado { get; set; }
+        public virtual CompraEtapa Etapa { get; set; }
         public virtual FormaPago FormaPago { get; set; }
         public virtual Proveedores Proveedor { get; set; }
         public virtual ICollection<ComprasDetalle> ComprasDetalle { get; set; }
