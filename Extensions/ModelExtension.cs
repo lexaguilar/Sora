@@ -20,5 +20,23 @@ namespace Sora
                 propery.SetValue(this, value);
             }  
         }
+
+        internal void CopyAllFromExcept(T source, Expression<Func<T, object>> expression){
+            NewExpression body = (NewExpression)expression.Body;
+            var exclude = body.Arguments.Cast<MemberExpression>().Select(x => x.Member.Name);
+
+            var type = typeof(T);
+            var properties = type.GetProperties().Where(x => x.CanWrite);
+            foreach (var p in properties)
+            {
+                if(exclude.Contains(p.Name))
+                    continue;
+
+                    object value = p.GetValue(source);
+
+                    p.SetValue(this, value);
+               
+            }  
+        }
     }
 }

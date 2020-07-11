@@ -16,4 +16,8 @@ namespace Sora.Models.SaraModel
     public partial class Cuentas : ICatalogo {  }
     public partial class UnidadMedida : ICatalogo {  }
     public partial class InventarioEstado : ICatalogo {  }
+    public partial class CompraEstado : ICatalogo {  }
+    public partial class Proveedores : ICatalogo {  }
+    public partial class FormaPago : ICatalogo {  }
+    public partial class Inventario : ICatalogo {  }
 }

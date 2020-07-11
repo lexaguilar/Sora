@@ -9,6 +9,7 @@ import corteReducer from './corte'
 import userReducer from './user'
 import asientoReducer from './asiento'
 import libroMayorReducer from './libroMayor'
+import compraReducer from './compra'
 
 
 export default combineReducers({
@@ -20,4 +21,5 @@ export default combineReducers({
     user: userReducer,
     asiento: asientoReducer,
     libroMayor: libroMayorReducer,
+    compra: compraReducer,
 });

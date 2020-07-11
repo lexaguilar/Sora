@@ -19,6 +19,8 @@ namespace Sora.Models.SaraModel
         public decimal Iva { get; set; }
         public decimal Total { get; set; }
         public string Observacion { get; set; }
+        public string Referencia { get; set; }
+        public int PlazoCredito { get; set; }
         public int EstadoId { get; set; }
 
         public virtual CompraEstado Estado { get; set; }

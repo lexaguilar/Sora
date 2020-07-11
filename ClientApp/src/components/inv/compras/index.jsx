@@ -17,11 +17,12 @@ import { store } from "../../../services/store";
 import Nuevo from "./Nuevo";
 import numeral from 'numeral'
 import { connect } from 'react-redux';
-import { updateAsiento } from '../../../store/asiento/asientoActions'
-import { estadoAsiento } from "../../../data/catalogos";
+import { updateCompra } from '../../../store/compra/compraActions'
+import { estadoCompra, etapaCompra } from "../../../data/catalogos";
 import BlockHeader from "../../shared/BlockHeader";
+import uri from "../../../utils/uri";
 
-class Asientos extends Component {
+class Compras extends Component {
 
     constructor(props) {
         super(props)
@@ -33,7 +34,6 @@ class Asientos extends Component {
         this.onRowDblClick = this.onRowDblClick.bind(this);
         this.onToolbarPreparing = this.onToolbarPreparing.bind(this);
 
-
     }
 
     reload() {
@@ -42,12 +42,14 @@ class Asientos extends Component {
 
     openDialog(id = 0, editable=true) {
 
-        let { updateAsiento } = this.props;
+        let { updateCompra } = this.props;
 
-        updateAsiento({
-            id: id,
+        console.log(updateCompra);
+
+        updateCompra({
+            id: 0,
             open: true,
-            editable: editable
+            editable: true
         });
     }
 
@@ -61,7 +63,7 @@ class Asientos extends Component {
             widget: 'dxButton',
             options: {
                 icon: 'add',
-                text: 'Nuevo asiento',
+                text: 'Nueva orden',
                 onClick: e => this.openDialog(0, true)
             }
         })
@@ -69,28 +71,31 @@ class Asientos extends Component {
 
     onRowPrepared(e) {
         if (e.rowType == 'data') {
-            if (e.data.estadoId == estadoAsiento.anulado) {
-                e.rowElement.classList.add('asiento-anulado');
-            }
+
+            if (e.data.estadoId == estadoCompra.anulado) 
+                e.rowElement.classList.add('compra-anulado');
+
+            if (e.data.etapaId == etapaCompra.recibida) 
+                e.rowElement.classList.add('compra-recibida');
+            
         }
     }
 
     render() {
-        let { user } = this.props;
         let remoteOperations = true;
         this.store = store(
             {
-                uri: { get: `asientos/get/cortes/${user.corteId}` },
-                msgInserted: 'Cuenta agregada correctamente',
-                msgUpdated: 'Cuenta modificada correctamente',
-                msgDeleted: 'Cuenta eliminada correctamente',
+                uri: uri.compras,
+                msgInserted: 'Orden de compra agregada correctamente',
+                msgUpdated: 'Orden de compra modificada correctamente',
+                msgDeleted: 'Orden de compra eliminada correctamente',
                 remoteOperations: remoteOperations
             });
 
         return (
             <div className="container">
-                <BlockHeader title="Comprobantes" />
-                <Nuevo onSave={this.reload} />
+                <BlockHeader title="Compras" />
+                <Nuevo  />
                 <DataGrid
                     ref={(ref) => this.dataGrid = ref}
                     dataSource={this.store}
@@ -118,19 +123,21 @@ class Asientos extends Component {
                         <ButtonGrid name="ver" text="Ver" onClick={e => this.openDialog(e.row.data.id, false)}/>
                         <ButtonGrid name="modificar" text="Editar" onClick={e => this.openDialog(e.row.data.id, true)}/>
                     </Column>
-                    <Column dataField="numero" width={100} cellRender={data => `${data.data.tipoComprobante.abrev}-${numeral(data.value).format('000000')}`} />
+                    <Column dataField="id" width={100} cellRender={data => `${data.data.tipoComprobante.abrev}-${numeral(data.value).format('000000')}`} />
                     <Column dataField="fecha" width={120} dataType="date" format="dd/MM/yyyy" />
-                    <Column dataField="concepto" allowFiltering={false} />
-                    <Column dataField="tipoComprobanteId" width={260} caption="Tipo Comprobante">
-                        <Lookup disabled={true} dataSource={createStore('tipoComprobantes')} valueExpr="id" displayExpr="descripcion" />
-                    </Column>
-                    <Column dataField="monedaId" width={130}>
-                        <Lookup disabled={true} dataSource={createStore('moneda')} valueExpr="id" displayExpr="descripcion" />
-                    </Column>
-                    <Column dataField="tipoCambio" width={120} allowFiltering={false} />
+                    <Column dataField="proveedorId" width={260} caption="Proveedor">
+                        <Lookup disabled={true} dataSource={createStore('proveedores')} valueExpr="id" displayExpr="nombre" />
+                    </Column>                    
+                    <Column dataField="formaPagoId" width={260} caption="Forma Pago">
+                        <Lookup disabled={true} dataSource={createStore('formaPago')} valueExpr="id" displayExpr="descripcion" />
+                    </Column>                    
                     <Column dataField="referencia" width={120} allowFiltering={false} />
+                    <Column dataField="total" width={120} allowFiltering={false} />
                     <Column dataField="estadoId" caption="Estado" width={130}>
-                        <Lookup disabled={true} dataSource={createStore('asientoEstado')} valueExpr="id" displayExpr="descripcion" />
+                        <Lookup disabled={true} dataSource={createStore('compraEstado')} valueExpr="id" displayExpr="descripcion" />
+                    </Column>
+                    <Column dataField="etapaId" caption="Etapa" width={130}>
+                        <Lookup disabled={true} dataSource={createStore('compraEtapa')} valueExpr="id" displayExpr="descripcion" />
                     </Column>
                 </DataGrid>
             </div>
@@ -139,12 +146,8 @@ class Asientos extends Component {
 
 }
 
-const mapStateToProps = (state) => ({
-    user: state.user
-});
-
 const mapDispatchToPros = ({
-    updateAsiento
+    updateCompra
 });
 
-export default connect(mapStateToProps, mapDispatchToPros)(Asientos);
+export default connect(null, mapDispatchToPros)(Compras);

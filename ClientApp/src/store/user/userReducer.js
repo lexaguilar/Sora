@@ -5,7 +5,7 @@ const user = {
     username: 'aaguilare',
 };
 
-export default function getUserReducer(state = user, { type, payload }) {
+export default function userReducer(state = user, { type, payload }) {
     switch (type) {
         case GET_USER:
 

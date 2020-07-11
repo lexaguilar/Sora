@@ -34,7 +34,6 @@ class Nuevo extends React.Component {
     this.onRowUpdated = this.onRowUpdated.bind(this);
     this.getFilteredCentroCosto = this.getFilteredCentroCosto.bind(this);
     this.state = {
-      loading: true,
       comprobante: Object.assign({}, defaultComprobante),
       comprobanteDetalle: []
     };
@@ -105,13 +104,10 @@ class Nuevo extends React.Component {
 
   onShowing(e) {
 
-    this.setState({ loading: true });
-
     const { asiento } = this.props;
     if (asiento.id > 0) {
       http(uri.asientos.getById(asiento.id)).asGet().then(r => {
         this.setState({
-          loading: false,
           comprobante: {
             id: r.id,
             numero: r.numero,
@@ -129,7 +125,6 @@ class Nuevo extends React.Component {
       })
     } else {
       this.setState({
-        loading: false,
         comprobante: Object.assign({}, defaultComprobante),
         comprobanteDetalle: []
       });
@@ -221,17 +216,18 @@ class Nuevo extends React.Component {
 
   render() {
 
-    const { asiento } = this.props;
+    const { asiento : { editable, open, id } } = this.props;
+
     return (
       <div id="container">
 
         <Popup
           width={800}
           height={550}
-          title={`${asiento.id == 0 ? 'Nuevo asiento 000000' : `Comprobante ${numeral(this.state.comprobante.numero).format('000000')}`}`}
+          title={`${id == 0 ? 'Nuevo asiento 000000' : `Comprobante ${numeral(this.state.comprobante.numero).format('000000')}`}`}
           onHiding={this.onHiding}
           onShowing={this.onShowing}
-          visible={asiento.open}
+          visible={open}
         >
           <Form id="scroll" formData={this.state.comprobante} ref={(ref) => this.refAsiento = ref}>
             <GroupItem cssClass="first-group" colCount={2}>
@@ -239,7 +235,7 @@ class Nuevo extends React.Component {
               <GroupItem>
                 <SimpleItem dataField="estadoId"
                   editorType="dxSelectBox" editorOptions={{
-                    disabled: !asiento.editable,
+                    disabled: !editable,
                     dataSource: createStore('asientoEstado'), valueExpr: "id", displayExpr: "descripcion"
                   }} >
                   <RequiredRule message="Seleccione el estado" />
@@ -249,7 +245,7 @@ class Nuevo extends React.Component {
                 <GroupItem>
                   <SimpleItem dataField="monedaId"
                     editorType="dxSelectBox" editorOptions={{
-                      disabled: !asiento.editable,
+                      disabled: !editable,
                       dataSource: createStore('moneda'), valueExpr: "id", displayExpr: "descripcion"
                     }} >
                     <RequiredRule message="Seleccione el comprobante" />
@@ -264,7 +260,7 @@ class Nuevo extends React.Component {
                   dataField="fecha"
                   editorType="dxDateBox"
                   editorOptions={{
-                    disabled: !asiento.editable,
+                    disabled: !editable,
                     displayFormat: "dd/MM/yyyy", onValueChanged: this.obtTasaCambio
                   }}
                 >
@@ -279,7 +275,7 @@ class Nuevo extends React.Component {
               <GroupItem>
                 <SimpleItem dataField="tipoComprobanteId" label={{ text: "Tipo Comprobante" }}
                   editorType="dxSelectBox" editorOptions={{
-                    disabled: !asiento.editable,
+                    disabled: !editable,
                     dataSource: createStore('tipoComprobantes'), valueExpr: "id", displayExpr: "descripcion",
                   }} >
                   <RequiredRule message="Seleccione el comprobante" />
@@ -287,7 +283,7 @@ class Nuevo extends React.Component {
               </GroupItem>
               <GroupItem>
                 <SimpleItem dataField="referencia" editorOptions={{
-                    disabled: !asiento.editable}} >
+                    disabled: !editable}} >
                   <StringLengthRule max={50} message="Maximo 50 caracteres" />
                 </SimpleItem>
               </GroupItem>
@@ -296,7 +292,7 @@ class Nuevo extends React.Component {
                 dataField="concepto"
                 editorType="dxTextArea"
                 editorOptions={{
-                  disabled: !asiento.editable
+                  disabled: !editable
                 }}
               >
                 <RequiredRule message="Esta dato es requerido" />
@@ -307,7 +303,7 @@ class Nuevo extends React.Component {
                 dataField="observacion"
                 editorType="dxTextArea"
                 editorOptions={{
-                  disabled: !asiento.editable
+                  disabled: !editable
                 }}
               >
                 <StringLengthRule max={500} message="Maximo 500 caracteres" />
@@ -334,11 +330,11 @@ class Nuevo extends React.Component {
                 <SearchPanel visible={true} />
                 <Editing
                   mode="cell"
-                  allowAdding={asiento.editable}
-                  allowDeleting={asiento.editable}
-                  allowUpdating={asiento.editable}
-                  selectTextOnEditStart={asiento.editable}
-                  useIcons={asiento.editable}
+                  allowAdding={editable}
+                  allowDeleting={editable}
+                  allowUpdating={editable}
+                  selectTextOnEditStart={editable}
+                  useIcons={editable}
                 />
                 <Column dataField="cuentaId" cssClass='cellDetail'>
                   <Lookup
@@ -375,7 +371,7 @@ class Nuevo extends React.Component {
             </GroupItem>
           </Form>          
           <Button
-            visible={asiento.editable}
+            visible={editable}
             width={120}
             text="Guardar"
             type="success"

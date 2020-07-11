@@ -20,6 +20,7 @@ const uri = {
     presentacion: createProxyBase('presentacion'),
     proveedores: createProxyBase('proveedores'),
     formaPago: createProxyBase('formaPago'),
+    compras: createProxyBase('compras'),
 };
 
 export default uri;

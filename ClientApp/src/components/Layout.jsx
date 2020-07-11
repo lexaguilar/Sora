@@ -24,6 +24,7 @@ import { _path } from '../data/headerNavigation';
 import Familia from './inv/familia/Familia';
 import Inventario from './inv/inventario/Inventario';
 import Proveedores from './inv/Entidades/Proveedores';
+import compras from './inv/compras';
 
 
 function Layout(props) {
@@ -62,6 +63,7 @@ function Layout(props) {
                         <Route exact path={`${_path.INV}/inventario`} component={Inventario} />                   
                         <Route exact path={`${_path.INV}/familia`} component={Familia} />                    
                         <Route exact path={`${_path.INV}/proveedores`} component={Proveedores} />                    
+                        <Route exact path={`${_path.INV}/compras`} component={compras} />                    
                     </Switch>
                 </div>
 

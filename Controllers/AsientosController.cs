@@ -66,7 +66,6 @@ namespace Sora.Controllers
         [Route("api/asientos/post")]
         public IActionResult Post([FromBody] Asientos asiento){
 
-
             if (asiento.Id > 0){
                 //Actializar encabezado
                 var asientoModificado = factory.FirstOrDefault(x => x.Id == asiento.Id);
@@ -79,11 +78,10 @@ namespace Sora.Controllers
                     x.Concepto,
                     x.EstadoId,
                     x.Observacion, 
-                    x.TipoCambio });
+                    x.TipoCambio 
+                });
                                 
                 factory.Save();
-
-                var detalle = asiento.AsientosDetalle;
 
                 //eliminar registros anteriores
                 var oldAsientoDetalle = factoryDetalle.GetAll(x => x.AsientoId == asiento.Id);
@@ -92,19 +90,16 @@ namespace Sora.Controllers
                 factoryDetalle.Save();
 
                 //agregar nuevos registros
+                var detalle = asiento.AsientosDetalle;
                 foreach (var item in detalle)  {
 
-                    factoryDetalle.Insert(new AsientosDetalle{
-                        Id =0,
-                        CuentaId = item.CuentaId,
-                        Debe = item.Debe,
-                        Haber= item.Haber,
-                        Referencia= item.Referencia,
-                        AsientoId =asiento.Id
-                    });
-                }
-                factoryDetalle.Save();
+                    var asientosDetalle = new AsientosDetalle();
+                    asientosDetalle.CopyAllFromExcept(item, x => new { x.Id });
+                    factoryDetalle.Insert(asientosDetalle);
 
+                }
+
+                factoryDetalle.Save();
                 
             }
             else{
@@ -112,8 +107,8 @@ namespace Sora.Controllers
                 asiento.Numero = getMax(asiento.CorteId);
                 factory.Insert(asiento);
                 factory.Save(); 
-            }
 
+            }
 
             return Json(asiento);
 
@@ -132,8 +127,7 @@ namespace Sora.Controllers
         public IActionResult Delete(int id)
         {
 
-            factory.Delete(id);
-            var n = factory.Save();
+            var n = factory.DeleteAndSave(id);
             return Json(new { n });
 
         }

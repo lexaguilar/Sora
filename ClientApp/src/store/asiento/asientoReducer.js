@@ -6,7 +6,7 @@ const asiendo = {
     editable: true
 };
 
-export default function getAsientoReducer(state = asiendo, { type, payload }) {
+export default function asientoReducer(state = asiendo, { type, payload }) {
     switch (type) {
         case GET_ASIENTO_ID:
 

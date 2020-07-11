@@ -4,5 +4,9 @@ namespace Sora.Models.SaraModel
     {
 
     }
+    public partial class AsientosDetalle : ModelExtension<AsientosDetalle>
+    {
+
+    }
 
 }
