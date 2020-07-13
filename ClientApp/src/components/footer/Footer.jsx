@@ -1,57 +1,50 @@
 // react
-import React from 'react';
+import React, { Component }  from 'react';
+import { connect } from 'react-redux';
+import { getAppInfo } from '../../store/app/appActions';
 
-// application
-import FooterContacts from './FooterContacts';
-import FooterLinks from './FooterLinks';
-import FooterNewsletter from './FooterNewsletter';
+class Footer extends Component {
+    constructor(props) {
+        super(props);       
+    }
 
-// data stubs
-import app from '../../data/app';
+    componentDidMount() {
+        let { getAppInfo } = this.props;
+        getAppInfo();
+    }
 
+    
+    render() {
+        let { app } = this.props;
 
-export default function Footer() {
-    const informationLinks = [
-        { title: 'About Us', url: '' },
-        { title: 'Delivery Information', url: '' },
-        { title: 'Privacy Policy', url: '' },
-        { title: 'Brands', url: '' },
-        { title: 'Contact Us', url: '' },
-        { title: 'Returns', url: '' },
-        { title: 'Site Map', url: '' },
-    ];
+        return (
+            <div className="site-footer">
+                <div className="container">
 
-    const accountLinks = [
-        { title: 'Store Location', url: '' },
-        { title: 'Order History', url: '' },
-        { title: 'Wish List', url: '' },
-        { title: 'Newsletter', url: '' },
-        { title: 'Specials', url: '' },
-        { title: 'Gift Certificates', url: '' },
-        { title: 'Affiliate', url: '' },
-    ];
-
-    return (
-        <div className="site-footer">
-            <div className="container">              
-
-                <div className="site-footer__bottom">
-                    <div className="site-footer__copyright">
-                        Powered by
+                    <div className="site-footer__bottom">
+                        <div className="site-footer__copyright">
+                            {app.name}
+                            {' '}
+                        — Version
                         {' '}
-                        <a href="https://reactjs.org/" rel="noopener noreferrer" target="_blank">React</a>
-                        {' '}
-                        — Design by
-                        {' '}
-                        <a href={app.author.profile_url} target="_blank" rel="noopener noreferrer">
-                            {app.author.name}
-                        </a>
-                    </div>
-                    <div className="site-footer__payments">
-                        <img src="images/payments.png" alt="" />
+                            {app.version}
+                        </div>
+                        <div className="site-footer__payments">
+                            <img src="images/payments.png" alt="" />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
+        )
+    }
 }
+
+const mapStateToProps = (state) => ({
+    app: state.appInfo,
+});
+
+const mapDispatchToPros = ({
+    getAppInfo
+});
+
+export default connect(mapStateToProps, mapDispatchToPros)(Footer);

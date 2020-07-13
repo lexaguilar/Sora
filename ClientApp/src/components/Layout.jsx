@@ -6,7 +6,6 @@ import { Helmet } from 'react-helmet';
 import { Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import HomePage from './home/HomePage';
-import app from '../data/app';
 
 // application
 import Footer from './footer';
@@ -25,6 +24,8 @@ import Familia from './inv/familia/Familia';
 import Inventario from './inv/inventario/Inventario';
 import Proveedores from './inv/Entidades/Proveedores';
 import compras from './inv/compras';
+import Title from './shared/Title';
+import Kardex from './inv/reportes/Kardex';
 
 
 function Layout(props) {
@@ -35,11 +36,7 @@ function Layout(props) {
         )} />
     })
     return (
-        <React.Fragment>
-            <Helmet>
-                <title>{app.Name}</title>
-                <meta name="description" content={app.fullName} />
-            </Helmet>
+        <React.Fragment>          
 
             <ToastContainer autoClose={5000} hideProgressBar />
 
@@ -64,6 +61,7 @@ function Layout(props) {
                         <Route exact path={`${_path.INV}/familia`} component={Familia} />                    
                         <Route exact path={`${_path.INV}/proveedores`} component={Proveedores} />                    
                         <Route exact path={`${_path.INV}/compras`} component={compras} />                    
+                        <Route exact path={`${_path.INV}/kardex`} component={Kardex} />                    
                     </Switch>
                 </div>
 

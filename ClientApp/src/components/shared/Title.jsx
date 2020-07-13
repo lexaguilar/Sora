@@ -1,14 +1,19 @@
 // react
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import app from '../../data/app';
+import { connect } from 'react-redux';
 
 function Title(props) {
-    const { title } = props;
+
+    const { title, app } = props;
 
     return  <Helmet>
-                <title>{app.Name} - {title}</title>
+                <title>{app.name} - {title}</title>
             </Helmet>
 }
 
-export default Title;
+const mapStateToProps = (state) => ({   
+    app: state.appInfo,        
+});
+
+export default connect(mapStateToProps, null)(Title);
