@@ -119,7 +119,7 @@ const menuInv = [{
     {
         layout: 'inv',
         title: 'Catalogos',
-        url: `${_path.INV}/cuentas`,
+        url: `${_path.INV}`,
         submenu: {
             type: 'megamenu',
             menu: {
@@ -133,7 +133,7 @@ const menuInv = [{
                             { title: 'Unidad medida', url: `${_path.INV}/unidadMedida` },
                             { title: 'Presentacion', url: `${_path.INV}/presentacion` },
                             { title: 'Familias', url: `${_path.INV}/familia` },
-                            { title: 'Formas de Pago', url: `${_path.INV}/formaPago` }
+                            // { title: 'Formas de Pago', url: `${_path.INV}/formaPago` } // se quita poque no debe ser administrable
                         ],
                     }]
                 }, {
@@ -154,7 +154,7 @@ const menuInv = [{
     {
         layout: 'inv',
         title: 'Compras',
-        url: '',
+        url: `${_path.INV}`,
         submenu: {
             type: 'menu',
             menu: [
@@ -173,7 +173,7 @@ const menuInv = [{
             menu: [
                 { title: 'Inventario Stock', url: `${_path.INV}/` },
                 { title: 'Existencias', url: `${_path.INV}/` },
-                { title: 'Kardex', url: `${_path.INV}/` },
+                { title: 'Kardex', url: `${_path.INV}/kardex` },
             ],
         },
     },

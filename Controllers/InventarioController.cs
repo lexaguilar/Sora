@@ -100,7 +100,7 @@ namespace Sora.Controllers
                 var inventarioModificado = factory.FirstOrDefault(x => x.Id == inventario.Id);
 
                 if (inventarioModificado.FamiliaId != inventario.FamiliaId)
-                    numeroMax = getMax(inventario.FamiliaId);                
+                    numeroMax = getMax(inventario.FamiliaId);
 
                 inventarioModificado.CopyFrom(inventario, x => new
                 {
@@ -115,9 +115,9 @@ namespace Sora.Controllers
                     x.Numero
                 });
 
-                if (numeroMax != 0)                
-                    inventarioModificado.Numero = numeroMax;                    
-                
+                if (numeroMax != 0)
+                    inventarioModificado.Numero = numeroMax;
+
 
             }
             else
@@ -132,7 +132,7 @@ namespace Sora.Controllers
             return Json(inventario);
 
         }
-        
+
         private int getMax(int familiaId)
         {
             var familia = db.Familia.FirstOrDefault(x => x.Id == familiaId);
@@ -141,23 +141,23 @@ namespace Sora.Controllers
 
             var maxresult = db.Inventario.Where(x => x.FamiliaId == familiaId);//
             if (maxresult.Count() > 0)
-            {       
+            {
                 var min = familia.Prefijo * rate;
                 var max = Convert.ToInt32(maxresult.Max(x => x.Numero)) + 1;
                 var i = max;
 
-                while (i >  min)
+                while (i > min)
                 {
-                    
+
                     var _inventario = maxresult.FirstOrDefault(x => x.Numero == i);
-                    if(_inventario == null && i < max)
+                    if (_inventario == null && i < max)
                     {
                         max = i;
                         i = min;
                     }
-                    i--;         
-                }               
-                
+                    i--;
+                }
+
                 return max;
 
             }
@@ -167,6 +167,37 @@ namespace Sora.Controllers
 
         [HttpGet("api/inventario/{id}/delete")]
         public IActionResult Delete(int id) => Json(new { n = factory.DeleteAndSave(id) });
+
+        [HttpGet("api/inventario/kardex/area/{areaId}/producto/{inventarioId}")]
+        public IActionResult Kardex(int areaId, int inventarioId)
+        {
+            var resultCompra = from ed in db.EntradasDetalle
+                        join e in db.Entradas on ed.EntradaId equals e.Id
+                        join c in db.Compras on e.CompraId equals c.Id
+                        join t in db.EntradaTipos on e.TipoId equals t.Id
+                        where e.AreaId == areaId 
+                            &&  e.TipoId == (int)EntradaTipo.Compras
+                            && ed.InventarioId == inventarioId
+
+                        select new {
+                            fecha = e.Fecha,
+                            origen = t.Descripcion,
+                            documento = c.Id,
+                            referencia = c.Referencia,
+                            costo = ed.Costo,
+                            entradas = ed.Cantidad,
+                            salidas = 0,
+                            costoPromedioSalida = 0,
+                            existencias = ed.Existencias,
+                            costoPromedio = ed.CostoPromedio,
+                            total = Convert.ToDecimal(ed.Existencias) * ed.CostoPromedio
+                        };
+
+            return Json(resultCompra);
+
+
+                        
+        }
 
     }
 }

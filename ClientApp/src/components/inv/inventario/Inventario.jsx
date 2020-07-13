@@ -20,6 +20,8 @@ import { createStore } from "../../../utils/proxy";
 import { Item } from 'devextreme-react/form';
 import BlockHeader from "../../shared/BlockHeader";
 import { editorOptions } from "../../../data/app";
+import { cellAsBold } from "../../../utils/common";
+import Title from "../../shared/Title";
 
 class Inventario extends Component {
 
@@ -72,8 +74,8 @@ class Inventario extends Component {
     }
 
     render() {
-        let { user } = this.props;
         let remoteOperations = true;
+        const title = "Inventario"
         this.store = store(
             {
                 uri: uri.inventario,
@@ -85,7 +87,8 @@ class Inventario extends Component {
 
         return (
                 <div className="container">       
-                    <BlockHeader title="Inventario"/>             
+                    <Title title={title} />
+                    <BlockHeader title={title} />          
                     <DataGrid
                         ref={(ref) => this.dataGrid = ref}
                         dataSource={this.store}
@@ -131,7 +134,7 @@ class Inventario extends Component {
                                 </Item>                           
                             </Form>
                         </Editing>
-                        <Column dataField="numero" width={100} alignment="right" cellRender={ data => (<b>{data.data.numero}</b>)} />
+                        <Column dataField="numero" width={100} alignment="right" cellRender={ data => cellAsBold(data.data.numero)} />
                         <Column dataField="nombre" width={260} >
                             <RequiredRule message="Esta dato es requerido" />
                             <StringLengthRule max={150} message="Maximo 150 caracteres" />

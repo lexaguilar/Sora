@@ -3,7 +3,7 @@ import { Popup, Button } from 'devextreme-react';
 import Form, { SimpleItem, GroupItem, Label } from 'devextreme-react/form';
 import 'devextreme-react/text-area';
 import { createStore } from '../../../utils/proxy';
-import { Column, SearchPanel, Lookup, Editing, RequiredRule, StringLengthRule, Scrolling, Button as ButtonGrid }
+import { Column, SearchPanel, Lookup, Editing, RequiredRule, StringLengthRule, Scrolling }
   from 'devextreme-react/data-grid';
 import { DataGrid } from 'devextreme-react';
 import http from '../../../utils/http';
@@ -14,7 +14,6 @@ import { connect } from 'react-redux';
 import { defaultCompra, defaultComprasDetalle } from '../../../data/compra';
 import { updateCompra } from '../../../store/compra/compraActions';
 import Resumen from '../../shared/Resumen';
-import { formaPago } from '../../../data/catalogos';
 
 class Nuevo extends React.Component {
   constructor(props) {
@@ -28,10 +27,9 @@ class Nuevo extends React.Component {
     this.onRowUpdated = this.onRowUpdated.bind(this);
     this.onCellPrepared = this.onCellPrepared.bind(this);
     this.setCellValue = this.setCellValue.bind(this);
-    this.setCellValueFromCant = this.setCellValue.bind(this, "cantidadSolicitada");
+    this.setCellValueFromCant = this.setCellValue.bind(this, "cantidadRecibida");
     this.setCellValueFromCosto = this.setCellValue.bind(this, "costo");
     this.setCellValueFromDesc = this.setCellValue.bind(this, "descuentoAverage");
-    this.onRowRemoved = this.onRowRemoved.bind(this);
     this.calculateResumen = this.calculateResumen.bind(this);
     this.onRowInserting = this.onRowInserting.bind(this);
     this.save = this.save.bind(this);
@@ -43,17 +41,13 @@ class Nuevo extends React.Component {
 
   }
 
-  onRowRemoved(e){
-    this.calculateResumen();
-  }
-
   onRowInserted(e) {
     this.calculateResumen();
 
     let detalle = this.refComprasDetalle.instance.option('dataSource');
 
     if (detalle.filter(x => x.inventarioId == undefined).length == 0) {
-      e.component.saveEditData();
+      e.component.saveEditData()
       e.component.addRow();
     }
 
@@ -73,10 +67,6 @@ class Nuevo extends React.Component {
       e.cancel = true;
       e.component.cancelEditData();
     }   
-    else    
-    {
-      e.data = { ...defaultComprasDetalle, ...e.data};
-    }
 
   }
 
@@ -118,7 +108,7 @@ class Nuevo extends React.Component {
 
     updateCompra({
       id: 0,
-      open: false
+      descarga: false
     });
 
     if (cancel) {
@@ -132,35 +122,23 @@ class Nuevo extends React.Component {
 
   save() {
 
-    let isValid = true;
+    var result = this.refCompra.instance.validate();
+    if (result.isValid) {
+      let detalle = this.refComprasDetalle.instance.option('dataSource');
+      let compra = this.refCompra.instance.option('formData');
 
-    let result = this.refCompra.instance.validate();
-    isValid = result.isValid;
+      if (detalle.length != 0) {
 
-    let compra = this.refCompra.instance.option('formData');
-    if(compra.formaPagoId == formaPago.credito && (compra.plazoCredito == '' || compra.plazoCredito <= 0)){
-      isValid = false;
-      notify({ message: "Cuando la forma de pago es crédito debe ingresar el plazo de crédito" }, 'error');
-    }
+        compra.comprasDetalle = detalle;
 
-    let detalle = this.refComprasDetalle.instance.option('dataSource');
-    if (detalle.length == 0) {
-      
-      isValid = false;
-      notify({ message: "Debe ingresar al menos un producto" }, 'error');
-        
-    }
+        http(uri.compras.descargar).asPost(compra).then(r => {
+          notify({ message: "Registro guardado correctamente" });
+          this.onHiding({ cancel: true });
 
-    if (isValid) {
-
-      compra.comprasDetalle = detalle;
-
-      http(uri.compras.insert).asPost(compra).then(r => {
-
-        notify({ message: "Registro guardado correctamente" });
-        this.onHiding({ cancel: true });
-
-      });
+        });
+      } 
+      else
+        notify({ message: "Debe de registrar al menos un productp" }, 'error');
     }
 
   }
@@ -185,11 +163,14 @@ class Nuevo extends React.Component {
 
   onCellPrepared(e) {
     if (e.rowType == 'data') {
-      if (['cantidadSolicitada', 'costo', 'descuentoAverage'].includes(e.column.dataField))
+      if (['cantidadRecibida', 'costo', 'descuentoAverage'].includes(e.column.dataField))
         e.cellElement.classList.add('cell-editable');
 
       if (['total'].includes(e.column.dataField))
         e.cellElement.classList.add('cell-bold');
+
+      if (['nuevoPrecio'].includes(e.column.dataField))
+        e.cellElement.classList.add('cell-price');
     }
   }
 
@@ -200,7 +181,7 @@ class Nuevo extends React.Component {
     newData[prop] = value || 0;
     detalle[prop] = newData[prop];
 
-    newData.subTotal = detalle.cantidadSolicitada * detalle.costo;
+    newData.subTotal = detalle.cantidadRecibida * detalle.costo;
     newData.importe = newData.subTotal - (newData.subTotal * detalle.descuentoAverage / 100);
     newData.ivaAverage = 0.15;
     newData.ivaMonto = newData.importe * newData.ivaAverage;
@@ -208,17 +189,34 @@ class Nuevo extends React.Component {
 
   }
 
+  addMenuItems(e) {
+    if(e.row)
+    if (e.row.rowType == "data") {
+        // e.items can be undefined
+        if (!e.items) e.items = [];
+
+        // Add a custom menu item
+        e.items.push({
+          text: 'Igualar todas cantidades',
+          icon: 'increaseindent',
+          onItemClick: () => {
+              console.log(e.column.caption);
+          }
+      });
+    }
+}
+
   render() {
 
-    const { compra: { editable, open, id } } = this.props;
+    const { compra: { editable, descargar: open, id } } = this.props;
 
     return (
       <div id="container">
 
         <Popup
-          width={850}
+          width={1000}
           height={550}
-          title={`Orden de compra ${formatId(id)}`}
+          title={`Descargar orden ${formatId(id)}`}
           onHiding={this.onHiding}
           onShowing={this.onShowing}
           visible={open}
@@ -227,7 +225,7 @@ class Nuevo extends React.Component {
             <GroupItem cssClass="second-group" colCount={3}>
               <SimpleItem dataField="estadoId"
                 editorType="dxSelectBox" editorOptions={{
-                  disabled: !editable,
+                  readOnly: !editable,
                   dataSource: createStore('compraEstado'), valueExpr: "id", displayExpr: "descripcion"
                 }} >
                 <RequiredRule message="Seleccione el estado" />
@@ -237,7 +235,7 @@ class Nuevo extends React.Component {
                 dataField="fecha"
                 editorType="dxDateBox"
                 editorOptions={{
-                  disabled: !editable,
+                  readOnly: !editable,
                   displayFormat: "dd/MM/yyyy"
                 }}
               >
@@ -246,13 +244,13 @@ class Nuevo extends React.Component {
               <SimpleItem dataField="plazoCredito"
                 editorType="dxNumberBox"
                 editorOptions={{
-                  disabled: !editable
+                  readOnly: !editable
                 }} >
               </SimpleItem>
               <SimpleItem dataField="formaPagoId"
                 editorType="dxSelectBox"
                 editorOptions={{
-                  disabled: !editable,
+                  readOnly: !editable,
                   dataSource: createStore('formaPago'),
                   valueExpr: "id",
                   displayExpr: "descripcion"
@@ -263,7 +261,7 @@ class Nuevo extends React.Component {
               <SimpleItem dataField="proveedorId"
                 editorType="dxSelectBox"
                 editorOptions={{
-                  disabled: !editable,
+                  readOnly: !editable,
                   dataSource: createStore('proveedores'),
                   valueExpr: "id",
                   displayExpr: "nombre"
@@ -271,20 +269,14 @@ class Nuevo extends React.Component {
                 <Label text="Proveedor" />
                 <RequiredRule message="Seleccione el proveedor" />
               </SimpleItem>
-              <SimpleItem dataField="referencia"
-                editorOptions={{
-                  disabled: !editable
-                }} >
+              <SimpleItem dataField="referencia">
                 <StringLengthRule max={50} message="Maximo 50 caracteres" />
               </SimpleItem>
 
             </GroupItem>
             <GroupItem colCount={3}>
               <SimpleItem dataField="observacion"
-                colSpan={3}
-                editorOptions={{
-                  disabled: !editable
-                }} >
+                colSpan={3}>
                 <StringLengthRule max={250} message="Maximo 250 caracteres" />
               </SimpleItem>
             </GroupItem>
@@ -301,10 +293,10 @@ class Nuevo extends React.Component {
                 allowColumnResizing={true}
                 allowColumnReordering={true}
                 onRowInserted={this.onRowInserted}
+                onRowInserting={this.onRowInserting}
                 onRowUpdated={this.onRowUpdated}
                 onCellPrepared={this.onCellPrepared}
-                onRowInserting={this.onRowInserting}
-                onRowRemoved={this.onRowRemoved}
+                onContextMenuPreparing={this.addMenuItems}
                 hoverStateEnabled={true}
               >
                 <Scrolling mode="virtual" />
@@ -313,11 +305,11 @@ class Nuevo extends React.Component {
                   mode="cell"
                   allowAdding={editable}
                   allowDeleting={editable}
-                  allowUpdating={editable}
-                  selectTextOnEditStart={editable}
-                  useIcons={editable}
+                  allowUpdating={true}
+                  selectTextOnEditStart={true}
+                  useIcons={true}
                 />
-                <Column dataField="inventarioId" caption="Inventario" cssClass='cellDetail' >
+                <Column dataField="inventarioId" caption="Inventario" cssClass='cellDetail' fixed={true}>
                   <Lookup
                     dataSource={createStore('inventario')}
                     valueExpr="id"
@@ -325,17 +317,17 @@ class Nuevo extends React.Component {
                   >
                   </Lookup>
                 </Column>
-                <Column dataField="cantidadSolicitada" caption="Cant" dataType="number" width={60} setCellValue={this.setCellValueFromCant}></Column>
+                <Column dataField="cantidadSolicitada" allowEditing={false} caption="Cant. Soli" dataType="number" width={75}></Column>
+                <Column dataField="cantidadRecibida" caption="Cant. Rec" dataType="number" width={75} setCellValue={this.setCellValueFromCant}></Column>
                 <Column dataField="costo" width={70} dataType="number" setCellValue={this.setCellValueFromCosto}></Column>
                 <Column dataField="subTotal" width={80} allowEditing={false} dataType="number" cellRender={cellRender}></Column>
                 <Column dataField="descuentoAverage" caption="Desc" width={70} dataType="number" customizeText={customizeTextAsPercent} setCellValue={this.setCellValueFromDesc}></Column>
-                <Column dataField="importe" width={80} allowEditing={false} dataType="number" cellRender={cellRender}></Column>
+                <Column dataField="importe" width={75} allowEditing={false} dataType="number" cellRender={cellRender}></Column>
                 <Column dataField="ivaAverage" width={70} visible={false} allowEditing={false} dataType="number"></Column>
                 <Column dataField="ivaMonto" caption="Iva" width={70} allowEditing={false} dataType="number" cellRender={cellRender}></Column>
-                <Column dataField="total" width={90} allowEditing={false} dataType="number" cellRender={cellRender}></Column>
-                <Column type="buttons" width={50}>
-                  <ButtonGrid name="delete" />
-                </Column>
+                <Column dataField="total" width={85} allowEditing={false} dataType="number" cellRender={cellRender}></Column>               
+                <Column dataField="ultimoPrecio" caption="Ult Precio" allowEditing={false} width={70} dataType="number" cellRender={cellRender}></Column>               
+                <Column dataField="nuevoPrecio" caption="Nvo Precio" width={70} dataType="number" cellRender={cellRender}></Column>   
               </DataGrid>
             </GroupItem>
             <GroupItem colCount={1}>
@@ -348,7 +340,6 @@ class Nuevo extends React.Component {
             </GroupItem>
           </Form>
           <Button
-            visible={editable}
             width={120}
             text="Guardar"
             type="success"

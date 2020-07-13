@@ -38,5 +38,7 @@ namespace Sora
                
             }  
         }
+
+        //internal abstract void Init();
     }
 }

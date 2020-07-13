@@ -3,7 +3,8 @@ import { GET_COMPRA_ID, UPDATE_COMPRA_ID } from "./compraActionTypes";
 const compra = {
     id: 0,
     open: false,
-    editable: true
+    editable: true,
+    descarga: false
 };
 
 export default function compraReducer(state = compra, { type, payload }) {

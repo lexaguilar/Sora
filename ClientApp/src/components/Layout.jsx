@@ -25,6 +25,7 @@ import Inventario from './inv/inventario/Inventario';
 import Proveedores from './inv/Entidades/Proveedores';
 import compras from './inv/compras';
 import Title from './shared/Title';
+import Kardex from './inv/reportes/Kardex';
 
 
 function Layout(props) {
@@ -60,6 +61,7 @@ function Layout(props) {
                         <Route exact path={`${_path.INV}/familia`} component={Familia} />                    
                         <Route exact path={`${_path.INV}/proveedores`} component={Proveedores} />                    
                         <Route exact path={`${_path.INV}/compras`} component={compras} />                    
+                        <Route exact path={`${_path.INV}/kardex`} component={Kardex} />                    
                     </Switch>
                 </div>
 

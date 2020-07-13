@@ -15,6 +15,8 @@ namespace Sora.Models.SaraModel
         {
         }
 
+        public virtual DbSet<AreaExistencias> AreaExistencias { get; set; }
+        public virtual DbSet<Areas> Areas { get; set; }
         public virtual DbSet<AsientoEstado> AsientoEstado { get; set; }
         public virtual DbSet<Asientos> Asientos { get; set; }
         public virtual DbSet<AsientosDetalle> AsientosDetalle { get; set; }
@@ -27,6 +29,9 @@ namespace Sora.Models.SaraModel
         public virtual DbSet<Cortes> Cortes { get; set; }
         public virtual DbSet<Cuentas> Cuentas { get; set; }
         public virtual DbSet<Entidades> Entidades { get; set; }
+        public virtual DbSet<EntradaTipos> EntradaTipos { get; set; }
+        public virtual DbSet<Entradas> Entradas { get; set; }
+        public virtual DbSet<EntradasDetalle> EntradasDetalle { get; set; }
         public virtual DbSet<Familia> Familia { get; set; }
         public virtual DbSet<FormaPago> FormaPago { get; set; }
         public virtual DbSet<Grupos> Grupos { get; set; }
@@ -53,6 +58,37 @@ namespace Sora.Models.SaraModel
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<AreaExistencias>(entity =>
+            {
+                entity.HasKey(e => new { e.AreaId, e.InventarioId });
+
+                entity.Property(e => e.CostoPromedio).HasColumnType("money");
+
+                entity.Property(e => e.CostoReal).HasColumnType("money");
+
+                entity.Property(e => e.Precio).HasColumnType("money");
+
+                entity.HasOne(d => d.Area)
+                    .WithMany(p => p.AreaExistencias)
+                    .HasForeignKey(d => d.AreaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_AreaExistencias_Areas");
+
+                entity.HasOne(d => d.Inventario)
+                    .WithMany(p => p.AreaExistencias)
+                    .HasForeignKey(d => d.InventarioId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_AreaExistencias_Inventario");
+            });
+
+            modelBuilder.Entity<Areas>(entity =>
+            {
+                entity.Property(e => e.Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<AsientoEstado>(entity =>
             {
                 entity.Property(e => e.Descripcion)
@@ -188,7 +224,13 @@ namespace Sora.Models.SaraModel
 
             modelBuilder.Entity<Compras>(entity =>
             {
+                entity.HasIndex(e => e.EntradaId);
+
                 entity.HasIndex(e => e.EstadoId);
+
+                entity.HasIndex(e => e.EtapaId);
+
+                entity.HasIndex(e => e.Fecha);
 
                 entity.HasIndex(e => e.FormaPagoId);
 
@@ -356,6 +398,94 @@ namespace Sora.Models.SaraModel
                     .HasMaxLength(250);
 
                 entity.Property(e => e.Telefono).HasMaxLength(8);
+            });
+
+            modelBuilder.Entity<EntradaTipos>(entity =>
+            {
+                entity.Property(e => e.Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Entradas>(entity =>
+            {
+                entity.HasIndex(e => e.AreaId);
+
+                entity.HasIndex(e => e.Fecha);
+
+                entity.HasIndex(e => e.TipoId)
+                    .HasName("IX_Entradas_TpoId");
+
+                entity.Property(e => e.Descuento).HasColumnType("money");
+
+                entity.Property(e => e.Fecha).HasColumnType("date");
+
+                entity.Property(e => e.Iva).HasColumnType("money");
+
+                entity.Property(e => e.Observacion).HasMaxLength(500);
+
+                entity.Property(e => e.SubTotal).HasColumnType("money");
+
+                entity.Property(e => e.Total).HasColumnType("money");
+
+                entity.HasOne(d => d.Area)
+                    .WithMany(p => p.Entradas)
+                    .HasForeignKey(d => d.AreaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Entradas_Areas");
+
+                entity.HasOne(d => d.Compra)
+                    .WithMany(p => p.Entradas)
+                    .HasForeignKey(d => d.CompraId)
+                    .HasConstraintName("FK_Entradas_Compras");
+
+                entity.HasOne(d => d.Tipo)
+                    .WithMany(p => p.Entradas)
+                    .HasForeignKey(d => d.TipoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Entradas_EntradaTipos");
+            });
+
+            modelBuilder.Entity<EntradasDetalle>(entity =>
+            {
+                entity.HasIndex(e => e.EntradaId);
+
+                entity.HasIndex(e => e.InventarioId);
+
+                entity.Property(e => e.Costo).HasColumnType("money");
+
+                entity.Property(e => e.CostoPromedio).HasColumnType("money");
+
+                entity.Property(e => e.DescuentoAverage).HasComment("% de descuento");
+
+                entity.Property(e => e.DescuentoMonto).HasColumnType("money");
+
+                entity.Property(e => e.Importe)
+                    .HasColumnType("money")
+                    .HasComment("Subtotal menos descuento");
+
+                entity.Property(e => e.IvaMonto).HasColumnType("money");
+
+                entity.Property(e => e.Precio).HasColumnType("money");
+
+                entity.Property(e => e.SubTotal).HasColumnType("money");
+
+                entity.Property(e => e.Total)
+                    .HasColumnType("money")
+                    .HasComment("Importe mas iva");
+
+                entity.HasOne(d => d.Entrada)
+                    .WithMany(p => p.EntradasDetalle)
+                    .HasForeignKey(d => d.EntradaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EntradasDetalle_Entradas");
+
+                entity.HasOne(d => d.Inventario)
+                    .WithMany(p => p.EntradasDetalle)
+                    .HasForeignKey(d => d.InventarioId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EntradasDetalle_Inventario");
             });
 
             modelBuilder.Entity<Familia>(entity =>

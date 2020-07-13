@@ -20,4 +20,6 @@ namespace Sora.Models.SaraModel
     public partial class Proveedores : ICatalogo {  }
     public partial class FormaPago : ICatalogo {  }
     public partial class Inventario : ICatalogo {  }
+    public partial class CompraEtapa : ICatalogo {  }
+    public partial class Areas : ICatalogo {  }
 }
