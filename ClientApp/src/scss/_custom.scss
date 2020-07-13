@@ -95,9 +95,29 @@
         background-color: #aeffb2a1;
     }
     
-    // td[role="gridcell"].col-debe {
-    //     background-color: rgb(241, 131, 131);
-    // }
-    // td>div.col-summary {
-    //     background-color: transparent;
-    // }
+    .cell-editable {
+        background-color: rgb(144, 210, 219);
+    }
+    
+    .cell-price {
+        background-color: #ffaeaea1;
+    }
+    
+    .cell-bold {
+        font-weight: bold;
+    }
+    
+    .resumen {
+        float: right;
+        width: 185px;
+    }
+    
+    .resumen>div>p,
+    .resumen>div>div {
+        font-size: 13px;
+        font-weight: 500;
+    }
+    
+    .resumen>div:last-child>p {
+        font-weight: bold;
+    }

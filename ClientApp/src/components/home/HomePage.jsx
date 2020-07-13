@@ -3,16 +3,13 @@ import React from 'react';
 
 // third-party
 import { Helmet } from 'react-helmet';
-import app from '../../data/app';
+import Title from '../shared/Title';
 
-import ODataStore from 'devextreme/data/odata/store';
 export default function HomePage() {
     
     return (
         <React.Fragment>
-            <Helmet>
-                <title>{`Home Page One — ${app.Name}`}</title>
-            </Helmet>
+            <Title title="Inicio" />
             
         </React.Fragment>
     )

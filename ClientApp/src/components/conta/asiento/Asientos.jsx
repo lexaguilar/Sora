@@ -20,6 +20,7 @@ import { connect } from 'react-redux';
 import { updateAsiento } from '../../../store/asiento/asientoActions'
 import { estadoAsiento } from "../../../data/catalogos";
 import BlockHeader from "../../shared/BlockHeader";
+import { formatId } from "../../../utils/common";
 
 class Asientos extends Component {
 
@@ -45,9 +46,9 @@ class Asientos extends Component {
         let { updateAsiento } = this.props;
 
         updateAsiento({
-            id: id,
+            id,
             open: true,
-            editable: editable
+            editable
         });
     }
 
@@ -118,7 +119,7 @@ class Asientos extends Component {
                         <ButtonGrid name="ver" text="Ver" onClick={e => this.openDialog(e.row.data.id, false)}/>
                         <ButtonGrid name="modificar" text="Editar" onClick={e => this.openDialog(e.row.data.id, true)}/>
                     </Column>
-                    <Column dataField="numero" width={100} cellRender={data => `${data.data.tipoComprobante.abrev}-${numeral(data.value).format('000000')}`} />
+                    <Column dataField="numero" width={100} cellRender={data => `${data.data.tipoComprobante.abrev}-${formatId(data.value)}`} />
                     <Column dataField="fecha" width={120} dataType="date" format="dd/MM/yyyy" />
                     <Column dataField="concepto" allowFiltering={false} />
                     <Column dataField="tipoComprobanteId" width={260} caption="Tipo Comprobante">

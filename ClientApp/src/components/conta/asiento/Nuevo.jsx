@@ -1,14 +1,14 @@
 import React from 'react';
 import { Popup, Button } from 'devextreme-react';
-import Form, { SimpleItem, GroupItem } from 'devextreme-react/form';
+import Form, { SimpleItem, GroupItem, Label } from 'devextreme-react/form';
 import 'devextreme-react/text-area';
 import { createStore, createCustomStore } from '../../../utils/proxy';
-import { Column, SearchPanel, Lookup, Editing, Summary, TotalItem, RequiredRule, StringLengthRule, Scrolling }
+import { Column, SearchPanel, Lookup, Editing, Summary, TotalItem, RequiredRule, StringLengthRule, Scrolling, Button as ButtonGrid }
   from 'devextreme-react/data-grid';
 import { DataGrid } from 'devextreme-react';
 import http from '../../../utils/http';
 import uri from '../../../utils/uri';
-import { getTicks, cellRender } from '../../../utils/common';
+import { getTicks, cellRender, formatId } from '../../../utils/common';
 import notify from 'devextreme/ui/notify';
 import { connect } from 'react-redux';
 import { defaultComprobante } from '../../../data/comprobante';
@@ -30,7 +30,6 @@ class Nuevo extends React.Component {
     this.obtTasaCambio = this.obtTasaCambio.bind(this);
     this.onRowInserting = this.onRowInserting.bind(this);
     this.onRowInserted = this.onRowInserted.bind(this);
-    //this.onRowUpdating = this.onRowUpdating.bind(this);
     this.onRowUpdated = this.onRowUpdated.bind(this);
     this.getFilteredCentroCosto = this.getFilteredCentroCosto.bind(this);
     this.state = {
@@ -65,8 +64,7 @@ class Nuevo extends React.Component {
       e.component.cancelEditData();
     }
     else    
-    this.resetValues(e);
-  
+      this.resetValues(e);  
 
   }
 
@@ -108,18 +106,7 @@ class Nuevo extends React.Component {
     if (asiento.id > 0) {
       http(uri.asientos.getById(asiento.id)).asGet().then(r => {
         this.setState({
-          comprobante: {
-            id: r.id,
-            numero: r.numero,
-            tipoComprobanteId: r.tipoComprobanteId,
-            fecha: r.fecha,
-            concepto: r.concepto,
-            observacion: r.observacion,
-            tipoCambio: r.tipoCambio,
-            referencia: r.referencia,
-            monedaId: r.monedaId,
-            estadoId: r.estadoId
-          },
+          comprobante: { ...r  },
           comprobanteDetalle: r.asientosDetalle,
         })
       })
@@ -168,9 +155,9 @@ class Nuevo extends React.Component {
       let haber = detalle.sum('haber');
 
       if (debe != haber)
-        notify({ message: "El comprobante no cuadra, revise los debe y haber" }, 'error')
+        notify({ message: "El comprobante no cuadra, revise los debe y haber" }, 'error');
       else if (debe == 0 && haber == 0)
-        notify({ message: "Debe de registrar al menos un movimiento" }, 'error')
+        notify({ message: "Debe de registrar al menos un movimiento" }, 'error');
       else {
 
 
@@ -224,7 +211,7 @@ class Nuevo extends React.Component {
         <Popup
           width={800}
           height={550}
-          title={`${id == 0 ? 'Nuevo asiento 000000' : `Comprobante ${numeral(this.state.comprobante.numero).format('000000')}`}`}
+          title={`${id == 0 ? 'Nuevo comprobante' : `Comprobante ${formatId(this.state.comprobante.numero)}`}`}
           onHiding={this.onHiding}
           onShowing={this.onShowing}
           visible={open}
@@ -238,6 +225,7 @@ class Nuevo extends React.Component {
                     disabled: !editable,
                     dataSource: createStore('asientoEstado'), valueExpr: "id", displayExpr: "descripcion"
                   }} >
+                  <Label text="Estado" />
                   <RequiredRule message="Seleccione el estado" />
                 </SimpleItem>
               </GroupItem>
@@ -248,6 +236,7 @@ class Nuevo extends React.Component {
                       disabled: !editable,
                       dataSource: createStore('moneda'), valueExpr: "id", displayExpr: "descripcion"
                     }} >
+                    <Label text="Moneda" />
                     <RequiredRule message="Seleccione el comprobante" />
                   </SimpleItem>
                 </GroupItem>
@@ -273,11 +262,12 @@ class Nuevo extends React.Component {
             </GroupItem>
             <GroupItem cssClass="second-group" colCount={2}>
               <GroupItem>
-                <SimpleItem dataField="tipoComprobanteId" label={{ text: "Tipo Comprobante" }}
+                <SimpleItem dataField="tipoComprobanteId"
                   editorType="dxSelectBox" editorOptions={{
                     disabled: !editable,
                     dataSource: createStore('tipoComprobantes'), valueExpr: "id", displayExpr: "descripcion",
                   }} >
+                  <Label text="Tipo Comprobante" />
                   <RequiredRule message="Seleccione el comprobante" />
                 </SimpleItem>
               </GroupItem>
@@ -323,8 +313,8 @@ class Nuevo extends React.Component {
                 onRowInserting={this.onRowInserting}
                 onRowInserted={this.onRowInserted}
                 onRowUpdated={this.onRowUpdated}
-                onRowUpdating={this.onRowUpdating}
                 onCellPrepared={this.onRowPrepared}
+                hoverStateEnabled={true}
               >
                 <Scrolling mode="virtual" />
                 <SearchPanel visible={true} />
@@ -334,9 +324,10 @@ class Nuevo extends React.Component {
                   allowDeleting={editable}
                   allowUpdating={editable}
                   selectTextOnEditStart={editable}
+                  hoverStateEnabled={true}
                   useIcons={editable}
                 />
-                <Column dataField="cuentaId" cssClass='cellDetail'>
+                <Column dataField="cuentaId" caption="Cuenta" cssClass='cellDetail'>
                   <Lookup
                     dataSource={createCustomStore('cuentas/get/nivel/4')()}
                     valueExpr="id"
@@ -344,7 +335,7 @@ class Nuevo extends React.Component {
                   >
                   </Lookup>
                 </Column>
-                <Column dataField="centroCostoId" width={150} cssClass='cellDetail'>
+                <Column dataField="centroCostoId"  caption="Centro costo" width={150} cssClass='cellDetail'>
                   <Lookup
                     dataSource={this.getFilteredCentroCosto}
                     valueExpr="id"
@@ -355,6 +346,9 @@ class Nuevo extends React.Component {
                 <Column dataField="referencia" width={100} ></Column>
                 <Column dataField="debe" width={90} cssClass="col-debe" dataType="number" cellRender={cellRender} />
                 <Column dataField="haber" width={90} cssClass="col-debe" dataType="number" cellRender={cellRender} />
+                <Column type="buttons" width={50}>
+                  <ButtonGrid name="delete"/>
+                </Column>
                 <Summary recalculateWhileEditing={true}>
                   <TotalItem
                     column="debe"

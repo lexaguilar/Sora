@@ -21,6 +21,8 @@ import { updateCompra } from '../../../store/compra/compraActions'
 import { estadoCompra, etapaCompra } from "../../../data/catalogos";
 import BlockHeader from "../../shared/BlockHeader";
 import uri from "../../../utils/uri";
+import { formatId, cellAsBold } from "../../../utils/common";
+import Descarga from "./Descarga";
 
 class Compras extends Component {
 
@@ -40,16 +42,27 @@ class Compras extends Component {
         this.dataGrid.instance.refresh();
     }
 
-    openDialog(id = 0, editable=true) {
+    openDialog(id = 0, editable=true, descargar=false) {
 
         let { updateCompra } = this.props;
 
-        console.log(updateCompra);
+        updateCompra({
+            id,
+            open: true,
+            editable,
+            descargar : false
+        });
+    }
+
+    openDialogDescarga(id = 0) {
+
+        let { updateCompra } = this.props;
 
         updateCompra({
-            id: 0,
-            open: true,
-            editable: true
+            id,
+            open: false,
+            editable : false,
+            descargar : true
         });
     }
 
@@ -95,7 +108,8 @@ class Compras extends Component {
         return (
             <div className="container">
                 <BlockHeader title="Compras" />
-                <Nuevo  />
+                <Nuevo onSave={this.reload}  />
+                <Descarga onSave={this.reload}  />
                 <DataGrid
                     ref={(ref) => this.dataGrid = ref}
                     dataSource={this.store}
@@ -119,25 +133,28 @@ class Compras extends Component {
                     <FilterRow visible={true} />
                     <ColumnChooser enabled={true} />
                     <Export enabled={true} fileName="Comprobantes" allowExportSelectedData={true} />
-                     <Column type="buttons">
+                    <Column type="buttons">
                         <ButtonGrid name="ver" text="Ver" onClick={e => this.openDialog(e.row.data.id, false)}/>
                         <ButtonGrid name="modificar" text="Editar" onClick={e => this.openDialog(e.row.data.id, true)}/>
                     </Column>
-                    <Column dataField="id" width={100} cellRender={data => `${data.data.tipoComprobante.abrev}-${numeral(data.value).format('000000')}`} />
+                    <Column dataField="id" width={90} cellRender={data => cellAsBold(formatId(data.value))} />
                     <Column dataField="fecha" width={120} dataType="date" format="dd/MM/yyyy" />
                     <Column dataField="proveedorId" width={260} caption="Proveedor">
                         <Lookup disabled={true} dataSource={createStore('proveedores')} valueExpr="id" displayExpr="nombre" />
                     </Column>                    
-                    <Column dataField="formaPagoId" width={260} caption="Forma Pago">
+                    <Column dataField="formaPagoId" width={130} caption="Forma Pago">
                         <Lookup disabled={true} dataSource={createStore('formaPago')} valueExpr="id" displayExpr="descripcion" />
                     </Column>                    
                     <Column dataField="referencia" width={120} allowFiltering={false} />
-                    <Column dataField="total" width={120} allowFiltering={false} />
-                    <Column dataField="estadoId" caption="Estado" width={130}>
+                    <Column dataField="total" width={100} allowFiltering={false} />
+                    <Column dataField="estadoId" caption="Estado" width={120}>
                         <Lookup disabled={true} dataSource={createStore('compraEstado')} valueExpr="id" displayExpr="descripcion" />
                     </Column>
-                    <Column dataField="etapaId" caption="Etapa" width={130}>
+                    <Column dataField="etapaId" caption="Etapa" width={100}>
                         <Lookup disabled={true} dataSource={createStore('compraEtapa')} valueExpr="id" displayExpr="descripcion" />
+                    </Column>
+                    <Column type="buttons">
+                        <ButtonGrid name="descargar" text="Recibir" hint='click para dar ingreso a la compra' onClick={e => this.openDialogDescarga(e.row.data.id, true, true )}/>
                     </Column>
                 </DataGrid>
             </div>
@@ -151,3 +168,4 @@ const mapDispatchToPros = ({
 });
 
 export default connect(null, mapDispatchToPros)(Compras);
+
