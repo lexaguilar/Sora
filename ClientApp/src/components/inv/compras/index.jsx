@@ -20,7 +20,7 @@ import { updateCompra } from '../../../store/compra/compraActions'
 import { estadoCompra, etapaCompra } from "../../../data/catalogos";
 import BlockHeader from "../../shared/BlockHeader";
 import uri from "../../../utils/uri";
-import { formatId, cellAsBold } from "../../../utils/common";
+import { formatId, cellAsBold, cellRender } from "../../../utils/common";
 import Descarga from "./Descarga";
 import Title from "../../shared/Title";
 
@@ -147,7 +147,7 @@ class Compras extends Component {
                         <Lookup disabled={true} dataSource={createStore('formaPago')} valueExpr="id" displayExpr="descripcion" />
                     </Column>                    
                     <Column dataField="referencia" width={120} allowFiltering={false} />
-                    <Column dataField="total" width={100} allowFiltering={false} />
+                    <Column dataField="total" width={100} allowFiltering={false} cellRender={cellRender} />
                     <Column dataField="estadoId" caption="Estado" width={120}>
                         <Lookup disabled={true} dataSource={createStore('compraEstado')} valueExpr="id" displayExpr="descripcion" />
                     </Column>
