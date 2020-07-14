@@ -68,11 +68,11 @@ class LibroMayor extends React.Component {
                     return d;
                 })
             });
-
+        const title = "Libro mayor";
         return (
             <div className="container medium">
-                <Title title="Libro mayor" />
-                <BlockHeader title ="Libro mayor" />
+                <Title title={title} />
+                <BlockHeader title = {title} />
                 <Detalle />
                 <div className="dx-field" style={{width: 600}}>
                     <div className="dx-field-label">Cuenta contable</div>

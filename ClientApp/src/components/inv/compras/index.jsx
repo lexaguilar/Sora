@@ -15,7 +15,6 @@ import { DataGrid } from 'devextreme-react';
 import { createStore } from "../../../utils/proxy";
 import { store } from "../../../services/store";
 import Nuevo from "./Nuevo";
-import numeral from 'numeral'
 import { connect } from 'react-redux';
 import { updateCompra } from '../../../store/compra/compraActions'
 import { estadoCompra, etapaCompra } from "../../../data/catalogos";
@@ -23,6 +22,7 @@ import BlockHeader from "../../shared/BlockHeader";
 import uri from "../../../utils/uri";
 import { formatId, cellAsBold } from "../../../utils/common";
 import Descarga from "./Descarga";
+import Title from "../../shared/Title";
 
 class Compras extends Component {
 
@@ -104,10 +104,11 @@ class Compras extends Component {
                 msgDeleted: 'Orden de compra eliminada correctamente',
                 remoteOperations: remoteOperations
             });
-
+        const title = "Tipo de Comrobante"; 
         return (
             <div className="container">
-                <BlockHeader title="Compras" />
+                <Title title={title} />
+                <BlockHeader title={title} />
                 <Nuevo onSave={this.reload}  />
                 <Descarga onSave={this.reload}  />
                 <DataGrid
