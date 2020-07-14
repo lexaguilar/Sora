@@ -125,6 +125,9 @@ namespace Sora.Controllers
             if (compraModificada == null)
                 return BadRequest($"No se puede encontra la compra con identificador {compra.Id}");
 
+            if (compraModificada.EstadoId == (int)Estados.Anulado)
+                return BadRequest($"No se puede hacer una descarga de una compra en estado anulado");
+
             compraModificada.CopyFrom(compra, x => new
             {
                 x.Referencia,
