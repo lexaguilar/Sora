@@ -12,6 +12,32 @@ const createProxyBase = root => createProxy(`${root}/get`, `${root}/post`, id =>
  */
 const createStore = name => createCustomStore(`catalogos/${toCapital(name)}`)();
 
+const createStoreLocal = ({ name = required('name'), local = required('local') }) => {
+    return {
+        store: new CustomStore({
+            key: "id",
+            loadMode: "raw",
+            load: function() {
+                return new Promise(resolve => {
+
+                    if (local[name] && local[name].length)
+                        resolve(local[name]);
+                    else
+                        http(`catalogos/${toCapital(name)}`)
+                        .asGet()
+                        .then(r => {
+                            local[name] = r;
+                            resolve(local[name]);
+                        });
+
+                });
+            }
+        })
+    }
+}
+
+const required = name => new Error(`El parametro ${name} es requerido`);
+
 
 /**
  * returna una url despues del prefijo api/catalogsCustom/ 
@@ -19,6 +45,7 @@ const createStore = name => createCustomStore(`catalogos/${toCapital(name)}`)();
  * @param {Function} myStore -  nombre de la accion
  */
 const createCustomStore = url => myStore => {
+
     return {
         store: new CustomStore({
             key: "id",
@@ -27,11 +54,12 @@ const createCustomStore = url => myStore => {
                 return new Promise(resolve => {
                     http(url)
                         .asGet()
-                        .then(r => resolve(typeof myStore == 'function' ? myStore(r) : r));
+                        .then(r => resolve(typeof myStore == 'function' ? myStore(r) : r))
                 });
             }
         })
     }
+
 }
 
-export { createProxy, createProxyBase, createStore, createCustomStore };
+export { createProxy, createProxyBase, createStore, createStoreLocal, createCustomStore };
