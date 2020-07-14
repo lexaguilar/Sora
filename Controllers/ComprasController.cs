@@ -75,6 +75,9 @@ namespace Sora.Controllers
             {
                 //Actializar encabezado
                 var compraModificada = factory.FirstOrDefault(x => x.Id == compra.Id);
+                if (compraModificada.EtapaId == (int)CompraEtapas.Recibida)
+                    return BadRequest($"No se puede editar una compra en la etapa recibida");
+
                 compraModificada.CopyAllFromExcept(compra, x => new
                 {
                     x.Id,
