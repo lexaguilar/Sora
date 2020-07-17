@@ -1,7 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { SelectBox, DataGrid } from 'devextreme-react';
-import { Column, Summary, TotalItem }
+import { Column }
   from 'devextreme-react/data-grid';
 import { createStore } from '../../../utils/proxy';
 import { Export } from 'devextreme-react/bar-gauge';

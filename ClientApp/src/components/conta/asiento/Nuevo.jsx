@@ -13,7 +13,6 @@ import notify from 'devextreme/ui/notify';
 import { connect } from 'react-redux';
 import { defaultComprobante } from '../../../data/comprobante';
 import moment from 'moment';
-import numeral from 'numeral';
 import { updateAsiento } from '../../../store/asiento/asientoActions';
 
 class Nuevo extends React.Component {

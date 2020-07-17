@@ -75,6 +75,9 @@ namespace Sora.Controllers
             {
                 //Actializar encabezado
                 var compraModificada = factory.FirstOrDefault(x => x.Id == compra.Id);
+                if (compraModificada.EtapaId == (int)CompraEtapas.Recibida)
+                    return BadRequest($"No se puede editar una compra en la etapa recibida");
+
                 compraModificada.CopyAllFromExcept(compra, x => new
                 {
                     x.Id,
@@ -124,6 +127,9 @@ namespace Sora.Controllers
             var compraModificada = db.Compras.Include(x => x.ComprasDetalle).FirstOrDefault(x => x.Id == compra.Id);
             if (compraModificada == null)
                 return BadRequest($"No se puede encontra la compra con identificador {compra.Id}");
+
+            if (compraModificada.EstadoId == (int)Estados.Anulado)
+                return BadRequest($"No se puede hacer una descarga de una compra en estado anulado");
 
             compraModificada.CopyFrom(compra, x => new
             {

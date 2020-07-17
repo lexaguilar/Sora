@@ -2,7 +2,7 @@ import React from 'react';
 import { Popup, Button } from 'devextreme-react';
 import Form, { SimpleItem, GroupItem, Label } from 'devextreme-react/form';
 import 'devextreme-react/text-area';
-import { createStore } from '../../../utils/proxy';
+import { createStore, createStoreLocal } from '../../../utils/proxy';
 import { Column, SearchPanel, Lookup, Editing, RequiredRule, StringLengthRule, Scrolling, Button as ButtonGrid }
   from 'devextreme-react/data-grid';
 import { DataGrid } from 'devextreme-react';
@@ -40,6 +40,13 @@ class Nuevo extends React.Component {
       compra: Object.assign({}, defaultCompra),
       comprasDetalle: []
     };
+
+    this.storeTransient = {
+      inventario : [],
+      compraEstado : [],
+      proveedores : [],
+      formaPago : []
+    }
 
   }
 
@@ -228,7 +235,7 @@ class Nuevo extends React.Component {
               <SimpleItem dataField="estadoId"
                 editorType="dxSelectBox" editorOptions={{
                   disabled: !editable,
-                  dataSource: createStore('compraEstado'), valueExpr: "id", displayExpr: "descripcion"
+                  dataSource: createStoreLocal({name : 'compraEstado', local: this.storeTransient} ), valueExpr: "id", displayExpr: "descripcion"
                 }} >
                 <RequiredRule message="Seleccione el estado" />
                 <Label text="Estado" />
@@ -253,7 +260,7 @@ class Nuevo extends React.Component {
                 editorType="dxSelectBox"
                 editorOptions={{
                   disabled: !editable,
-                  dataSource: createStore('formaPago'),
+                  dataSource: createStoreLocal({name : 'formaPago', local: this.storeTransient} ),
                   valueExpr: "id",
                   displayExpr: "descripcion"
                 }} >
@@ -264,7 +271,7 @@ class Nuevo extends React.Component {
                 editorType="dxSelectBox"
                 editorOptions={{
                   disabled: !editable,
-                  dataSource: createStore('proveedores'),
+                  dataSource: createStoreLocal({name : 'proveedores', local: this.storeTransient} ),
                   valueExpr: "id",
                   displayExpr: "nombre"
                 }} >
@@ -319,7 +326,7 @@ class Nuevo extends React.Component {
                 />
                 <Column dataField="inventarioId" caption="Inventario" cssClass='cellDetail' >
                   <Lookup
-                    dataSource={createStore('inventario')}
+                    dataSource={createStoreLocal({name : 'inventario', local: this.storeTransient} )}                    
                     valueExpr="id"
                     displayExpr={item => item ? `${item.numero} - ${item.nombre}` : ''}
                   >

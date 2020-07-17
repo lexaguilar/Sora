@@ -6,6 +6,7 @@ import { createStore } from "../../../utils/proxy";
 import { store } from "../../../services/store";
 import uri from "../../../utils/uri";
 import BlockHeader from "../../shared/BlockHeader";
+import Title from "../../shared/Title";
 
 class Cuentas extends Component {
     constructor(props) {
@@ -34,9 +35,11 @@ class Cuentas extends Component {
 
     render() {
         const allowedPageSizes = [10, 15, 30, 50];
+        const title = "Cuentas contables";
         return (
             <div className="container">
-                <BlockHeader title="Cuentas contables" />
+                <Title title={title} />
+                <BlockHeader title={title} />
                 <TreeList
                     dataSource={store(
                         {

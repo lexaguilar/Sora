@@ -15,7 +15,7 @@ import { defaultCompra, defaultComprasDetalle } from '../../../data/compra';
 import { updateCompra } from '../../../store/compra/compraActions';
 import Resumen from '../../shared/Resumen';
 
-class Nuevo extends React.Component {
+class Descarga extends React.Component {
   constructor(props) {
     super(props);
 
@@ -38,6 +38,8 @@ class Nuevo extends React.Component {
       compra: Object.assign({}, defaultCompra),
       comprasDetalle: []
     };
+
+    
 
   }
 
@@ -362,4 +364,4 @@ const mapDispatchToPros = ({
   updateCompra
 });
 
-export default connect(mapStateToProps, mapDispatchToPros)(Nuevo);
+export default connect(mapStateToProps, mapDispatchToPros)(Descarga);

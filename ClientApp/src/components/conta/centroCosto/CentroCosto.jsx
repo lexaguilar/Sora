@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { DataGrid } from 'devextreme-react';
 import { Item } from 'devextreme-react/form';
 import {
@@ -20,14 +20,15 @@ import {
 import uri from '../../../utils/uri';
 import { store } from '../../../services/store';
 import Title from '../../shared/Title';
+import BlockHeader from '../../shared/BlockHeader';
 
 
 function CentroCosto(props) {
-
+    const title = "Centro de costo";
     return (
         <div className="container small">
-            <Title title="Centro de costo" />
-
+            <Title title={title} />
+            <BlockHeader title={title} />
             <DataGrid id="gridContainer"
                 selection={{ mode: 'single' }}
                 dataSource={store({ uri: uri.centroCosto })}

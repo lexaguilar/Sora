@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { DataGrid } from 'devextreme-react';
 import { Item } from 'devextreme-react/form';
 import {
@@ -12,20 +12,17 @@ import {
     Editing,
     Popup,
     Form,
-    NumericRule,
     RequiredRule,
     StringLengthRule,
     EmailRule,
     PatternRule
 } from 'devextreme-react/data-grid';
 
-
 import uri from '../../../utils/uri';
 import { store } from '../../../services/store';
 import Title from '../../shared/Title';
 import BlockHeader from '../../shared/BlockHeader';
 import { phonePattern, phoneRules } from '../../../utils/common';
-
 
 function Proveedores() {
     const title = "Proveedores";

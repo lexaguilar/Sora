@@ -12,7 +12,6 @@ import {
 }
     from 'devextreme-react/data-grid';
 import { DataGrid } from 'devextreme-react';
-import numeral from 'numeral'
 import { connect } from 'react-redux';
 import uri from "../../../utils/uri";
 import { store } from "../../../services/store";
@@ -75,7 +74,7 @@ class Inventario extends Component {
 
     render() {
         let remoteOperations = true;
-        const title = "Inventario"
+        const title = "Inventario";
         this.store = store(
             {
                 uri: uri.inventario,

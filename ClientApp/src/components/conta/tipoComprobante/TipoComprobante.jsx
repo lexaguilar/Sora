@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { DataGrid } from 'devextreme-react';
 import { Item } from 'devextreme-react/form';
 import {
@@ -24,11 +24,11 @@ import BlockHeader from '../../shared/BlockHeader';
 
 
 function TipoComprobante(props) {
-
+    const title = "Tipo de Comrobante";
     return (
         <div className="container small">
-            <Title title="Tipo de Comrobante" />
-            <BlockHeader title="Tipo de Comrobante" />
+            <Title title={title} />
+            <BlockHeader title={title} />
             <DataGrid id="gridContainer"
                 selection={{ mode: 'single' }}
                 dataSource={store({ uri: uri.tipoComprobantes })}
