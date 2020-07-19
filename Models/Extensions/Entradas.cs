@@ -8,10 +8,10 @@ namespace Sora.Models.SaraModel
     {
         internal void InitFromCompras(SaraContext db, Compras compras)
         {
+            //TODO quitar obetener del area principal de config
             this.AreaId = 1;
             this.TipoId = (int)EntradaTipo.Compras;
             this.Fecha = DateTime.Today;
-            //TODO quitar obetener del area principal de config
             this.Numero = getMax(db);
             this.Observacion = compras.Observacion;
             this.SubTotal = compras.SubTotal;
