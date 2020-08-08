@@ -1,6 +1,7 @@
 export const _path = {
     CONTA: '/conta',
-    INV: '/inv'
+    INV: '/inv',
+    APP: '/app'
 }
 
 
@@ -154,7 +155,7 @@ const menuInv = [{
     {
         layout: 'inv',
         title: 'Compras',
-        url: `${_path.INV}`,
+        url: `${_path.INV}/compras`,
         submenu: {
             type: 'menu',
             menu: [

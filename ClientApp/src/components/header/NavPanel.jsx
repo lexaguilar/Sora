@@ -8,29 +8,30 @@ import { Link } from 'react-router-dom';
 // application
 import NavLinks from './NavLinks';
 import IndicatorSearch from './IndicatorSearch';
+import { logo, colorNavBar } from '../../data/logo';
 
 
 function NavPanel(props) {
-    const { layout, wishlist } = props;
+    const { layout } = props;
 
-    let logo = null;
+    let _logo = null;
     let searchIndicator;
   
-    logo = (
+    _logo = (
         <div className="nav-panel__logo">
-            <Link to="/"><img className="nav-panel-logo" width={150} src={require('../../svg/logo2.png')} /></Link>
+            <Link to="/">{logo}</Link>
         </div>
     );
 
     searchIndicator = <IndicatorSearch />;
 
-    var color = layout == 'conta' ? '#ffd333' : layout == 'inv' ? '#03A9F4' : '#4CAF50';
+    var color = colorNavBar(layout);
 
     return (
         <div className="nav-panel" style={{background : color}}>
             <div className="nav-panel__container container">
                 <div className="nav-panel__row">
-                    {logo}                   
+                    {_logo}                   
 
                     <div className="nav-panel__nav-links nav-links">
                         <NavLinks layout={layout} />

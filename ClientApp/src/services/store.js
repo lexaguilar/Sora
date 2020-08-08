@@ -15,7 +15,8 @@ const store =
             msgUpdated: '',
             msgDeleted: '',
             cb: null,
-            remoteOperations: false
+            remoteOperations: false,
+            extraParameter: null
         }
     ) => {
         const customStore = new CustomStore({
@@ -24,6 +25,9 @@ const store =
                 let params = {};
                 params.skip = loadOptions.skip || 0;
                 params.take = loadOptions.take || 10;
+
+                if (model.extraParameter)
+                    params[model.extraParameter.key] = model.extraParameter.value;
 
                 if (loadOptions.filter) {
                     if (typeof loadOptions.filter[0] == 'object') {

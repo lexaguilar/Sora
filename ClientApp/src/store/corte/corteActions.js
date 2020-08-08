@@ -7,7 +7,8 @@ import uri from '../../utils/uri'
 const getCorteSuccess = createAction(GET_CORTE);
 export const getCorte = () => async(dispatch) => {
 
-    const resp = await http(uri.cortes.get).asGet();
-    dispatch(getCorteSuccess(resp));
+    http(uri.cortes.get).asGet()
+        .then(resp => dispatch(getCorteSuccess(resp)))
+        .catch(message => console.log(message));
 
 };

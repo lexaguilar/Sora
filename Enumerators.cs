@@ -12,5 +12,27 @@ namespace Sora
             SaldoInicial = 1,
             Compras = 2
         }
+
+        public enum SalidaTipo
+        {
+            Factura = 1
+        }
+
+        public enum TipoMovimiento{
+            Entrada =1,
+            Salida=2
+        }
+
+        public enum FormaPagos{
+            Contado = 1,
+            Credito = 2
+        }
+
+        public enum TipoComprobante{
+            Apertura = 1,
+            Diario = 2,
+            Ingreso = 3,
+            Egreso = 4
+        }
     }
 }

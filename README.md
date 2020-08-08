@@ -8,7 +8,7 @@ Pedientes
 5-Crear tabla para configuracion de la app
     5.1 Configurar cantiad de decimales en redondear
     5.2 Configurar el % de IVA
-    5.3 Configurar Area principal, ahi caeran todas las compras 
+    5.3 Configurar Area principal, ahi caeran todas las compras (Crear Area Centra con valor 1)
     
 6-agregar al estado de la aplicacion la moneda 
 7-Para compras, valdiar si es de credito que ingresen el plaza de los dias
@@ -18,7 +18,11 @@ Pedientes
 
 ///
 Tablas que se deben inicializar con valorres
+--Tipo Comprobantes (Aqui poder crear nuenos pero no editar el 1,2,3 y 4)
 --Forma Pago
 --Tablas de estado
 --Etapas
 --EntradaTipos (Aqui poder crea nuenos pero no editar el lo de entrada inicial 1-Saldo inicial 2-Compras -)
+--SalidasTipo (Aqui poder crea nuenos pero no editar el lo de 1-Factura)
+11-Valiar si el corte esta activo al momento de guardar el asiento contable en Asientofactory
+12-Cuando el usario haga login que se le asigne el corte que esta activo

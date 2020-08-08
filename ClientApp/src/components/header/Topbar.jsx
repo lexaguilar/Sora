@@ -14,7 +14,7 @@ import DropdownCorte from './DropdownCorte';
 function Topbar(props) {
     let  { user } = props;
     const links = [
-        { title: <FormattedMessage id="topbar.caja" defaultMessage="Caja" />, url: '/caja' },
+        { title: <FormattedMessage id="topbar.aplicacion" defaultMessage="Aplicación" />, url: '/app/inicio' },
         { title: <FormattedMessage id="topbar.inventario" defaultMessage="Inventario" />, url: '/inv' },
         { title: <FormattedMessage id="topbar.contabilidad" defaultMessage="Contabilidad" />, url: '/conta' }
     ];

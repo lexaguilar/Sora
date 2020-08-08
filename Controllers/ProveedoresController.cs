@@ -17,21 +17,22 @@ namespace Sora.Controllers
         public IActionResult Get() => Json(factory.GetAll());       
 
         [HttpPost("api/proveedores/post")]
-        public IActionResult Post([FromBody] Proveedores proveedores)
+        public IActionResult Post([FromBody] Proveedores proveedor)
         {
+            proveedor.ToUpperCase();
 
-            if (proveedores.Id > 0)
-                factory.Update(proveedores);
+            if (proveedor.Id > 0)
+                factory.Update(proveedor);
             else
-                factory.Insert(proveedores);
+                factory.Insert(proveedor);
 
             factory.Save();
 
-            return Json(proveedores);
+            return Json(proveedor);
 
         }
       
-        [HttpGet("api/CentroCosto/{id}/delete")]
+        [HttpGet("api/proveedores/{id}/delete")]
         public IActionResult Delete(int id) => Json(new { n = factory.DeleteAndSave(id) });
     }
 }

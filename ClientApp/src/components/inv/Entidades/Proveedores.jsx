@@ -46,7 +46,7 @@ function Proveedores() {
                 <FilterRow visible={true} />
                 <HeaderFilter visible={true} />
                 <ColumnChooser enabled={true} />
-                <Export enabled={true} fileName="Familia" allowExportSelectedData={true} />
+                <Export enabled={true} fileName={title} allowExportSelectedData={true} />
                 <Column dataField="nombre" width={300} />
                 <Column dataField="contacto" width={300}  />
                 <Column dataField="telefono" />
@@ -73,6 +73,7 @@ function Proveedores() {
                                 <PatternRule message="The phone must have a correct USA phone format" pattern={phonePattern} />
                             </Item>
                             <Item dataField="correo" editorOptions={{ width: 250 }} >
+                                <StringLengthRule max={50} message="50 caracteres como máximo" />
                                 <EmailRule message="Correo invalida" />
                             </Item>
                         </Item>

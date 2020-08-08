@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Sora.Extensions;
 using Sora.Factory;
 using Sora.Models.SaraModel;
 using Sora.ViewModel;
@@ -168,32 +169,78 @@ namespace Sora.Controllers
         [HttpGet("api/inventario/{id}/delete")]
         public IActionResult Delete(int id) => Json(new { n = factory.DeleteAndSave(id) });
 
+        [Route("api/inventario/por-area")]
+        public IActionResult GetByIdForArea()
+        {
+            var user = this.GetAppUser();
+            
+            var inventario = from i in db.Inventario
+            join ae in db.AreaExistencias on 
+            new{ inventarioId = i.Id, areaId = user.AreaId } equals
+            new{ inventarioId = ae.InventarioId, areaId = ae.AreaId } into iet
+            from subint in iet.DefaultIfEmpty()
+            select new  {
+                i.Id,
+                i.Numero,
+                i.Nombre, 
+                Precio = subint==null ? 0 : subint.Precio,
+                Existencias = subint==null ? 0 : subint.Existencias,
+                i.Iva
+            };
+
+            return Json(inventario);
+
+        }
+
         [HttpGet("api/inventario/kardex/area/{areaId}/producto/{inventarioId}")]
         public IActionResult Kardex(int areaId, int inventarioId)
         {
-            var resultCompra = from ed in db.EntradasDetalle
+            var resultEntradas = (from ed in db.EntradasDetalle
                         join e in db.Entradas on ed.EntradaId equals e.Id
                         join c in db.Compras on e.CompraId equals c.Id
                         join t in db.EntradaTipos on e.TipoId equals t.Id
                         where e.AreaId == areaId 
                             &&  e.TipoId == (int)EntradaTipo.Compras
                             && ed.InventarioId == inventarioId
+                            && e.EstadoId == (int)Estados.Elaborado
+                        select new KardexModel{
+                            Fecha = e.Fecha,
+                            Origen = t.Descripcion,
+                            Documento = c.Id.ToString(),
+                            Referencia = c.Referencia,
+                            Costo = ed.Costo,
+                            Entradas = ed.Cantidad,
+                            Salidas = 0,
+                            CostoPromedioSalida = 0,
+                            Existencias = ed.Existencias,
+                            CostoPromedio = ed.CostoPromedio,
+                            Total = Convert.ToDecimal(ed.Existencias) * ed.CostoPromedio,
+                            Tipo = (int)TipoMovimiento.Entrada
+                        }).ToArray();
 
-                        select new {
-                            fecha = e.Fecha,
-                            origen = t.Descripcion,
-                            documento = c.Id,
-                            referencia = c.Referencia,
-                            costo = ed.Costo,
-                            entradas = ed.Cantidad,
-                            salidas = 0,
-                            costoPromedioSalida = 0,
-                            existencias = ed.Existencias,
-                            costoPromedio = ed.CostoPromedio,
-                            total = Convert.ToDecimal(ed.Existencias) * ed.CostoPromedio
-                        };
+            var resultSalidas = (from sd in db.SalidasDetalle
+                        join s in db.Salidas on sd.SalidaId equals s.Id
+                        join t in db.SalidaTipos on s.TipoId equals t.Id
+                        where s.AreaId == areaId 
+                            &&  s.TipoId == (int)SalidaTipo.Factura
+                            && sd.InventarioId == inventarioId
+                            && s.EstadoId == (int)Estados.Elaborado
+                        select new KardexModel{
+                            Fecha = s.Fecha,
+                            Origen = t.Descripcion,
+                            Documento = s.Id.ToString(),
+                            Referencia = "",
+                            Costo = 0,
+                            Entradas = 0,
+                            Salidas = sd.Cantidad,
+                            CostoPromedioSalida = sd.CostoPromedio,
+                            Existencias = sd.Existencias,
+                            CostoPromedio = sd.CostoPromedio,
+                            Total = Convert.ToDecimal(sd.Existencias) * sd.CostoPromedio,
+                            Tipo = (int)TipoMovimiento.Salida
+                        }).ToArray();
 
-            return Json(resultCompra);
+            return Json(resultEntradas.Concat(resultSalidas).OrderBy(x => x.Fecha));
 
 
                         

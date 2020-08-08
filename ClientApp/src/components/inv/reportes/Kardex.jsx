@@ -4,7 +4,7 @@ import { Column }
   from 'devextreme-react/data-grid';
 import { createStore } from '../../../utils/proxy';
 import { Export } from 'devextreme-react/bar-gauge';
-import { cellRender, cellAsBold, formatId } from '../../../utils/common';
+import { cellRender, cellAsBold, formatId, cellDiff } from '../../../utils/common';
 import Title from '../../shared/Title';
 import { store } from '../../../services/store';
 import BlockHeader from '../../shared/BlockHeader';
@@ -92,15 +92,15 @@ class Kardex extends React.Component {
                     <Column caption="Entradas" alignment="center">
                         <Column dataField="entradas" dataType="number" alignment="right"/>
                         <Column dataField="costo" dataType="number" alignment="right" cellRender={cellRender} />
-                        <Column dataField="totalEntradas" dataType="number" alignment="right" cellRender={cellRender} />
+                        <Column dataField="totalEntradas" caption="Total" dataType="number" alignment="right" cellRender={cellRender} />
                     </Column>
                     <Column caption="Salidas" alignment="center">
                         <Column dataField="salidas" dataType="number" alignment="right" />
                         <Column dataField="costoPromedioSalida" dataType="number" alignment="right"  cellRender={cellRender} />
-                        <Column dataField="totalSalidas" dataType="number" alignment="right"  cellRender={cellRender} />
+                        <Column dataField="totalSalidas" caption="Total" dataType="number" alignment="right"  cellRender={cellRender} />
                     </Column>
                     <Column caption="Existencias" alignment="center">
-                        <Column dataField="existencias" dataType="number" alignment="right" />
+                        <Column dataField="existencias" dataType="number" alignment="right" cellRender={cellDiff}/>
                         <Column dataField="costoPromedio" dataType="number" alignment="right" cellRender={cellRender}/>
                         <Column dataField="total" dataType="number" alignment="right" cellRender={cellRender}/>
                     </Column>

@@ -104,7 +104,7 @@ class Compras extends Component {
                 msgDeleted: 'Orden de compra eliminada correctamente',
                 remoteOperations: remoteOperations
             });
-        const title = "Tipo de Comrobante"; 
+        const title = "Compras"; 
         return (
             <div className="container">
                 <Title title={title} />

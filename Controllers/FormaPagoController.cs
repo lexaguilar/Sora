@@ -19,7 +19,8 @@ namespace Sora.Controllers
         [HttpPost("api/FormaPago/post")]
         public IActionResult Post([FromBody] FormaPago formaPago)
         {
-
+            formaPago.ToUpperCase();
+            
             if (formaPago.Id > 0)
                 factory.Update(formaPago);
             else
@@ -31,7 +32,7 @@ namespace Sora.Controllers
 
         }
       
-        [HttpGet("api/CentroCosto/{id}/delete")]
+        [HttpGet("api/FormaPago/{id}/delete")]
         public IActionResult Delete(int id) => Json(new { n = factory.DeleteAndSave(id) });
     }
 }

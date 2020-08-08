@@ -49,7 +49,7 @@ export default class Root extends Component {
                         )}
                     />
                     <Route
-                        path="/caja"
+                        path="/app"
                         render={(props) => (
                             <Layout {...props} headerLayout='caja'/>
                         )}

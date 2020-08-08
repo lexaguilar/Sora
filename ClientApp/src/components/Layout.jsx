@@ -2,7 +2,6 @@
 import React from 'react';
 
 // third-party
-import { Helmet } from 'react-helmet';
 import { Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import HomePage from './home/HomePage';
@@ -10,6 +9,8 @@ import HomePage from './home/HomePage';
 // application
 import Footer from './footer';
 import Header from './header';
+import MobileMenu from './mobile/MobileMenu';
+
 import catalogos from '../data/catalogos';
 import Cuentas from './conta/cuentas/Cuentas';
 import Asientos from './conta/asiento/Asientos';
@@ -22,10 +23,14 @@ import Catalogo from './shared/Catalogos';
 import { _path } from '../data/headerNavigation';
 import Familia from './inv/familia/Familia';
 import Inventario from './inv/inventario/Inventario';
-import Proveedores from './inv/Entidades/Proveedores';
-import compras from './inv/compras';
-import Title from './shared/Title';
+import Proveedores from './inv/entidades/Proveedores';
+import Compras from './inv/compras/Index';
+import Facturas from './inv/facturas/Index';
 import Kardex from './inv/reportes/Kardex';
+import Clientes from './inv/entidades/Clientes';
+import MobileHeader from './mobile/MobileHeader';
+import App from './app/Index';
+
 
 
 function Layout(props) {
@@ -40,7 +45,13 @@ function Layout(props) {
 
             <ToastContainer autoClose={5000} hideProgressBar />
 
+            <MobileMenu layout={headerLayout}/>
+
             <div className="site">
+                <header className="site__header d-lg-none">
+                    <MobileHeader />
+                </header>
+
                 <header className="site__header d-lg-block d-none">
                     <Header layout={headerLayout} />
                 </header>
@@ -60,8 +71,11 @@ function Layout(props) {
                         <Route exact path={`${_path.INV}/inventario`} component={Inventario} />                   
                         <Route exact path={`${_path.INV}/familia`} component={Familia} />                    
                         <Route exact path={`${_path.INV}/proveedores`} component={Proveedores} />                    
-                        <Route exact path={`${_path.INV}/compras`} component={compras} />                    
+                        <Route exact path={`${_path.INV}/clientes`} component={Clientes} />                    
+                        <Route exact path={`${_path.INV}/compras`} component={Compras} />                    
+                        <Route exact path={`${_path.INV}/facturas`} component={Facturas} />                    
                         <Route exact path={`${_path.INV}/kardex`} component={Kardex} />                    
+                        <Route exact path={`${_path.APP}/inicio`} component={App} />                    
                     </Switch>
                 </div>
 

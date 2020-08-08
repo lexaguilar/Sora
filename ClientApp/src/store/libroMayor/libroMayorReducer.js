@@ -5,7 +5,8 @@ const libroMayor = {
     year: 0,
     mes: 0,
     debe: false,
-    open: false
+    open: false,
+    cuenta: ''
 };
 
 export default function libroMayorReducer(state = libroMayor, { type, payload }) {

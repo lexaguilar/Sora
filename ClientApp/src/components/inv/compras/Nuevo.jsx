@@ -114,10 +114,7 @@ class Nuevo extends React.Component {
 
   onHiding({ cancel }) {
 
-    this.setState({
-      compra: Object.assign({}, defaultCompra),
-      comprasDetalle: []
-    });
+    this.refCompra.instance.resetValues();
 
     this.refComprasDetalle.instance.saveEditData();
 
