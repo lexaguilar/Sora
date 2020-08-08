@@ -12,18 +12,18 @@ const createProxyBase = root => createProxy(`${root}/get`, `${root}/post`, id =>
  */
 const createStore = name => createCustomStore(`catalogos/${toCapital(name)}`)();
 
-const createStoreLocal = ({ name = required('name'), local = required('local') }) => {
+const createStoreLocal = ({ name = required('name'), local = required('local'), url = '' }) => {
     return {
         store: new CustomStore({
             key: "id",
             loadMode: "raw",
             load: function() {
                 return new Promise(resolve => {
-
+                    let endPoint = url || `catalogos/${toCapital(name)}`
                     if (local[name] && local[name].length)
                         resolve(local[name]);
                     else
-                        http(`catalogos/${toCapital(name)}`)
+                        http(endPoint)
                         .asGet()
                         .then(r => {
                             local[name] = r;

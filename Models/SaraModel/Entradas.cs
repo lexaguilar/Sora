@@ -21,9 +21,11 @@ namespace Sora.Models.SaraModel
         public decimal Iva { get; set; }
         public decimal Total { get; set; }
         public int? CompraId { get; set; }
+        public int EstadoId { get; set; }
 
         public virtual Areas Area { get; set; }
         public virtual Compras Compra { get; set; }
+        public virtual EntradaEstado Estado { get; set; }
         public virtual EntradaTipos Tipo { get; set; }
         public virtual ICollection<EntradasDetalle> EntradasDetalle { get; set; }
     }

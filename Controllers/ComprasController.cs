@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Sora.Extensions;
 using Sora.Factory;
 using Sora.Models.SaraModel;
 using Sora.ViewModel;
@@ -122,7 +123,7 @@ namespace Sora.Controllers
         [Route("api/compras/descargar")]
         public IActionResult Descargar([FromBody] Compras compra)
         {
-
+            var user = this.GetAppUser();
             //Actializar encabezado
             var compraModificada = db.Compras.Include(x => x.ComprasDetalle).FirstOrDefault(x => x.Id == compra.Id);
             if (compraModificada == null)
@@ -149,13 +150,21 @@ namespace Sora.Controllers
                     item.CantidadRecibida = itemEnviado.CantidadRecibida;
                     item.Costo = itemEnviado.Costo;
                     item.NuevoPrecio = itemEnviado.NuevoPrecio;
+                    item.SubTotal = itemEnviado.SubTotal;
+                    item.DescuentoAverage = itemEnviado.DescuentoAverage;
+                    item.DescuentoMonto = itemEnviado.DescuentoMonto;
+                    item.Importe = itemEnviado.Importe;
+                    item.IvaAverage = itemEnviado.IvaAverage;
+                    item.IvaMonto = itemEnviado.IvaMonto;
+                    item.Total = itemEnviado.Total;
                 }
             }
 
             //Hacer la entrada
             //Craer encabezado
             var entrada = new Entradas();
-            entrada.InitFromCompras(db, compra);
+            entrada.InitFromCompras(db, compra, user);
+
             foreach (var item in compra.ComprasDetalle)
             {
 
@@ -165,41 +174,15 @@ namespace Sora.Controllers
 
                 entrada.EntradasDetalle.Add(entradasDetalle);
 
-
                 //Actualizar existencias
-                var resumen = db.AreaExistencias
-                .FirstOrDefault(x => x.AreaId == entrada.AreaId && x.InventarioId == item.InventarioId);
-
-                if (resumen == null)
-                {
-                    var inventario = db.Inventario.Find(entradasDetalle.InventarioId);
-                    db.AreaExistencias.Add(new AreaExistencias
-                    {
-                        AreaId = entrada.AreaId,
-                        InventarioId = item.InventarioId,
-                        Existencias = entradasDetalle.Existencias,
-                        CostoPromedio = entradasDetalle.CostoPromedio,
-                        CostoReal = entradasDetalle.Costo,
-                        Precio = entradasDetalle.Precio,
-                        //Hereda de Catalogo de inventario
-                        Minimo = inventario.StockMinimo,
-                    });
-                }
-                else
-                {
-
-                    resumen.Existencias += entradasDetalle.Existencias;
-                    resumen.CostoPromedio = entradasDetalle.CostoPromedio;
-                    resumen.CostoReal = entradasDetalle.Costo;
-                    resumen.Precio = entradasDetalle.Precio;
-
-                }
+                var inventario = db.Inventario.Find(entradasDetalle.InventarioId);
+                inventario.RegisterTransactionIn(db, entradasDetalle, user, entrada.AreaId);
 
             }
 
             db.Entradas.Add(entrada);
             compra.EntradaId = entrada.Id;
-            
+            entrada.CompraId = compra.Id;
             db.SaveChanges();
 
             return Json(compra);

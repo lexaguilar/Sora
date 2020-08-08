@@ -8,11 +8,13 @@ namespace Sora.Models.SaraModel
         public FormaPago()
         {
             Compras = new HashSet<Compras>();
+            Salidas = new HashSet<Salidas>();
         }
 
         public int Id { get; set; }
         public string Descripcion { get; set; }
 
         public virtual ICollection<Compras> Compras { get; set; }
+        public virtual ICollection<Salidas> Salidas { get; set; }
     }
 }

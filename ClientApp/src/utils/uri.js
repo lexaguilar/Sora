@@ -20,10 +20,14 @@ const uri = {
     unidadMedida: createProxyBase('unidadMedida'),
     presentacion: createProxyBase('presentacion'),
     proveedores: createProxyBase('proveedores'),
+    clientes: createProxyBase('clientes'),
     formaPago: createProxyBase('formaPago'),
+    tipoPago: createProxyBase('tipoPago'),
     compras: createProxyBase('compras'),
+    salidas: createProxyBase('salidas'),
 };
 
 uri.compras.descargar = `compras/descargar`;
+uri.salidas.asFactura = `salidas/factura`;
 
 export default uri;

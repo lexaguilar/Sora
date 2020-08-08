@@ -7,6 +7,7 @@ import { DataGrid } from 'devextreme-react';
 import http from '../../../utils/http';
 import { connect } from 'react-redux';
 import { updateLibroMayor } from '../../../store/libroMayor/libroMayorActions';
+import { cellRender, cellRenderBold } from '../../../utils/common';
 
 class Detalle extends React.Component {
   constructor(props) {
@@ -22,7 +23,7 @@ class Detalle extends React.Component {
   onShowing(e) {
 
     const { libroMayor } = this.props;
-    console.log(libroMayor);
+    
     http(`asientos/cuenta/${libroMayor.id}/year/${libroMayor.year}/month/${libroMayor.mes}/debe/${libroMayor.debe}/libro-mayor`).asGet().then(r => {
         this.setState({
           comprobante: r
@@ -55,6 +56,7 @@ class Detalle extends React.Component {
           onHiding={this.onHiding}
           onShowing={this.onShowing}
           visible={libroMayor.open}
+          title={libroMayor.cuenta}
         >
 
             <DataGrid               
@@ -68,11 +70,12 @@ class Detalle extends React.Component {
               >
                 <Scrolling mode="virtual" />
                 <SearchPanel visible={true} /> 
-                <Column dataField="fecha" />
-                <Column dataField="anio" />
+                <Column width="100" dataField="fecha" dataType="date" format="dd/MM/yyyy" alignment="right" />
+                <Column width="50" dataField="anio" />
+                <Column width="70" dataField="numero" />
+                <Column dataField="referencia" />
                 <Column dataField="descripcion" />
-                <Column dataField="monto" />
-                <Column dataField="concepto" />
+                <Column width="100" dataField="monto" cellRender={cellRenderBold} />
               </DataGrid>
         
         </Popup>

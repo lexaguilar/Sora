@@ -42,6 +42,11 @@ namespace Sora.Factory
             return entity.Find(id);
         }
 
+        public T FirstOrDefault()
+        {
+            return entity.FirstOrDefault();
+        }
+
         public T FirstOrDefault(Expression<Func<T, bool>> predicate)
         {
             return entity.FirstOrDefault(predicate);
@@ -93,6 +98,11 @@ namespace Sora.Factory
             T existing = entity.Find(id);
             entity.Remove(existing);
             return db.SaveChanges();
+        }
+
+        public bool Exists(object id){
+            T model = entity.Find(id);
+            return model != null;
         }
     }
 }

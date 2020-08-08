@@ -19,7 +19,8 @@ namespace Sora.Controllers
         [HttpPost("api/unidadMedida/post")]
         public IActionResult Post([FromBody] UnidadMedida unidadMedida)
         {
-
+            unidadMedida.ToUpperCase();
+            
             if (unidadMedida.Id > 0)
                 factory.Update(unidadMedida);
             else

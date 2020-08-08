@@ -17,7 +17,7 @@ namespace Sora.Controllers
         }
 
         [Route("api/cortes/get")]
-        public IActionResult Get() => Json(factory.GetAll());       
+        public IActionResult Get() => Json(factory.GetAll().OrderByDescending(x => x.Id));       
 
         
         [Route("api/cortes/get/{id}")]
