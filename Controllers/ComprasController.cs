@@ -71,19 +71,25 @@ namespace Sora.Controllers
         [Route("api/compras/post")]
         public IActionResult Post([FromBody] Compras compra)
         {
-            compra.ApplyRules();
-            
+            var model = compra
+            .ApplyRules()
+            .validate();
+
+            if (!model.IsValid)
+                return BadRequest(model.Error);
+
+
             if (compra.Id > 0)
             {
                 //Actializar encabezado
                 var compraModificada = factory.FirstOrDefault(x => x.Id == compra.Id);
-                if (compraModificada.EtapaId == (int)CompraEtapas.Recibida)
-                    return BadRequest($"No se puede editar una compra en la etapa recibida");
+                model = compra.validate(compraModificada);
+                if (!model.IsValid)
+                    return BadRequest(model.Error);
 
                 compraModificada.CopyAllFromExcept(compra, x => new
                 {
                     x.Id,
-                    x.EstadoId,
                     x.EtapaId
                 });
 
@@ -94,7 +100,7 @@ namespace Sora.Controllers
                 var idsToDelete = oldComprasDetalle.Select(x => x.InventarioId).Except(compra.ComprasDetalle.Select(x => x.InventarioId));
                 var objToDelete = oldComprasDetalle.Where(x => idsToDelete.Contains(x.InventarioId)).ToList();
                 objToDelete.ForEach(x => factoryDetalle.Delete(x));
-              
+
                 //agregar nuevos registros y actualizar                
                 foreach (var item in compra.ComprasDetalle)
                 {
@@ -114,7 +120,6 @@ namespace Sora.Controllers
                 compra.EtapaId = (int)CompraEtapas.Pendiente;
                 factory.Insert(compra);
                 factory.Save();
-
             }
 
             return Json(compra);
@@ -184,6 +189,9 @@ namespace Sora.Controllers
             db.Entradas.Add(entrada);
             compra.EntradaId = entrada.Id;
             entrada.CompraId = compra.Id;
+
+            
+
             db.SaveChanges();
 
             return Json(compra);
