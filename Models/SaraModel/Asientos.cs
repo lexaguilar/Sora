@@ -23,14 +23,14 @@ namespace Sora.Models.SaraModel
         public bool EsCheque { get; set; }
         public string PagueseA { get; set; }
         public int? CuentaId { get; set; }
-        public int? EntidadId { get; set; }
+        public int? ClienteId { get; set; }
         public double Monto { get; set; }
         public double TipoCambio { get; set; }
         public int MonedaId { get; set; }
 
+        public virtual Clientes Cliente { get; set; }
         public virtual Cortes Corte { get; set; }
         public virtual Cuentas Cuenta { get; set; }
-        public virtual Entidades Entidad { get; set; }
         public virtual AsientoEstado Estado { get; set; }
         public virtual Moneda Moneda { get; set; }
         public virtual TipoComprobantes TipoComprobante { get; set; }

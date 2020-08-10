@@ -328,7 +328,7 @@ class Nuevo extends React.Component {
                 />
                 <Column dataField="cuentaId" caption="Cuenta" cssClass='cellDetail'>
                   <Lookup
-                    dataSource={createCustomStore('cuentas/get/nivel/4')()}
+                    dataSource={createCustomStore(uri.cuentasLevels(4))()}
                     valueExpr="id"
                     displayExpr={item => item ? `${item.numero} - ${item.descripcion}` : ''}
                   >

@@ -29,4 +29,5 @@ namespace Sora.Models.SaraModel
     public partial class SalidaEstado : ICatalogo {  } 
     public partial class EntradaEstado : ICatalogo {  } 
     public partial class TipoPago : ICatalogo {  } 
+    public partial class Bancos : ICatalogo {  } 
 }

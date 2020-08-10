@@ -62,4 +62,4 @@ const createCustomStore = url => myStore => {
 
 }
 
-export { createProxy, createProxyBase, createStore, createStoreLocal, createCustomStore };
+export { createProxy, createProxyBase, createStore, createStoreLocal, createCustomStore, required };

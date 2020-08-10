@@ -96,7 +96,7 @@
     }
     
     .estado-anulado {
-        background-color: #ffaeaea1;
+        background-color: #ffaeae47;
     }
     
     .cell-editable {
@@ -148,4 +148,18 @@
         background-repeat: no-repeat;
         background-size: 10px 10px;
         background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADJSURBVHjaYvzPgBfgkhYA4o8QFahKmBioDEYNHIQGsgBxIBCLkqgvAYi/g1mMjMjir0EJzR6If/6HpChKMMgMe3DKBeIcKhiY8x/MYoDj+RQYNgdkGLqBbEB8kgzDToL1YjEQhKWB+BUJhj0H64Eahs1AELYhMpJ+gtUiGYbLQBBOI8LANLBaIg1kAAc0vkiAqSPBQFAkHcNi2DGoHMkGgrAENOCRI0ECRQ2JBoKwJTQCfkLZDPgMZPxPXN5NhtJzMSsJVBMAAgwAyWSY2svfmrwAAAAASUVORK5CYII=');
+    }
+    
+    .item-value {
+        float: left;
+    }
+    
+    .item-numero {
+        font-weight: bold;
+        font-size: 12px;
+    }
+    
+    .item-price {
+        float: right;
+        font-size: 15px;
     }

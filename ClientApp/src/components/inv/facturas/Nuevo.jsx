@@ -100,8 +100,6 @@ class Nuevo extends React.Component {
   onShowing(e) {
     const { factura } = this.props;
 
-    console.log(defaultFactura);
-
     if (factura.id > 0) {
       http(uri.salidas.getById(factura.id)).asGet().then(r => {
         this.setState({
@@ -149,8 +147,6 @@ class Nuevo extends React.Component {
     let result = this.refFactura.instance.validate();
     isValid = result.isValid;
 
-    console.log(formaPago);
-
     let factura = this.refFactura.instance.option('formData');
     if (factura.formaPagoId == formaPago.credito && (factura.plazoCredito == '' || factura.plazoCredito <= 0)) {
       isValid = false;
@@ -160,7 +156,8 @@ class Nuevo extends React.Component {
     if(factura.formaPagoId == formaPago.credito)
       factura.tipoPagoId = null;
 
-    console.log(factura.tipoPagoId);
+    if(factura.formaPagoId == formaPago.contado)
+      factura.plazoCredito = 0;
     
     if(factura.formaPagoId == formaPago.contado && (factura.tipoPagoId == 0 || factura.tipoPagoId == null)){
       isValid = false;

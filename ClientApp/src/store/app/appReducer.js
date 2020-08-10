@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import { GET_APPINFO } from './appActionTypes'
+import { GET_APPINFO, UPDATE_APPINFO } from './appActionTypes'
 
 const app = {
     name: 'Sora',
@@ -10,6 +10,9 @@ const app = {
 
 export default handleActions({
     [GET_APPINFO]: (state, action) => {
+        return action.payload
+    },
+    [UPDATE_APPINFO]: (state, action) => {
         return action.payload
     }
 }, app)

@@ -45,7 +45,7 @@ namespace Sora
         internal void ToUpperCase()
         {
             var type = this.GetType();
-            var properties = type.GetProperties().Where(x => x.GetType() == typeof(string));
+            var properties = type.GetProperties().Where(x => x.PropertyType.FullName == "System.String");
 
             foreach (var p in properties)
             {

@@ -29,7 +29,8 @@ const menuConta = [{
                                 { title: 'Naturaleza de las cuentas', url: `${_path.CONTA}/naturaleza` },
                                 { title: 'Grupo de cuentas', url: `${_path.CONTA}/grupos` },
                                 { title: 'Tipo de cuentas', url: `${_path.CONTA}/tipoCuenta` },
-                                { title: 'Clasificacion de cuentas', url: `${_path.CONTA}/clasificacion` }
+                                { title: 'Clasificacion de cuentas', url: `${_path.CONTA}/clasificacion` },
+                                { title: 'Bancos', url: `${_path.CONTA}/bancos` },
                             ],
                         }, ]
                     },

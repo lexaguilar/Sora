@@ -19,4 +19,9 @@ export const formaPago = { contado: 1, credito: 2 }
 
 export const tipoMovimiento = { entrada: 1, salida: 2 }
 
+export const monedaSymbol = {
+    1: "C$",
+    2: "$"
+}
+
 export default catalogos;

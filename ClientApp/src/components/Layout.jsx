@@ -30,6 +30,7 @@ import Kardex from './inv/reportes/Kardex';
 import Clientes from './inv/entidades/Clientes';
 import MobileHeader from './mobile/MobileHeader';
 import App from './app/Index';
+import Bancos from './conta/bancos/Index';
 
 
 
@@ -63,6 +64,7 @@ function Layout(props) {
                         {PrintCatalogos}
                         <Route exact path={`${_path.CONTA}/tipoComprobantes`} render={props => <TipoComprobante {...props} /> } />                         
                         <Route exact path={`${_path.CONTA}/asientos`} component={Asientos} />                         
+                        <Route exact path={`${_path.CONTA}/bancos`} component={Bancos} />                         
                         <Route exact path={`${_path.CONTA}/configuracion/cortes`} component={Cortes} />                         
                         <Route exact path={`${_path.CONTA}/configuracion/tasa-cambio`} component={TasaCambio} />                         
                         <Route exact path={`${_path.CONTA}/centro-costo`} component={CentroCosto} />                         

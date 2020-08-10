@@ -1,24 +1,32 @@
 import CustomStore from 'devextreme/data/custom_store';
 import notify from 'devextreme/ui/notify';
 import http from '../utils/http';
+import { required } from '../utils/proxy';
 
 /**
  * returna un new CustomStore/ 
  * @param {model} model -  uri para enlazar los datos
  * @return {CustomStore} CustomStore
  */
+
+
 const store =
     (
-        model = {
-            uri: '',
-            msgInserted: '',
-            msgUpdated: '',
-            msgDeleted: '',
-            cb: null,
-            remoteOperations: false,
-            extraParameter: null
-        }
+        defaultModel
     ) => {
+
+        let model = {... {
+                uri: required('uri'),
+                msgInserted: 'Registro agregado correctamente',
+                msgUpdated: 'Registro modificado correctamente',
+                msgDeleted: 'Registro eliminado correctamente',
+                cb: null,
+                remoteOperations: false,
+                extraParameter: null
+            },
+            ...defaultModel
+        };
+
         const customStore = new CustomStore({
             load: (loadOptions) => {
 

@@ -15,13 +15,15 @@ const setAppInfoSuccess = createAction(UPDATE_APPINFO);
 export const setAppInfo = data => async(dispatch) => {
 
     http('about/set-info').asPost(data)
+        //dispatch(setAppInfoSuccess(setData(data, resp)));
         .then(resp => dispatch(setAppInfoSuccess(setData(data, resp))))
         .catch(message => console.log(message));
 
 };
 
 const setData = (currentData, newData) => {
-    return {...currentData, ...exluyeVersion(newData) }
+    let result = {...currentData, ...exluyeVersion(newData) };
+    return result;
 }
 
 const exluyeVersion = ({ version, ...resp }) => resp;

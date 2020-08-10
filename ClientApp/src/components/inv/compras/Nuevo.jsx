@@ -1,6 +1,6 @@
 import React from 'react';
 import { Popup, Button } from 'devextreme-react';
-import Form, { SimpleItem, GroupItem, Label } from 'devextreme-react/form';
+import Form, { SimpleItem, GroupItem, Label, AsyncRule } from 'devextreme-react/form';
 import 'devextreme-react/text-area';
 import { createStore, createStoreLocal } from '../../../utils/proxy';
 import { Column, SearchPanel, Lookup, Editing, RequiredRule, StringLengthRule, Scrolling, Button as ButtonGrid }
@@ -8,13 +8,14 @@ import { Column, SearchPanel, Lookup, Editing, RequiredRule, StringLengthRule, S
 import { DataGrid } from 'devextreme-react';
 import http from '../../../utils/http';
 import uri from '../../../utils/uri';
-import { customizeTextAsPercent, cellRender, formatId } from '../../../utils/common';
+import { customizeTextAsPercent, cellRender, formatId, formatToMoney } from '../../../utils/common';
 import notify from 'devextreme/ui/notify';
 import { connect } from 'react-redux';
 import { defaultCompra, defaultComprasDetalle } from '../../../data/compra';
 import { updateCompra } from '../../../store/compra/compraActions';
 import Resumen from '../../shared/Resumen';
 import { formaPago } from '../../../data/catalogos';
+import { editorOptionsSelect } from '../../../data/app';
 
 class Nuevo extends React.Component {
   constructor(props) {
@@ -35,22 +36,29 @@ class Nuevo extends React.Component {
     this.calculateResumen = this.calculateResumen.bind(this);
     this.onRowInserting = this.onRowInserting.bind(this);
     this.save = this.save.bind(this);
+    this.validationCallback = this.validationCallback.bind(this);
+    this.validationTipoPago = this.validationTipoPago.bind(this);
 
     this.state = {
-      compra: Object.assign({}, defaultCompra),
-      comprasDetalle: []
+      compra: { ...defaultCompra },
+      comprasDetalle: [],
+      monedaId: 0,
+      saving: false,
+      esCredito: false
     };
 
     this.storeTransient = {
-      inventario : [],
-      compraEstado : [],
-      proveedores : [],
-      formaPago : []
+      inventario: [],
+      compraEstado: [],
+      proveedores: [],
+      formaPago: [],
+      tipoPago: [],
+      moneda: []
     }
 
   }
 
-  onRowRemoved(e){
+  onRowRemoved(e) {
     this.calculateResumen();
   }
 
@@ -76,13 +84,12 @@ class Nuevo extends React.Component {
 
   onRowInserting(e) {
 
-    if (e.data.inventarioId == undefined){
+    if (e.data.inventarioId == undefined) {
       e.cancel = true;
       e.component.cancelEditData();
-    }   
-    else    
-    {
-      e.data = { ...defaultComprasDetalle, ...e.data};
+    }
+    else {
+      e.data = { ...defaultComprasDetalle, ...e.data };
     }
 
   }
@@ -92,7 +99,7 @@ class Nuevo extends React.Component {
   }
 
   onShowing(e) {
-    const { compra } = this.props;
+    const { compra, app } = this.props;
 
     if (compra.id > 0) {
       http(uri.compras.getById(compra.id)).asGet().then(r => {
@@ -105,7 +112,7 @@ class Nuevo extends React.Component {
       })
     } else {
       this.setState({
-        compra: Object.assign({}, defaultCompra),
+        compra: { ...defaultCompra, ...{ monedaId: app.monedaId } },
         comprasDetalle: []
       });
     }
@@ -142,28 +149,44 @@ class Nuevo extends React.Component {
     isValid = result.isValid;
 
     let compra = this.refCompra.instance.option('formData');
-    if(compra.formaPagoId == formaPago.credito && (compra.plazoCredito == '' || compra.plazoCredito <= 0)){
+    if (compra.formaPagoId == formaPago.credito && (compra.plazoCredito == '' || compra.plazoCredito <= 0)) {
       isValid = false;
       notify({ message: "Cuando la forma de pago es crédito debe ingresar el plazo de crédito" }, 'error');
     }
 
+    if (compra.formaPagoId == formaPago.credito)
+      compra.tipoPagoId = null;
+
+    if (compra.formaPagoId == formaPago.contado)
+      compra.plazoCredito = 0;
+
+    if (compra.formaPagoId == formaPago.contado && (compra.tipoPagoId == 0 || compra.tipoPagoId == null)) {
+      isValid = false;
+      notify({ message: "Debe ingresar el tipo de pago" }, 'error');
+    }
+
     let detalle = this.refComprasDetalle.instance.option('dataSource');
     if (detalle.length == 0) {
-      
+
       isValid = false;
       notify({ message: "Debe ingresar al menos un producto" }, 'error');
-        
+
     }
 
     if (isValid) {
 
       compra.comprasDetalle = detalle;
+      this.setState({ saving: true });
 
       http(uri.compras.insert).asPost(compra).then(r => {
 
         notify({ message: "Registro guardado correctamente" });
+        this.setState({ saving: false });
         this.onHiding({ cancel: true });
 
+      }).catch(message => {
+        this.setState({ saving: false });
+        notify({ message }, 'error');
       });
     }
 
@@ -212,9 +235,48 @@ class Nuevo extends React.Component {
 
   }
 
+  onValueChanged = e => {
+
+    this.setState({
+      monedaId: e.value
+    });
+
+  }
+
+  validationCallback(params) {
+    return new Promise(resolve => {
+
+      if (this.refCompra) {
+        
+        let compra = this.refCompra.instance.option('formData')
+        
+        let result = compra.formaPagoId == formaPago.credito && params.value > 0;
+        resolve(result);
+      }
+      resolve(true);
+    })
+
+  }
+
+  validationTipoPago(params) {
+
+    return new Promise(resolve => {
+
+      if (this.refCompra) {
+        let compra = this.refCompra.instance.option('formData')
+        
+        let result = compra.formaPagoId == formaPago.contado && parseInt(params.value) > 0;
+        resolve(result);
+      }
+
+      resolve(true)
+    });
+
+  }
+
   render() {
 
-    const { compra: { editable, open, id } } = this.props;
+    const { compra: { editable, open, id }, app } = this.props;
 
     return (
       <div id="container">
@@ -231,8 +293,8 @@ class Nuevo extends React.Component {
             <GroupItem cssClass="second-group" colCount={3}>
               <SimpleItem dataField="estadoId"
                 editorType="dxSelectBox" editorOptions={{
-                  disabled: !editable,
-                  dataSource: createStoreLocal({name : 'compraEstado', local: this.storeTransient} ), valueExpr: "id", displayExpr: "descripcion"
+                  ...editorOptionsSelect,
+                  ...{ disabled: !editable, dataSource: createStoreLocal({ name: 'compraEstado', local: this.storeTransient }) }
                 }} >
                 <RequiredRule message="Seleccione el estado" />
                 <Label text="Estado" />
@@ -247,34 +309,6 @@ class Nuevo extends React.Component {
               >
                 <RequiredRule message="Seleccione la fecha" />
               </SimpleItem>
-              <SimpleItem dataField="plazoCredito"
-                editorType="dxNumberBox"
-                editorOptions={{
-                  disabled: !editable
-                }} >
-              </SimpleItem>
-              <SimpleItem dataField="formaPagoId"
-                editorType="dxSelectBox"
-                editorOptions={{
-                  disabled: !editable,
-                  dataSource: createStoreLocal({name : 'formaPago', local: this.storeTransient} ),
-                  valueExpr: "id",
-                  displayExpr: "descripcion"
-                }} >
-                <Label text="Forma de pago" />
-                <RequiredRule message="Seleccione la forma de pago" />
-              </SimpleItem>
-              <SimpleItem dataField="proveedorId"
-                editorType="dxSelectBox"
-                editorOptions={{
-                  disabled: !editable,
-                  dataSource: createStoreLocal({name : 'proveedores', local: this.storeTransient} ),
-                  valueExpr: "id",
-                  displayExpr: "nombre"
-                }} >
-                <Label text="Proveedor" />
-                <RequiredRule message="Seleccione el proveedor" />
-              </SimpleItem>
               <SimpleItem dataField="referencia"
                 editorOptions={{
                   disabled: !editable
@@ -282,6 +316,66 @@ class Nuevo extends React.Component {
                 <StringLengthRule max={50} message="Maximo 50 caracteres" />
               </SimpleItem>
 
+              <SimpleItem dataField="formaPagoId"
+                editorType="dxSelectBox"
+                editorOptions={{
+                  ...editorOptionsSelect,
+                  ...{
+                    disabled: !editable, dataSource: createStoreLocal({ name: 'formaPago', local: this.storeTransient }),
+                    onValueChanged: item => {
+
+                      this.setState({ esCredito: item.value == formaPago.credito })
+
+                    }
+                  }
+                }} >
+                <Label text="Forma de pago" />
+                <RequiredRule message="Seleccione la forma de pago" />
+              </SimpleItem>
+              <SimpleItem dataField="tipoPagoId"
+                editorType="dxSelectBox"
+                editorOptions={{
+                  ...editorOptionsSelect,
+                  ...{ disabled: !editable || this.state.esCredito, dataSource: createStoreLocal({ name: 'tipoPago', local: this.storeTransient }) }
+                }} >
+                <Label text="Tipo de pago" />
+                <AsyncRule
+                  message="El tipo de pago es requerido"
+                  validationCallback={this.validationTipoPago} />
+              </SimpleItem>
+
+              <SimpleItem dataField="plazoCredito"
+                editorType="dxNumberBox"
+                editorOptions={{
+                  disabled: !editable || !this.state.esCredito
+                }} >
+                <Label text="Dias crédito" />
+                <AsyncRule
+                  message="Los dias de plazo son requerido"
+                  validationCallback={this.validationCallback} />
+              </SimpleItem>
+
+            </GroupItem>
+            <GroupItem colCount={3}>
+              <SimpleItem dataField="monedaId"
+                editorType="dxSelectBox"
+                editorOptions={{
+                  ...editorOptionsSelect,
+                  ...{ disabled: !editable, dataSource: app.moneda, onValueChanged: this.onValueChanged }
+                }} >
+                <Label text="Moneda" />
+                <RequiredRule message="Seleccione la moneda" />
+              </SimpleItem>
+              <SimpleItem dataField="proveedorId"
+                colSpan={2}
+                editorType="dxSelectBox"
+                editorOptions={{
+                  valueExpr: "id", displayExpr: "nombre",
+                  disabled: !editable, dataSource: createStoreLocal({ name: 'proveedores', local: this.storeTransient })
+                }} >
+                <Label text="Proveedor" />
+                <RequiredRule message="Seleccione el proveedor" />
+              </SimpleItem>
             </GroupItem>
             <GroupItem colCount={3}>
               <SimpleItem dataField="observacion"
@@ -296,7 +390,7 @@ class Nuevo extends React.Component {
             <GroupItem>
               <DataGrid
                 id="gridComprasDetalle"
-                height={280}
+                height={250}
                 ref={(ref) => this.refComprasDetalle = ref}
                 dataSource={this.state.comprasDetalle}
                 selection={{ mode: 'single' }}
@@ -323,14 +417,14 @@ class Nuevo extends React.Component {
                 />
                 <Column dataField="inventarioId" caption="Inventario" cssClass='cellDetail' >
                   <Lookup
-                    dataSource={createStoreLocal({name : 'inventario', local: this.storeTransient} )}                    
+                    dataSource={createStoreLocal({ name: 'inventario', local: this.storeTransient })}
                     valueExpr="id"
                     displayExpr={item => item ? `${item.numero} - ${item.nombre}` : ''}
                   >
                   </Lookup>
                 </Column>
                 <Column dataField="cantidadSolicitada" caption="Cant" dataType="number" width={60} setCellValue={this.setCellValueFromCant}></Column>
-                <Column dataField="costo" width={70} dataType="number" setCellValue={this.setCellValueFromCosto}></Column>
+                <Column dataField="costo" width={70} dataType="number" setCellValue={this.setCellValueFromCosto} cellRender={cellRender}></Column>
                 <Column dataField="subTotal" width={80} allowEditing={false} dataType="number" cellRender={cellRender}></Column>
                 <Column dataField="descuentoAverage" caption="Desc" width={70} dataType="number" customizeText={customizeTextAsPercent} setCellValue={this.setCellValueFromDesc}></Column>
                 <Column dataField="importe" width={80} allowEditing={false} dataType="number" cellRender={cellRender}></Column>
@@ -344,22 +438,23 @@ class Nuevo extends React.Component {
             </GroupItem>
             <GroupItem colCount={1}>
               <div className="resumen">
-                <Resumen title="Sub total" value={this.state.compra.subTotal} />
-                <Resumen title="Descuento" value={this.state.compra.descuento} />
-                <Resumen title="Iva" value={this.state.compra.iva} />
-                <Resumen title="Total" value={this.state.compra.total} />
+                <Resumen title="Sub total" value={this.state.compra.subTotal} monedaId={this.state.compra.monedaId} />
+                <Resumen title="Descuento" value={this.state.compra.descuento} monedaId={this.state.compra.monedaId} />
+                <Resumen title="Iva" value={this.state.compra.iva} monedaId={this.state.compra.monedaId} />
+                <Resumen title="Total" value={this.state.compra.total} monedaId={this.state.compra.monedaId} />
               </div>
             </GroupItem>
           </Form>
           <Button
             visible={editable}
             width={120}
-            text="Guardar"
+            text={this.state.saving ? 'Guardando' : 'Guardar'}
             type="success"
             icon="save"
             stylingMode="contained"
             className="m-1"
             onClick={this.save}
+            disabled={this.state.saving}
           />
         </Popup>
       </div>
@@ -368,7 +463,8 @@ class Nuevo extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  compra: state.compra
+  compra: state.compra,
+  app: state.appInfo
 });
 
 const mapDispatchToPros = ({

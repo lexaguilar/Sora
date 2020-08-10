@@ -6,35 +6,39 @@ import Form, {
     GroupItem,
     Label,
     EmailRule,
-    PatternRule,
-    RangeRule,
     RequiredRule,
 } from 'devextreme-react/form';
 import 'devextreme-react/text-area';
 import { setAppInfo } from '../../store/app/appActions';
 import notify from 'devextreme/ui/notify';
 import { createStore, createCustomStore } from '../../utils/proxy';
+import uri from '../../utils/uri';
 class App extends React.Component {
 
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.state = {
+            defaultVisible: false
+          };
     }
 
     handleSubmit(e) {
 
         let { setAppInfo, app } = this.props;
 
-        setAppInfo(app);
+        setAppInfo(app).then(x => {
 
-        console.log(app);
-        notify({
-          message: 'You have submitted the form',
-          position: {
-            my: 'center top',
-            at: 'center top'
-          }
-        }, 'success', 3000);
+            
+            notify({
+                message: 'sus cambios han sido guardados correctamente',
+                position: {
+                    my: 'center top',
+                    at: 'center top'
+                }
+            }, 'success', 3000);
+            
+        });
 
         e.preventDefault();
     }
@@ -44,14 +48,15 @@ class App extends React.Component {
         let { app } = this.props;
 
         let render = x => {
-            return  <SimpleItem dataField={x.name} editorType="dxSelectBox" 
-                        editorOptions={{
+            return  <SimpleItem dataField={x.name} id={x.name} editorType="dxSelectBox" 
+                        editorOptions={{                            
                             searchEnabled: true,
-                            dataSource: createCustomStore('cuentas/get/nivel/4')(), 
+                            dataSource: createCustomStore(uri.cuentasLevels(4))(), 
                             valueExpr: "id", 
-                            displayExpr: item => item ? `${item.numero} - ${item.descripcion}` : ''
+                            displayExpr: item => item ? `${item.numero} - ${item.descripcion}` : '',
+                            showClearButton:true
                         }}>
-                        <Label text={x.caption} />
+                        <Label text={x.caption} />                       
                     </SimpleItem>
         }
 
@@ -105,10 +110,16 @@ class App extends React.Component {
                             </SimpleItem>  
                             <SimpleItem dataField="areaId" editorType="dxSelectBox" 
                                 editorOptions={{
-                                    dataSource: createStore('areas'), valueExpr: "id", displayExpr: "descripcion"
+                                    dataSource: createStore('areas'), valueExpr: "id", displayExpr: "descripcion",
                                 }}>
                                 <RequiredRule message="El area es requerida" />
                                 <Label text="Area Inicial" />
+                            </SimpleItem>   
+                            <SimpleItem dataField="monedaId" editorType="dxSelectBox" 
+                                editorOptions={{
+                                    dataSource: createStore('moneda'), valueExpr: "id", displayExpr: "descripcion", showClearButton:true
+                                }}>
+                                <Label text="Moneda" />
                             </SimpleItem>                            
                         </GroupItem>
                     </GroupItem>

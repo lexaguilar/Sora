@@ -54,7 +54,7 @@ function TipoComprobante(props) {
                     allowDeleting={true}
                     allowAdding={true}
                 >
-                    <Popup title="Tipo Comprobantes" showTitle={true} width={550} height={220}>
+                    <Popup title={title} showTitle={true} width={550} height={220}>
 
                     </Popup>
                     <Form>

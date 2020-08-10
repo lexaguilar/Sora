@@ -8,7 +8,7 @@ import DataGrid, {
     HeaderFilter,
 } from 'devextreme-react/data-grid';
 import DropDownBox from 'devextreme-react/drop-down-box';
-import { cellRender } from '../../../utils/common';
+import { cellRender, formatToMoney } from '../../../utils/common';
 
 const dropDownOptions = { width: 500 };
 
@@ -22,6 +22,21 @@ export default class InventarioDDBComponent extends React.Component {
         this.onSelectionChanged = this.onSelectionChanged.bind(this);
         this.contentRender = this.contentRender.bind(this);
     }
+
+    customCell(cellData) {
+        
+        return (
+          <div>
+            <div className="item-value">
+                <div className="item-numero">{cellData.data.numero}</div>
+                <div className="item-nombre">{cellData.data.nombre}</div>
+                
+            </div>
+           
+            <div className="item-price">{formatToMoney(cellData.data.precio)}</div>
+          </div>
+        );
+      }
 
     contentRender() {
         return (
@@ -39,9 +54,7 @@ export default class InventarioDDBComponent extends React.Component {
             >
                 <FilterRow visible={true} />
                 <HeaderFilter visible={true} />
-                <Column dataField="nombre" />
-                <Column dataField="existencias" width={100} />
-                <Column dataField="precio" width={100} cellRender={cellRender}/>
+                <Column dataField="nombre" cellRender={this.customCell} />
                 <Paging enabled={true} pageSize={10} />
                 <Scrolling mode="virtual" />
                 <Selection mode="single" />

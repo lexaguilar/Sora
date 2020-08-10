@@ -25,18 +25,12 @@ namespace Sora.Controllers
         }
 
         [HttpPost("api/tipoComprobantes/post")]
-        public IActionResult Post([FromBody] TipoComprobantes tipoComprobantes)
+        public IActionResult Post([FromBody] TipoComprobantes tipoComprobante)
         {
-            tipoComprobantes.ToUpperCase();
+            tipoComprobante.ToUpperCase();
 
-            if (tipoComprobantes.Id > 0)
-                factory.Update(tipoComprobantes);
-            else
-                factory.Insert(tipoComprobantes);
-
-            factory.Save();
-
-            return Json(tipoComprobantes);
+            factory.InsertOrUpdateAndSave(tipoComprobante, x => x.Id == tipoComprobante.Id);
+            return Json(tipoComprobante);         
 
         }
 

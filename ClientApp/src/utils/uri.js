@@ -3,6 +3,7 @@ import { createProxy, createProxyBase } from "./proxy";
 const uri = {
     areas: createProxyBase('areas'),
     asientos: createProxyBase('asientos'),
+    bancos: createProxyBase('bancos'),
     centroCosto: createProxyBase('centroCosto'),
     clasificacion: createProxyBase('clasificacion'),
     cortes: createProxyBase('cortes'),
@@ -29,5 +30,6 @@ const uri = {
 
 uri.compras.descargar = `compras/descargar`;
 uri.salidas.asFactura = `salidas/factura`;
+uri.cuentasLevels = level => `cuentas/get/nivel/${level}`;
 
 export default uri;

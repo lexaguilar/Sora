@@ -7,6 +7,7 @@ namespace Sora.Models.SaraModel
     {
         public Clientes()
         {
+            Asientos = new HashSet<Asientos>();
             Salidas = new HashSet<Salidas>();
         }
 
@@ -16,6 +17,7 @@ namespace Sora.Models.SaraModel
         public string Telefono { get; set; }
         public string Correo { get; set; }
 
+        public virtual ICollection<Asientos> Asientos { get; set; }
         public virtual ICollection<Salidas> Salidas { get; set; }
     }
 }

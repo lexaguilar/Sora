@@ -71,7 +71,8 @@ namespace Sora.Controllers
         [Route("api/compras/post")]
         public IActionResult Post([FromBody] Compras compra)
         {
-
+            compra.ApplyRules();
+            
             if (compra.Id > 0)
             {
                 //Actializar encabezado
@@ -83,25 +84,25 @@ namespace Sora.Controllers
                 {
                     x.Id,
                     x.EstadoId,
-                    x.Etapa
+                    x.EtapaId
                 });
 
                 factory.Save();
 
                 //eliminar registros anteriores
                 var oldComprasDetalle = factoryDetalle.GetAll(x => x.CompraId == compra.Id);
-                foreach (var item in oldComprasDetalle)
-                    factoryDetalle.Delete(item);
-                factoryDetalle.Save();
-
-                //agregar nuevos registros
-                var detalle = compra.ComprasDetalle;
-                foreach (var item in detalle)
+                var idsToDelete = oldComprasDetalle.Select(x => x.InventarioId).Except(compra.ComprasDetalle.Select(x => x.InventarioId));
+                var objToDelete = oldComprasDetalle.Where(x => idsToDelete.Contains(x.InventarioId)).ToList();
+                objToDelete.ForEach(x => factoryDetalle.Delete(x));
+              
+                //agregar nuevos registros y actualizar                
+                foreach (var item in compra.ComprasDetalle)
                 {
-
-                    var comprasDetalle = new ComprasDetalle();
-                    comprasDetalle.CopyAllFromExcept(item, x => new { x.Id });
-                    factoryDetalle.Insert(comprasDetalle);
+                    var comprasDetalle = oldComprasDetalle.FirstOrDefault(x => x.InventarioId == item.InventarioId);
+                    if (comprasDetalle == null)
+                        factoryDetalle.Insert(item);
+                    else
+                        comprasDetalle.CopyAllFromExcept(item, x => new { x.Id, x.CompraId, x.Compra });
 
                 }
 

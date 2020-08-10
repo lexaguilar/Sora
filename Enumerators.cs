@@ -26,7 +26,7 @@ namespace Sora
         public enum FormaPagos{
             Contado = 1,
             Credito = 2
-        }
+        }        
 
         public enum TipoComprobante{
             Apertura = 1,
