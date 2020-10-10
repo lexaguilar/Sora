@@ -1,3 +1,3 @@
-import corteReducer from './appReducer';
+import appReducer from './appReducer';
 
-export default corteReducer;
+export default appReducer;

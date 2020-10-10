@@ -31,16 +31,20 @@ import Clientes from './inv/entidades/Clientes';
 import MobileHeader from './mobile/MobileHeader';
 import App from './app/Index';
 import Bancos from './conta/bancos/Index';
+import PrivateRoute from './header/PrivateRouter';
+import Login from './app/login';
 
 
 
 function Layout(props) {
     const { match, headerLayout } = props;
+
     const PrintCatalogos = catalogos.map(c => {
         return  <Route key={c} exact path={`${_path[String(headerLayout).toUpperCase()]}/${c}`} render={(props) => (
                     <Catalogo {...props} catalogo={c} />
         )} />
-    })
+    });
+
     return (
         <React.Fragment>          
 
@@ -58,26 +62,28 @@ function Layout(props) {
                 </header>
 
                 <div className="site__body">
+                
                     <Switch>
-                        <Route exact path={`${match.path}`} component={HomePage} />
-                        <Route exact path={`${_path.CONTA}/cuentas`} component={Cuentas} />                         
+                        <PrivateRoute component={HomePage} path={`${_path.INV}/`} />
+                        <PrivateRoute exact path={`${match.path}`} component={HomePage} />
+                        <PrivateRoute exact path={`${_path.CONTA}/cuentas`} component={Cuentas} />                         
                         {PrintCatalogos}
-                        <Route exact path={`${_path.CONTA}/tipoComprobantes`} render={props => <TipoComprobante {...props} /> } />                         
-                        <Route exact path={`${_path.CONTA}/asientos`} component={Asientos} />                         
-                        <Route exact path={`${_path.CONTA}/bancos`} component={Bancos} />                         
-                        <Route exact path={`${_path.CONTA}/configuracion/cortes`} component={Cortes} />                         
-                        <Route exact path={`${_path.CONTA}/configuracion/tasa-cambio`} component={TasaCambio} />                         
-                        <Route exact path={`${_path.CONTA}/centro-costo`} component={CentroCosto} />                         
-                        <Route exact path={`${_path.CONTA}/libro/mayor`} component={LibroMayor} />                         
-                        <Route exact path={`${_path.INV}/`} component={HomePage} />                   
+                        <PrivateRoute exact  path={`${_path.CONTA}/tipoComprobantes`} render={props => <TipoComprobante {...props} /> } />                         
+                        <PrivateRoute exact path={`${_path.CONTA}/asientos`} component={Asientos} />                         
+                        <PrivateRoute exact path={`${_path.CONTA}/bancos`} component={Bancos} />                         
+                        <PrivateRoute exact path={`${_path.CONTA}/configuracion/cortes`} component={Cortes} />                         
+                        <PrivateRoute exact path={`${_path.CONTA}/configuracion/tasa-cambio`} component={TasaCambio} />                         
+                        <PrivateRoute exact path={`${_path.CONTA}/centro-costo`} component={CentroCosto} />                         
+                        <PrivateRoute exact path={`${_path.CONTA}/libro/mayor`} component={LibroMayor} />       
                         <Route exact path={`${_path.INV}/inventario`} component={Inventario} />                   
-                        <Route exact path={`${_path.INV}/familia`} component={Familia} />                    
-                        <Route exact path={`${_path.INV}/proveedores`} component={Proveedores} />                    
-                        <Route exact path={`${_path.INV}/clientes`} component={Clientes} />                    
-                        <Route exact path={`${_path.INV}/compras`} component={Compras} />                    
+                        <PrivateRoute exact path={`${_path.INV}/familia`} component={Familia} />                    
+                        <PrivateRoute exact path={`${_path.INV}/proveedores`} component={Proveedores} />                    
+                        <PrivateRoute exact path={`${_path.INV}/clientes`} component={Clientes} />                    
+                        <PrivateRoute exact path={`${_path.INV}/compras`} component={Compras} />                    
                         <Route exact path={`${_path.INV}/facturas`} component={Facturas} />                    
-                        <Route exact path={`${_path.INV}/kardex`} component={Kardex} />                    
-                        <Route exact path={`${_path.APP}/inicio`} component={App} />                    
+                        <PrivateRoute exact path={`${_path.INV}/kardex`} component={Kardex} />                    
+                        <PrivateRoute exact path={`${_path.APP}/inicio`} component={App} />   
+                        <Route exact path={`${_path.APP}/login`} component={Login} />   
                     </Switch>
                 </div>
 

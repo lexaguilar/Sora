@@ -63,7 +63,7 @@ namespace Sora.Controllers
         public IActionResult GetById(int id)
         {
 
-            var compra = db.Compras.Include(x => x.ComprasDetalle).FirstOrDefault(x => x.Id == id);
+            var compra = db.Compras.Include(x => x.ComprasDetalle).ThenInclude(x => x.Inventario).ThenInclude(x =>x.AreaExistencias).FirstOrDefault(x => x.Id == id);
             return Json(compra);
 
         }
@@ -190,7 +190,14 @@ namespace Sora.Controllers
             compra.EntradaId = entrada.Id;
             entrada.CompraId = compra.Id;
 
-            
+            var app = db.App.FirstOrDefault();
+            if (app.GererarProcesosContables)
+            {
+                var asientosFactory = new AsientosFactory(db);
+                var result = asientosFactory.CreateFromEntrada(entrada, app); 
+                if(!result.IsValid)
+                    return BadRequest(result.Error);
+            }        
 
             db.SaveChanges();
 

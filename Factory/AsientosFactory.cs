@@ -22,9 +22,18 @@ namespace Sora.Factory
             this.factoryDetalle = new GenericFactory<AsientosDetalle>(db);
         }
 
-        public Asientos Save(Asientos asiento)
+        public ModelValidationSource<Asientos> Save(Asientos asiento)
         {
-            //TODO Validar que el asietno que se editar no este cerrado el corte
+            var cortes = db.Cortes.Where(x => x.Activo);
+
+            var model = asiento.validateForCortes(cortes);
+            if(!model.IsValid)
+                return model;
+
+            model = asiento.validate();
+            if(!model.IsValid)
+                return model;
+
             if (asiento.Id > 0)
             {
                 //Actializar encabezado
@@ -73,7 +82,8 @@ namespace Sora.Factory
 
             }
 
-            return asiento;
+            model.model = asiento;
+            return model;
         }
 
         private int getMax(int corteId)
@@ -85,28 +95,22 @@ namespace Sora.Factory
                 return 1;
         }
 
-        public Asientos CreateFromSalida(Salidas salida)
+        public ModelValidationSource<Asientos> CreateFromSalida(Salidas salida, App app)
         {
-            //Contabilizar
-
-            //Encabezado                    
-            var corte = db.Cortes.FirstOrDefault(x => x.Activo);
+            
+            //Encabezado           
             var asiento = new Asientos
-            {
-                CorteId = corte.Id,
-                Fecha = DateTime.Today,
+            {               
+                Fecha = salida.Fecha,
                 Concepto = "Registro de factura",
                 TipoComprobanteId = (int)TipoComprobante.Ingreso,
                 EstadoId = (int)Estados.Elaborado,
+                //TODO poner factura segun ti po de salida
                 Referencia = $"Factura#{salida.Numero}",
-                //TODO, corregir la moneda, dejar con enumerador
-                MonedaId = 1,
-                //TODO obtener la tasa de camnbio del  dia
-                TipoCambio = 0
+                MonedaId = salida.MonedaId,
+                TipoCambio = TasaCambio(salida.Fecha)
 
             };
-
-            var app = db.App.FirstOrDefault();
 
             var costo = Convert.ToDouble(salida.SalidasDetalle.Sum(x => Convert.ToDouble(x.CostoPromedio) * x.Cantidad));
 
@@ -146,9 +150,44 @@ namespace Sora.Factory
             asiento.AsientosDetalle.Add(asientoDetalleIPP);
             asiento.AsientosDetalle.Add(asientoDetalle);
 
-            asiento = Save(asiento);
+            var result = Save(asiento);
 
-            return asiento;
+            return result;
+        }
+
+        public ModelValidationSource<Asientos> CreateFromEntrada(Entradas entrada, App app)
+        {
+            //Encabezado    
+            var asiento = new Asientos
+            {               
+                Fecha = entrada.Fecha,
+                Concepto = "Registro de factura",
+                TipoComprobanteId = (int)TipoComprobante.Egreso,
+                EstadoId = (int)Estados.Elaborado,
+                //TODO poner compra segun ti po de salida
+                Referencia = $"Compra#{entrada.Numero}",
+                MonedaId = entrada.MonedaId,
+                TipoCambio = TasaCambio(entrada.Fecha)
+
+            };
+
+            var costo = Convert.ToDouble(entrada.EntradasDetalle.Sum(x => Convert.ToDouble(x.Costo) * x.Cantidad));
+            //Inventario
+            var asientoDetalleInv = CreateDetalle(app.VtaInventarioCuentaId, "Inventario", costo, 0);
+            //Iva acreditable
+            var iva = Convert.ToDouble(entrada.EntradasDetalle.Sum(x => x.IvaMonto));
+            var asientoDetalleIVAAcred = CreateDetalle(app.CompIvaAcreditableCuentaId, "IVA Acreditable", iva, 0);
+
+            var cuentaPorPagar = CreateDetalle(app.CompCtaxPagarCuentaId, "Cta por pagar", 0, costo + iva);
+
+            asiento.AsientosDetalle.Add(asientoDetalleInv);
+            asiento.AsientosDetalle.Add(asientoDetalleIVAAcred);
+            asiento.AsientosDetalle.Add(cuentaPorPagar);
+
+            var result = Save(asiento);
+
+            return result;
+
         }
 
         private AsientosDetalle CreateDetalle(int? cuentaId, string referencia, double debe, double haber)
@@ -160,6 +199,13 @@ namespace Sora.Factory
                 Debe = debe,
                 Haber = haber
             };
+        }
+
+        private double TasaCambio(DateTime fecha){            
+            var tasaCambio = db.TasaDeCambio.FirstOrDefault(x => x.Fecha == fecha);
+            if(tasaCambio == null)
+                return 0;
+            return tasaCambio.Cambio;
         }
 
     }

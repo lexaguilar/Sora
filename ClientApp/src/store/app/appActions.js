@@ -1,24 +1,28 @@
 import { GET_APPINFO, UPDATE_APPINFO } from './appActionTypes';
 import { createAction } from 'redux-actions';
 import http from '../../utils/http'
+import { handleError } from '../errorHandler/errorActions';
 
 const getAppInfoSuccess = createAction(GET_APPINFO);
-export const getAppInfo = () => async(dispatch) => {
-
+export const getAppInfo = () => dispatch => {
     http('about/get-info').asGet()
         .then(resp => dispatch(getAppInfoSuccess(resp)))
-        .catch(message => console.log(message));
+        .catch(error => error);
 
 };
 
 const setAppInfoSuccess = createAction(UPDATE_APPINFO);
 export const setAppInfo = data => async(dispatch) => {
-
-    http('about/set-info').asPost(data)
-        //dispatch(setAppInfoSuccess(setData(data, resp)));
-        .then(resp => dispatch(setAppInfoSuccess(setData(data, resp))))
-        .catch(message => console.log(message));
-
+    return new Promise((resolve, reject) => {
+        http('about/set-info').asPost(data)
+            .then(resp => {
+                dispatch(setAppInfoSuccess(setData(data, resp)));
+                resolve();
+            }).catch(err => {
+                console.log(err)
+                reject(err);
+            });
+    });
 };
 
 const setData = (currentData, newData) => {

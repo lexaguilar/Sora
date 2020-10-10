@@ -7,6 +7,7 @@ import Form, {
     Label,
     EmailRule,
     RequiredRule,
+    AsyncRule
 } from 'devextreme-react/form';
 import 'devextreme-react/text-area';
 import { setAppInfo } from '../../store/app/appActions';
@@ -18,29 +19,51 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.onValueChanged = this.onValueChanged.bind(this);
+        this.validationCallback = this.validationCallback.bind(this);
         this.state = {
-            defaultVisible: false
+            defaultVisible: false,
+            saving: false,
           };
     }
 
     handleSubmit(e) {
 
+        e.preventDefault();
+
         let { setAppInfo, app } = this.props;
 
-        setAppInfo(app).then(x => {
+        this.setState({ saving: true });
 
-            
-            notify({
-                message: 'sus cambios han sido guardados correctamente',
-                position: {
-                    my: 'center top',
-                    at: 'center top'
-                }
-            }, 'success', 3000);
-            
+        setAppInfo(app)
+        .then(x => {
+            this.setState({ saving: false });
+            notify({ message: 'Sus cambios han sido guardados correctamente'}, 'success', 3000)
+        })
+        .catch(err => {
+            this.setState({ saving: false });
+            notify({ message: err }, 'error', 3000)
         });
 
-        e.preventDefault();
+    }
+
+    onValueChanged(e){
+
+        this.setState({
+            defaultVisible : !e.value
+        })
+
+    }
+
+    validationCallback(params) {
+        let { app } = this.props;
+        return new Promise(resolve => {
+
+            let result = app.gererarProcesosContables && params.value > 0;
+            resolve(result);
+
+        })
+
     }
 
     render() {
@@ -48,15 +71,19 @@ class App extends React.Component {
         let { app } = this.props;
 
         let render = x => {
-            return  <SimpleItem dataField={x.name} id={x.name} editorType="dxSelectBox" 
-                        editorOptions={{                            
+            return  <SimpleItem dataField={x.name} id={x.name} editorType="dxSelectBox"
+                        editorOptions={{
+                            disabled : this.state.defaultVisible,
                             searchEnabled: true,
-                            dataSource: createCustomStore(uri.cuentasLevels(4))(), 
-                            valueExpr: "id", 
+                            dataSource: createCustomStore(uri.cuentasLevels(4))(),
+                            valueExpr: "id",
                             displayExpr: item => item ? `${item.numero} - ${item.descripcion}` : '',
                             showClearButton:true
                         }}>
-                        <Label text={x.caption} />                       
+                        <Label text={x.caption} />
+                        <AsyncRule
+                            message="Este campo es requerido para proceso contable"
+                            validationCallback={this.validationCallback} />
                     </SimpleItem>
         }
 
@@ -71,17 +98,16 @@ class App extends React.Component {
 
         const selectsComp = [
            {name : 'compIvaAcreditableCuentaId', caption: 'Cuenta Iva Acred'}
-           ,{name : 'compBancoCuentaId', caption: 'Cuenta Banco'}
-           ,{name : 'compProveedorCuentaId', caption: 'Cuenta Proveedor'}
+          ,{name : 'compCtaxPagarCuentaId', caption: 'Cuenta por pagar'}
         ].map(render);
 
         return (
             <div className="container small">
-                <form onSubmit={this.handleSubmit}>            
+                <form onSubmit={this.handleSubmit}>
                 <Form formData={app}>
                     <GroupItem caption="Datos Generales"  colCount={4}>
-                        <GroupItem colSpan={3}>                        
-                            <SimpleItem dataField="name" editorType="dxTextBox">
+                        <GroupItem colSpan={4}>
+                            <SimpleItem  dataField="name" editorType="dxTextBox">
                                 <RequiredRule message="El nombre es requerido" />
                                 <Label text="Nombre" />
                             </SimpleItem>
@@ -94,12 +120,12 @@ class App extends React.Component {
                             </SimpleItem>
                             <SimpleItem dataField="telefono" editorType="dxTextBox">
                                 <RequiredRule message="El telefono es requerido" />
-                            </SimpleItem>                                      
+                            </SimpleItem>
                         </GroupItem>
                     </GroupItem>
 
-                    <GroupItem caption="Configuración" colCount={4}>                  
-                        <GroupItem colSpan={2}>
+                    <GroupItem caption="Configuración" colCount={4}>
+                        <GroupItem colSpan={3}>
                             <SimpleItem dataField="cantDecimales"  editorType="dxNumberBox" >
                                 <RequiredRule message="El nombre es requerido" />
                                 <Label text="Decimales" />
@@ -107,50 +133,63 @@ class App extends React.Component {
                             <SimpleItem dataField="ivaAverage" editorType="dxNumberBox" >
                                 <RequiredRule message="El iva es requerido" />
                                 <Label text="IVA" />
-                            </SimpleItem>  
-                            <SimpleItem dataField="areaId" editorType="dxSelectBox" 
+                            </SimpleItem>
+                            <SimpleItem dataField="areaId" editorType="dxSelectBox"
                                 editorOptions={{
                                     dataSource: createStore('areas'), valueExpr: "id", displayExpr: "descripcion",
                                 }}>
                                 <RequiredRule message="El area es requerida" />
                                 <Label text="Area Inicial" />
-                            </SimpleItem>   
-                            <SimpleItem dataField="monedaId" editorType="dxSelectBox" 
+                            </SimpleItem>
+                            <SimpleItem dataField="monedaId" editorType="dxSelectBox"
                                 editorOptions={{
                                     dataSource: createStore('moneda'), valueExpr: "id", displayExpr: "descripcion", showClearButton:true
                                 }}>
                                 <Label text="Moneda" />
-                            </SimpleItem>                            
+                            </SimpleItem>
                         </GroupItem>
                     </GroupItem>
 
-                    <GroupItem caption="Configuración Contable Venta" colCount={4}>                  
-                        <GroupItem colSpan={3}>                            
-                            {selectsVta}                       
-                        </GroupItem>
-                    </GroupItem>  
+                    <GroupItem caption="Configuración Contable Venta" colCount={4}>
+                        <GroupItem colSpan={4}>
 
-                    <GroupItem caption="Configuración Contable Compra" colCount={4}>                  
-                        <GroupItem colSpan={3}>                            
-                            {selectsComp}                       
                         </GroupItem>
-                    </GroupItem>                    
-                    
+                        <SimpleItem  colSpan={4} dataField="gererarProcesosContables"
+                            editorType="dxCheckBox"
+                            editorOptions = {{
+                                onValueChanged : this.onValueChanged
+                            }}
+                            >
+                            <Label text="Generar procesos contables" />
+                        </SimpleItem>
+                        <GroupItem colSpan={4}>
+                            {selectsVta}
+                        </GroupItem>
+                    </GroupItem>
+
+                    <GroupItem caption="Configuración Contable Compra" colCount={4}>
+                        <GroupItem colSpan={4}>
+                            {selectsComp}
+                        </GroupItem>
+                    </GroupItem>
+
                     <ButtonItem horizontalAlignment="left" buttonOptions={{
-                        text: 'Guardar Informacion',
+                        text: this.state.saving ? 'Guardando...' : 'Guardar información',
                         type: 'success',
-                        useSubmitBehavior: true
+                        useSubmitBehavior: true,
+                        disabled:this.state.saving
                     }} />
 
                 </Form>
             </form>
-            </div>            
+            </div>
         );
     }
 }
 
 const mapStateToProps = state => ({
-    app: state.appInfo
+    app: state.appInfo,
+    error: state.error
 });
 
 const mapDispatchToPros = ({

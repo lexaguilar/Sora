@@ -140,8 +140,12 @@ namespace Sora.Controllers
 
             }
 
-            var asientosFactory = new AsientosFactory(db);
-            asientosFactory.CreateFromSalida(salida);            
+            var app = db.App.FirstOrDefault();
+            if (app.GererarProcesosContables)
+            {
+                var asientosFactory = new AsientosFactory(db);
+                asientosFactory.CreateFromSalida(salida, app);
+            }
 
             return Json(salida);
         }

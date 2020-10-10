@@ -31,5 +31,6 @@ const uri = {
 uri.compras.descargar = `compras/descargar`;
 uri.salidas.asFactura = `salidas/factura`;
 uri.cuentasLevels = level => `cuentas/get/nivel/${level}`;
+uri.account = 'account/auth';
 
 export default uri;

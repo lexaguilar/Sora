@@ -27,13 +27,21 @@ export default class InventarioDDBComponent extends React.Component {
         
         return (
           <div>
-            <div className="item-value">
+
+            <div className="item-descripcion">
                 <div className="item-numero">{cellData.data.numero}</div>
                 <div className="item-nombre">{cellData.data.nombre}</div>
+            </div>           
+            <div className="item-values">
                 
+                <div className={cellData.data.existencias > 0 ? "stock" : "item-stock-zero"}>
+                    Stock:  {cellData.data.existencias}
+                </div>
+                <div className="item-label">
+                    Precio: <span className="item-price">{formatToMoney(cellData.data.precio)}</span>
+                </div>
             </div>
-           
-            <div className="item-price">{formatToMoney(cellData.data.precio)}</div>
+          
           </div>
         );
       }
@@ -44,13 +52,13 @@ export default class InventarioDDBComponent extends React.Component {
                 dataSource={this.props.data.column.lookup.dataSource}
                 remoteOperations={true}
                 keyExpr="id"
-                height={250}
+                height={280}
                 selectedRowKeys={[this.state.currentValue]}
                 hoverStateEnabled={true}
                 onSelectionChanged={this.onSelectionChanged}
                 focusedRowEnabled={true}
                 defaultFocusedRowKey={this.state.currentValue}
-                onRowPrepared={this.onRowPrepared}
+                rowAlternationEnabled={true}
             >
                 <FilterRow visible={true} />
                 <HeaderFilter visible={true} />
@@ -60,15 +68,6 @@ export default class InventarioDDBComponent extends React.Component {
                 <Selection mode="single" />
             </DataGrid>
         );
-    }
-
-    onRowPrepared(e){
-        if (e.rowType == 'data') {
-
-            if (e.data.existencias == 0) 
-                e.rowElement.classList.add('estado-anulado');
-            
-        }
     }
 
     onSelectionChanged(e) {

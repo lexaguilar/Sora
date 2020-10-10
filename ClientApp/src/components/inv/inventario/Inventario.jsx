@@ -24,6 +24,8 @@ import Title from "../../shared/Title";
 
 class Inventario extends Component {
 
+   
+
     constructor(props) {
         super(props)
 
@@ -31,6 +33,8 @@ class Inventario extends Component {
         this.dataGrid = null;
         this.onRowDblClick = this.onRowDblClick.bind(this);
         this.onToolbarPreparing = this.onToolbarPreparing.bind(this);
+
+        console.log('inventario');
 
     }
 
@@ -59,14 +63,6 @@ class Inventario extends Component {
             }
         })
     }
-
-    // onRowPrepared(e) {
-    //     if (e.rowType == 'data') {
-    //         if (e.data.estadoId == estadoAsiento.anulado) {
-    //             e.rowElement.classList.add('asiento-anulado');
-    //         }
-    //     }
-    // }
 
     onRowDblClick(e) {
         this.dataGrid.instance.editRow(e.rowIndex);

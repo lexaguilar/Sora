@@ -7,6 +7,7 @@ namespace Sora.Models.SaraModel
     {
         public Cuentas()
         {
+            AppCompCtaxPagarCuenta = new HashSet<App>();
             AppCompIvaAcreditableCuenta = new HashSet<App>();
             AppVtaCajaGeneralCuenta = new HashSet<App>();
             AppVtaClienteCuenta = new HashSet<App>();
@@ -32,6 +33,7 @@ namespace Sora.Models.SaraModel
         public virtual Grupos Grupo { get; set; }
         public virtual Naturaleza Naturaleza { get; set; }
         public virtual TipoCuenta TipoCuenta { get; set; }
+        public virtual ICollection<App> AppCompCtaxPagarCuenta { get; set; }
         public virtual ICollection<App> AppCompIvaAcreditableCuenta { get; set; }
         public virtual ICollection<App> AppVtaCajaGeneralCuenta { get; set; }
         public virtual ICollection<App> AppVtaClienteCuenta { get; set; }

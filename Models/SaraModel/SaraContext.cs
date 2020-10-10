@@ -53,6 +53,7 @@ namespace Sora.Models.SaraModel
         public virtual DbSet<TipoCuenta> TipoCuenta { get; set; }
         public virtual DbSet<TipoPago> TipoPago { get; set; }
         public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }
+        public virtual DbSet<UsuarioEstado> UsuarioEstado { get; set; }
         public virtual DbSet<Usuarios> Usuarios { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -95,6 +96,11 @@ namespace Sora.Models.SaraModel
                     .HasForeignKey(d => d.AreaId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_App_Areas");
+
+                entity.HasOne(d => d.CompCtaxPagarCuenta)
+                    .WithMany(p => p.AppCompCtaxPagarCuenta)
+                    .HasForeignKey(d => d.CompCtaxPagarCuentaId)
+                    .HasConstraintName("FK_App_Cuentas7");
 
                 entity.HasOne(d => d.CompIvaAcreditableCuenta)
                     .WithMany(p => p.AppCompIvaAcreditableCuenta)
@@ -943,9 +949,20 @@ namespace Sora.Models.SaraModel
                     .HasMaxLength(50);
             });
 
+            modelBuilder.Entity<UsuarioEstado>(entity =>
+            {
+                entity.Property(e => e.Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<Usuarios>(entity =>
             {
                 entity.HasKey(e => e.Username);
+
+                entity.HasIndex(e => e.AreaId)
+                    .HasName("IX_Usuarios_Area");
 
                 entity.Property(e => e.Username).HasMaxLength(50);
 
@@ -960,6 +977,18 @@ namespace Sora.Models.SaraModel
                 entity.Property(e => e.Password)
                     .IsRequired()
                     .HasMaxLength(500);
+
+                entity.HasOne(d => d.Area)
+                    .WithMany(p => p.Usuarios)
+                    .HasForeignKey(d => d.AreaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Usuarios_Areas");
+
+                entity.HasOne(d => d.Estado)
+                    .WithMany(p => p.Usuarios)
+                    .HasForeignKey(d => d.EstadoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Usuarios_UsuarioEstado");
             });
 
             OnModelCreatingPartial(modelBuilder);

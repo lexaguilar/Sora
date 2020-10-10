@@ -40,7 +40,7 @@ function Topbar(props) {
                     <div className="topbar__spring" />
                     <div className="topbar__item">
                         <Dropdown
-                            title={<FormattedMessage id="topbar.miCuenta" defaultMessage={<b>{user.username}</b>} />}
+                            title={<b>{user.username}</b>}
                             items={accountLinks}
                         />
                     </div>                   

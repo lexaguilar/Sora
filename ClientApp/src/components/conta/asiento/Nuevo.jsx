@@ -32,8 +32,9 @@ class Nuevo extends React.Component {
     this.onRowUpdated = this.onRowUpdated.bind(this);
     this.getFilteredCentroCosto = this.getFilteredCentroCosto.bind(this);
     this.state = {
-      comprobante: Object.assign({}, defaultComprobante),
-      comprobanteDetalle: []
+      comprobante: {...defaultComprobante},
+      comprobanteDetalle: [],
+      saving: false,
     };
   }
 
@@ -111,7 +112,7 @@ class Nuevo extends React.Component {
       })
     } else {
       this.setState({
-        comprobante: Object.assign({}, defaultComprobante),
+        comprobante: {...defaultComprobante},
         comprobanteDetalle: []
       });
     }
@@ -121,7 +122,7 @@ class Nuevo extends React.Component {
   onHiding({ cancel }) {
 
     this.setState({
-      comprobante: Object.assign({}, defaultComprobante),
+      comprobante: {...defaultComprobante},
       comprobanteDetalle: []
     });
 
@@ -144,8 +145,7 @@ class Nuevo extends React.Component {
   }
 
   save() {
-
-    const { user } = this.props;
+    
     var result = this.refAsiento.instance.validate();
     if (result.isValid) {
       let detalle = this.refAsientosDetalle.instance.option('dataSource').filter(x => x.cuentaId > 0);
@@ -162,13 +162,16 @@ class Nuevo extends React.Component {
 
         let asiento = this.refAsiento.instance.option('formData');
 
-        asiento.asientosDetalle = detalle;
-        asiento.corteId = user.corteId;
-
+        asiento.asientosDetalle = detalle;        
+        this.setState({ saving: true });
         http(uri.asientos.insert).asPost(asiento).then(r => {
           notify({ message: "Registro guardado correctamente" });
+          this.setState({ saving: false });
           this.onHiding({ cancel: true });
 
+        }).catch(message => {
+          this.setState({ saving: false });
+          notify({ message }, 'error');
         });
       }
     }
@@ -183,7 +186,7 @@ class Nuevo extends React.Component {
       let newState = { ...asiento, ...{ tipoCambio: r ? r.cambio : 0 } }
 
       this.setState({
-        comprobante: Object.assign({}, newState)
+        comprobante: {...newState}
       });
     })
   }
@@ -366,12 +369,13 @@ class Nuevo extends React.Component {
           <Button
             visible={editable}
             width={120}
-            text="Guardar"
+            text={this.state.saving ? 'Guardando...' : 'Guardar'}
             type="success"
             icon="save"
             stylingMode="contained"
             className="m-1"
             onClick={this.save}
+            disabled={this.state.saving}
           />
         </Popup>
       </div>
@@ -380,7 +384,6 @@ class Nuevo extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.user,
   asiento: state.asiento
 });
 

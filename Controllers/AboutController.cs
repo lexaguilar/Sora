@@ -34,6 +34,10 @@ namespace Sora.Controllers
         [HttpPost("api/about/set-info")]
         public IActionResult Set([FromBody]App app)
         {
+            var model = app.ApplyRules().validate();
+
+            if(!model.IsValid)
+                return BadRequest(model.Error);
 
             if(db.App.Any(x => x.Id == app.Id)){
                 factory.Update(app);

@@ -16,9 +16,9 @@ namespace Sora.Models.SaraModel
             return this;
         }
 
-        public ModelValidation validate()
+        public ModelValidationSource<Compras> validate()
         {
-            var modelValidation = new ModelValidation();
+            var modelValidation = new ModelValidationSource<Compras>(this);
 
             if(FormaPagoId == 0) return modelValidation.AsError("Debe seleccionar la forma de pago");
 
@@ -29,9 +29,9 @@ namespace Sora.Models.SaraModel
             return modelValidation.AsOk();
         }
 
-        public ModelValidation validate(Compras compraModificada)
+        public ModelValidationSource<Compras> validate(Compras compraModificada)
         {
-            var modelValidation = new ModelValidation();
+            var modelValidation = new ModelValidationSource<Compras>(this);
 
              if (compraModificada.EtapaId == (int)CompraEtapas.Recibida)
                 return modelValidation.AsError($"No se puede editar una compra en la etapa recibida");

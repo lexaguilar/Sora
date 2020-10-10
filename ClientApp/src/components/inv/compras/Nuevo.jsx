@@ -371,6 +371,7 @@ class Nuevo extends React.Component {
                 editorType="dxSelectBox"
                 editorOptions={{
                   valueExpr: "id", displayExpr: "nombre",
+                  searchEnabled: true,
                   disabled: !editable, dataSource: createStoreLocal({ name: 'proveedores', local: this.storeTransient })
                 }} >
                 <Label text="Proveedor" />

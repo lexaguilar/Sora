@@ -11,6 +11,7 @@ namespace Sora.Models.SaraModel
             AreaExistencias = new HashSet<AreaExistencias>();
             Entradas = new HashSet<Entradas>();
             Salidas = new HashSet<Salidas>();
+            Usuarios = new HashSet<Usuarios>();
         }
 
         public int Id { get; set; }
@@ -20,5 +21,6 @@ namespace Sora.Models.SaraModel
         public virtual ICollection<AreaExistencias> AreaExistencias { get; set; }
         public virtual ICollection<Entradas> Entradas { get; set; }
         public virtual ICollection<Salidas> Salidas { get; set; }
+        public virtual ICollection<Usuarios> Usuarios { get; set; }
     }
 }

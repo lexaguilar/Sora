@@ -20,7 +20,7 @@ function AppLink(props) {
 
         link = <a href={to} {...linkProps}>{children}</a>;
     } else {
-        link = <Link {...otherProps}>{children}</Link>;
+        link = <Link to={otherProps?.to||'/'} {...otherProps}>{children}</Link>;
     }
 
     return link;
