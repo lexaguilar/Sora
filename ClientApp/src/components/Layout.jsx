@@ -23,7 +23,7 @@ import Catalogo from './shared/Catalogos';
 import { _path } from '../data/headerNavigation';
 import Familia from './inv/familia/Familia';
 import Inventario from './inv/inventario/Inventario';
-import Proveedores from './inv/entidades/Proveedores';
+// import Proveedores from './inv/entidades/Proveedores';
 import Compras from './inv/compras';
 import Facturas from './inv/facturas/Index';
 import Kardex from './inv/reportes/Kardex';
@@ -76,7 +76,7 @@ function Layout(props) {
                         <PrivateRoute exact path={`${_path.CONTA}/libro/mayor`} component={LibroMayor} />       
                         <PrivateRoute exact path={`${_path.INV}/inventario`} component={Inventario} />              
                         <PrivateRoute exact path={`${_path.INV}/familia`} component={Familia} />                    
-                        <PrivateRoute exact path={`${_path.INV}/proveedores`} component={Proveedores} />                    
+                        {/* <PrivateRoute exact path={`${_path.INV}/proveedores`} component={Proveedores} />                     */}
                         <PrivateRoute exact path={`${_path.INV}/clientes`} component={Clientes} />                    
                         <PrivateRoute exact path={`${_path.INV}/compras`} component={Compras} />                    
                         <PrivateRoute exact path={`${_path.INV}/facturas`} component={Facturas} />                    
