@@ -8,5 +8,6 @@ namespace Sora.Models.SaraModel
     public partial class Grupos : ModelExtension<Grupos >  {  }
     public partial class FormaPago : ModelExtension<FormaPago >  {  }
     public partial class Familia : ModelExtension<Familia >  {  }
+    public partial class Bancos : ModelExtension<Bancos >  {  }
 
 }

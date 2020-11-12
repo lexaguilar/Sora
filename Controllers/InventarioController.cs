@@ -32,7 +32,7 @@ namespace Sora.Controllers
             if (values.ContainsKey("nombre"))
             {
                 var nombre = values["nombre"];
-                inventarios = inventarios.Where(x => x.Nombre.StartsWith(nombre));
+                inventarios = inventarios.Where(x => x.Nombre.Contains(nombre));
             }
 
             if (values.ContainsKey("numero"))
@@ -113,7 +113,8 @@ namespace Sora.Controllers
                     x.Nombre,
                     x.Descripcion,
                     x.EstadoId,
-                    x.Numero
+                    x.Numero,
+                    x.Servicio
                 });
 
                 if (numeroMax != 0)
@@ -241,10 +242,7 @@ namespace Sora.Controllers
                         }).ToArray();
 
             return Json(resultEntradas.Concat(resultSalidas).OrderBy(x => x.Fecha));
-
-
                         
         }
-
     }
 }

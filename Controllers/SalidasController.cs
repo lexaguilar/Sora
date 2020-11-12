@@ -39,6 +39,18 @@ namespace Sora.Controllers
                 salidas = salidas.Where(x => x.TipoId == tipoId);
             }
 
+            if (values.ContainsKey("areaId"))
+            {
+                var areaId = Convert.ToInt32(values["areaId"]);
+                salidas = salidas.Where(x => x.AreaId == areaId);
+            }
+
+            if (values.ContainsKey("formaPagoId"))
+            {
+                var formaPagoId = Convert.ToInt32(values["formaPagoId"]);
+                salidas = salidas.Where(x => x.FormaPagoId == formaPagoId);
+            }
+
             if (values.ContainsKey("estadoId"))
             {
                 var estadoId = Convert.ToInt32(values["estadoId"]);
@@ -140,8 +152,12 @@ namespace Sora.Controllers
 
             }
 
-            var asientosFactory = new AsientosFactory(db);
-            asientosFactory.CreateFromSalida(salida);            
+            var app = db.App.FirstOrDefault();
+            if (app.GererarProcesosContables)
+            {
+                var asientosFactory = new AsientosFactory(db);
+                asientosFactory.CreateFromSalida(salida, app);
+            }
 
             return Json(salida);
         }

@@ -25,11 +25,15 @@ namespace Sora.Models.SaraModel
         public int EstadoId { get; set; }
         public int PlazoCredito { get; set; }
         public int? TipoPagoId { get; set; }
+        public int MonedaId { get; set; }
+        public int? BancoId { get; set; }
 
         public virtual Areas Area { get; set; }
+        public virtual Bancos Banco { get; set; }
         public virtual Clientes Cliente { get; set; }
         public virtual SalidaEstado Estado { get; set; }
         public virtual FormaPago FormaPago { get; set; }
+        public virtual Moneda Moneda { get; set; }
         public virtual SalidaTipos Tipo { get; set; }
         public virtual TipoPago TipoPago { get; set; }
         public virtual ICollection<SalidasDetalle> SalidasDetalle { get; set; }

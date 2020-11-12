@@ -1,6 +1,7 @@
 ﻿
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Sora.Factory;
 using Sora.Models.SaraModel;
 using Sora.ViewModel;
@@ -20,7 +21,7 @@ namespace Sora.Controllers
         [Route("api/about/get-info")]
         public IActionResult Get()
         {
-            App app = factory.FirstOrDefault();
+            App app = db.App.Include(x => x.Moneda).FirstOrDefault();
 
             if(app==null)
                 return BadRequest("Los valores iniciales de la aplicacion no estan establecidos");
@@ -33,8 +34,12 @@ namespace Sora.Controllers
         [HttpPost("api/about/set-info")]
         public IActionResult Set([FromBody]App app)
         {
+            var model = app.ApplyRules().validate();
 
-            if(db.App.Any(x => x.Name == app.Name)){
+            if(!model.IsValid)
+                return BadRequest(model.Error);
+
+            if(db.App.Any(x => x.Id == app.Id)){
                 factory.Update(app);
             }else
                 factory.Insert(app);

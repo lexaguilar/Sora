@@ -34,7 +34,7 @@ class Asientos extends Component {
         this.onRowDblClick = this.onRowDblClick.bind(this);
         this.onToolbarPreparing = this.onToolbarPreparing.bind(this);
 
-
+        console.log('asientos');
     }
 
     reload() {
@@ -87,7 +87,7 @@ class Asientos extends Component {
                 msgDeleted: 'Cuenta eliminada correctamente',
                 remoteOperations: remoteOperations
             });
-        const title = "Centro de costo";
+        const title = "Comprobantes";
         return (
             <div className="container">
                 <Title title={title}/>

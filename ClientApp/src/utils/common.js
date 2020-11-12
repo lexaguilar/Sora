@@ -1,6 +1,6 @@
 import numeral from 'numeral'
 import React from 'react'
-import { tipoMovimiento } from '../data/catalogos';
+import { tipoMovimiento, monedaSymbol } from '../data/catalogos';
 /**
  * returna una cadena en tipo capital
  * @param {String} string -  cadena de texto a covertir en Capital
@@ -20,7 +20,7 @@ export const cellRenderBold = data => cellAsBold(formatToMoney(data.value));
 
 export const formatId = value => numeral(value).format('000000');
 
-export const formatToMoney = value => numeral(value).format('0,0.00');
+export const formatToMoney = (value, moneda) =>`${monedaSymbol[moneda]||''} ${numeral(value).format('0,0.00')}` ;
 
 export const customizeTextAsPercent = data => `${data.value || 0} %`
 

@@ -20,6 +20,9 @@ namespace Sora.Models.SaraModel
             this.Total = compras.Iva;
             this.CompraId = compras.Id;
             this.EstadoId = (int)Estados.Elaborado;
+            this.BancoId = compras.BancoId;
+            this.MonedaId = compras.MonedaId;
+            this.TipoPagoId = compras.TipoPagoId;
         }
 
         private int getMax(SaraContext db)

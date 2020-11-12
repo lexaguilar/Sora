@@ -22,7 +22,7 @@ function Topbar(props) {
     const accountLinks = [
         { title: 'Editar Perfil', url: '/account/profile' },
         { title: 'Password', url: '/account/password' },
-        { title: 'Salir', url: '/account/login' },
+        { title: 'Salir', url: '/app/logout' },
     ];
 
     const linksList = links.map((item, index) => (
@@ -40,7 +40,7 @@ function Topbar(props) {
                     <div className="topbar__spring" />
                     <div className="topbar__item">
                         <Dropdown
-                            title={<FormattedMessage id="topbar.miCuenta" defaultMessage={<b>{user.username}</b>} />}
+                            title={<b>{user.username}</b>}
                             items={accountLinks}
                         />
                     </div>                   

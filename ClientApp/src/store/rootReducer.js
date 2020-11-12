@@ -11,7 +11,9 @@ import asientoReducer from './asiento'
 import libroMayorReducer from './libroMayor'
 import compraReducer from './compra'
 import facturaReducer from './factura'
-import app from './app';
+import servicioReducer from './servicio'
+import appReducer from './app';
+import errorReducer from './errorHandler';
 
 
 export default combineReducers({
@@ -25,5 +27,7 @@ export default combineReducers({
     libroMayor: libroMayorReducer,
     compra: compraReducer,
     factura: facturaReducer,
-    appInfo: app,
+    servicio: servicioReducer,
+    appInfo: appReducer,
+    error: errorReducer
 });

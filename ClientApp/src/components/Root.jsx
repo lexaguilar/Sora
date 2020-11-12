@@ -8,6 +8,7 @@ import {
 import Layout from './Layout';
 import { locale, loadMessages } from "devextreme/localization";
 import { esMessages } from '../data/dx.messages.es';
+import PrivateRoute from './header/PrivateRouter';
 
 export default class Root extends Component {
 
@@ -36,7 +37,7 @@ export default class Root extends Component {
         return (
             <BrowserRouter basename={process.env.PUBLIC_URL}>
                 <Switch>
-                    <Route
+                    <PrivateRoute
                         path="/conta"
                         render={(props) => (
                             <Layout {...props} headerLayout='conta'  />
@@ -51,7 +52,7 @@ export default class Root extends Component {
                     <Route
                         path="/app"
                         render={(props) => (
-                            <Layout {...props} headerLayout='caja'/>
+                            <Layout {...props} headerLayout='app'/>
                         )}
                     />
                     <Redirect to='/conta'/>

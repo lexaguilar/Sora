@@ -1,6 +1,6 @@
 import React from 'react';
 import { Popup, Button } from 'devextreme-react';
-import Form, { SimpleItem, GroupItem, Label } from 'devextreme-react/form';
+import Form, { SimpleItem, GroupItem, Label, AsyncRule } from 'devextreme-react/form';
 import 'devextreme-react/text-area';
 import { createStoreLocal } from '../../../utils/proxy';
 import { Column, SearchPanel, Lookup, Editing, RequiredRule, StringLengthRule, Scrolling, Button as ButtonGrid }
@@ -16,6 +16,7 @@ import { updateFactura } from '../../../store/factura/facturaActions';
 import Resumen from '../../shared/Resumen';
 import { formaPago } from '../../../data/catalogos';
 import InventarioDDBComponent from './InventarioDDBComponent';
+import { editorOptionsSelect } from '../../../data/app';
 
 class Nuevo extends React.Component {
   constructor(props) {
@@ -37,10 +38,13 @@ class Nuevo extends React.Component {
     this.calculateResumen = this.calculateResumen.bind(this);
     this.onRowInserting = this.onRowInserting.bind(this);
     this.save = this.save.bind(this);
+    this.validationCallback = this.validationCallback.bind(this);
+    this.validationTipoPago = this.validationTipoPago.bind(this);
 
     this.state = {
-      factura: Object.assign({}, defaultFactura),
+      factura: {...defaultFactura},
       facturasDetalle: [],
+      monedaId: 0,
       saving: false,
       esCredito : false
     };
@@ -98,9 +102,7 @@ class Nuevo extends React.Component {
   }
 
   onShowing(e) {
-    const { factura } = this.props;
-
-    console.log(defaultFactura);
+    const { factura, app } = this.props;
 
     if (factura.id > 0) {
       http(uri.salidas.getById(factura.id)).asGet().then(r => {
@@ -113,7 +115,7 @@ class Nuevo extends React.Component {
       })
     } else {      
       this.setState({
-        factura: Object.assign({}, defaultFactura),
+        factura: {...defaultFactura, ...{ monedaId: app.monedaId } },
         facturasDetalle: []
       });
     }
@@ -149,8 +151,6 @@ class Nuevo extends React.Component {
     let result = this.refFactura.instance.validate();
     isValid = result.isValid;
 
-    console.log(formaPago);
-
     let factura = this.refFactura.instance.option('formData');
     if (factura.formaPagoId == formaPago.credito && (factura.plazoCredito == '' || factura.plazoCredito <= 0)) {
       isValid = false;
@@ -160,7 +160,8 @@ class Nuevo extends React.Component {
     if(factura.formaPagoId == formaPago.credito)
       factura.tipoPagoId = null;
 
-    console.log(factura.tipoPagoId);
+    if(factura.formaPagoId == formaPago.contado)
+      factura.plazoCredito = 0;
     
     if(factura.formaPagoId == formaPago.contado && (factura.tipoPagoId == 0 || factura.tipoPagoId == null)){
       isValid = false;
@@ -248,9 +249,48 @@ class Nuevo extends React.Component {
 
   }
 
+  onValueChanged = e => {
+
+    this.setState({
+      monedaId: e.value
+    });
+
+  }
+
+  validationCallback(params) {
+    return new Promise(resolve => {
+
+      if (this.refFactura) {
+        
+        let factura = this.refFactura.instance.option('formData')
+        
+        let result = factura.formaPagoId == formaPago.credito && params.value > 0;
+        resolve(result);
+      }
+      resolve(true);
+    })
+
+  }
+
+  validationTipoPago(params) {
+
+    return new Promise(resolve => {
+
+      if (this.refFactura) {
+        let factura = this.refFactura.instance.option('formData')
+        
+        let result = factura.formaPagoId == formaPago.contado && parseInt(params.value) > 0;
+        resolve(result);
+      }
+
+      resolve(true)
+    });
+
+  }
+
   render() {
 
-    const { factura: { editable, open, id } } = this.props;
+    const { factura: { editable, open, id }, app } = this.props;
 
     return (
       <div id="container">
@@ -288,27 +328,21 @@ class Nuevo extends React.Component {
                 }} >
                 <Label text="Cliente" />
                 <RequiredRule message="Seleccione el cliente" />
-              </SimpleItem>           
-              
-              <SimpleItem dataField="plazoCredito"
-                editorType="dxNumberBox"
-                editorOptions={{
-                  disabled: !editable
-                }} >
               </SimpleItem>
 
               <SimpleItem dataField="formaPagoId"
                 editorType="dxSelectBox"
                 editorOptions={{
-                  disabled: !editable,
-                  dataSource: createStoreLocal({ name: 'formaPago', local: this.storeTransient }),
-                  valueExpr: "id",
-                  displayExpr: "descripcion",
-                  onValueChanged: item => {
+                  ...editorOptionsSelect,
+                  ...{
+                    disabled: !editable,
+                    dataSource: createStoreLocal({ name: 'formaPago', local: this.storeTransient }),
+                    onValueChanged: item => {
 
-                    this.setState({ esCredito : item.value == formaPago.credito })                     
+                      this.setState({ esCredito : item.value == formaPago.credito })                     
 
-                  } 
+                    } 
+                  }                  
                 }} >
                 <Label text="Forma de pago" />
                 <RequiredRule message="Seleccione la forma de pago" />
@@ -317,18 +351,42 @@ class Nuevo extends React.Component {
               <SimpleItem dataField="tipoPagoId"
                 editorType="dxSelectBox"
                 editorOptions={{
-                  disabled: !editable || this.state.esCredito,
-                  dataSource:  this.state.esCredito ? [] : createStoreLocal({ name: 'tipoPago', local: this.storeTransient }),
-                  valueExpr: "id",
-                  displayExpr: "descripcion"
+                  ...editorOptionsSelect,
+                  ...{
+                    disabled: !editable || this.state.esCredito,
+                    dataSource:  this.state.esCredito ? [] : createStoreLocal({ name: 'tipoPago', local: this.storeTransient }),
+                  }
                 }} >
                 <Label text="Tipo de pago" />
+                <AsyncRule
+                  message="El tipo de pago es requerido"
+                  validationCallback={this.validationTipoPago} />
+              </SimpleItem>
+
+              <SimpleItem dataField="plazoCredito"
+                editorType="dxNumberBox"
+                editorOptions={{
+                  disabled: !editable || !this.state.esCredito
+                }} >
+                <Label text="Dias crédito" />
+                <AsyncRule
+                  message="Los dias de plazo son requerido"
+                  validationCallback={this.validationCallback} />
               </SimpleItem>
               
             </GroupItem>
             <GroupItem colCount={3}>
+              <SimpleItem dataField="monedaId"
+                editorType="dxSelectBox"
+                editorOptions={{
+                  ...editorOptionsSelect,
+                  ...{ disabled: !editable, dataSource: app.moneda, onValueChanged: this.onValueChanged }
+                }} >
+                <Label text="Moneda" />
+                <RequiredRule message="Seleccione la moneda" />
+              </SimpleItem>
               <SimpleItem dataField="observacion"
-                colSpan={3}
+                colSpan={2}
                 editorOptions={{
                   disabled: !editable
                 }} >
@@ -389,10 +447,10 @@ class Nuevo extends React.Component {
             </GroupItem>
             <GroupItem colCount={1}>
               <div className="resumen">
-                <Resumen title="Sub total" value={this.state.factura.subTotal} />
-                <Resumen title="Descuento" value={this.state.factura.descuento} />
-                <Resumen title="Iva" value={this.state.factura.iva} />
-                <Resumen title="Total" value={this.state.factura.total} />
+              <Resumen title="Sub total" value={this.state.factura.subTotal} monedaId={this.state.factura.monedaId} />
+                <Resumen title="Descuento" value={this.state.factura.descuento} monedaId={this.state.factura.monedaId} />
+                <Resumen title="Iva" value={this.state.factura.iva} monedaId={this.state.factura.monedaId} />
+                <Resumen title="Total" value={this.state.factura.total} monedaId={this.state.factura.monedaId} />
               </div>
             </GroupItem>
           </Form>
@@ -415,7 +473,8 @@ class Nuevo extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  factura: state.factura
+  factura: state.factura,
+  app: state.appInfo
 });
 
 const mapDispatchToPros = ({
