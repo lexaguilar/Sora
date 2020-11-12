@@ -15,12 +15,12 @@ import { DataGrid } from 'devextreme-react';
 import { createStore } from "../../../utils/proxy";
 import { store } from "../../../services/store";
 import Nuevo from "./Nuevo";
-import numeral from 'numeral'
 import { connect } from 'react-redux';
 import { updateAsiento } from '../../../store/asiento/asientoActions'
 import { estadoAsiento } from "../../../data/catalogos";
 import BlockHeader from "../../shared/BlockHeader";
 import { formatId } from "../../../utils/common";
+import Title from "../../shared/Title";
 
 class Asientos extends Component {
 
@@ -34,7 +34,7 @@ class Asientos extends Component {
         this.onRowDblClick = this.onRowDblClick.bind(this);
         this.onToolbarPreparing = this.onToolbarPreparing.bind(this);
 
-
+        console.log('asientos');
     }
 
     reload() {
@@ -87,10 +87,11 @@ class Asientos extends Component {
                 msgDeleted: 'Cuenta eliminada correctamente',
                 remoteOperations: remoteOperations
             });
-
+        const title = "Comprobantes";
         return (
             <div className="container">
-                <BlockHeader title="Comprobantes" />
+                <Title title={title}/>
+                <BlockHeader title={title} />
                 <Nuevo onSave={this.reload} />
                 <DataGrid
                     ref={(ref) => this.dataGrid = ref}

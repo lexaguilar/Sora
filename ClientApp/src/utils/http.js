@@ -1,14 +1,16 @@
+import notify from "devextreme/ui/notify";
+
 const root = process.env.PUBLIC_URL;
 const path = `${root}/api/`;
 const http = url => {
 
     let base = (url, properties) => {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
 
             fetch(`${url}`, properties)
-                .then(response => response.json())
-                .then(response => resolve(response))
-                .catch(error => console.error('Error:', error));
+                .then(processResponse)
+                .catch(error => reject(error))
+                .then(response => resolve(response));
 
         })
     };
@@ -47,7 +49,7 @@ const http = url => {
 
         },
         asPost: data => {
-            return new Promise(resolve => {
+            return new Promise((resolve, reject) => {
                 fetch(_url, {
                         method: 'POST',
                         body: data ? JSON.stringify(data) : null,
@@ -55,9 +57,9 @@ const http = url => {
                             "Content-Type": "application/json;charset=UTF-8"
                         }
                     })
-                    .then(response => response.json())
-                    .then(response => resolve(response))
-                    .catch(error => console.error('Error:', error));
+                    .then(processResponse)
+                    .catch(error => reject(error))
+                    .then(response => resolve(response));
             })
         },
         asDelete: (data = null) => {
@@ -81,6 +83,23 @@ const http = url => {
         },
     }
 }
+
+const processResponse = resp => {
+
+    return new Promise((resolve, reject) => {
+
+        if (resp.status == 400)
+            resp.text().then(err => reject(err));
+
+
+        if (resp.status == 200)
+            resp.json().then(data => resolve(data))
+
+    })
+
+}
+
+
 
 export { path };
 export default http;

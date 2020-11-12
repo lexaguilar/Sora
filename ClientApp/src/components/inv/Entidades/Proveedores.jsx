@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { DataGrid } from 'devextreme-react';
 import { Item } from 'devextreme-react/form';
 import {
@@ -12,20 +12,17 @@ import {
     Editing,
     Popup,
     Form,
-    NumericRule,
     RequiredRule,
     StringLengthRule,
     EmailRule,
     PatternRule
 } from 'devextreme-react/data-grid';
 
-
 import uri from '../../../utils/uri';
 import { store } from '../../../services/store';
 import Title from '../../shared/Title';
 import BlockHeader from '../../shared/BlockHeader';
 import { phonePattern, phoneRules } from '../../../utils/common';
-
 
 function Proveedores() {
     const title = "Proveedores";
@@ -49,7 +46,7 @@ function Proveedores() {
                 <FilterRow visible={true} />
                 <HeaderFilter visible={true} />
                 <ColumnChooser enabled={true} />
-                <Export enabled={true} fileName="Familia" allowExportSelectedData={true} />
+                <Export enabled={true} fileName={title} allowExportSelectedData={true} />
                 <Column dataField="nombre" width={300} />
                 <Column dataField="contacto" width={300}  />
                 <Column dataField="telefono" />
@@ -76,6 +73,7 @@ function Proveedores() {
                                 <PatternRule message="The phone must have a correct USA phone format" pattern={phonePattern} />
                             </Item>
                             <Item dataField="correo" editorOptions={{ width: 250 }} >
+                                <StringLengthRule max={50} message="50 caracteres como máximo" />
                                 <EmailRule message="Correo invalida" />
                             </Item>
                         </Item>

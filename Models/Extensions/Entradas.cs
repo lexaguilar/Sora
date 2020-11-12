@@ -1,17 +1,17 @@
 using System;
 using System.Linq;
+using Sora.Extensions;
 using static Sora.Enumerators;
 
 namespace Sora.Models.SaraModel
 {
     public partial class Entradas : ModelExtension<Entradas>
     {
-        internal void InitFromCompras(SaraContext db, Compras compras)
+        internal void InitFromCompras(SaraContext db, Compras compras,AppUser user)
         {
-            this.AreaId = 1;
+            this.AreaId = user.AreaId;
             this.TipoId = (int)EntradaTipo.Compras;
             this.Fecha = DateTime.Today;
-            //TODO quitar obetener del area principal de config
             this.Numero = getMax(db);
             this.Observacion = compras.Observacion;
             this.SubTotal = compras.SubTotal;
@@ -19,6 +19,10 @@ namespace Sora.Models.SaraModel
             this.Iva = compras.Total;
             this.Total = compras.Iva;
             this.CompraId = compras.Id;
+            this.EstadoId = (int)Estados.Elaborado;
+            this.BancoId = compras.BancoId;
+            this.MonedaId = compras.MonedaId;
+            this.TipoPagoId = compras.TipoPagoId;
         }
 
         private int getMax(SaraContext db)

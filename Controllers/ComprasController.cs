@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Sora.Extensions;
 using Sora.Factory;
 using Sora.Models.SaraModel;
 using Sora.ViewModel;
@@ -62,7 +63,7 @@ namespace Sora.Controllers
         public IActionResult GetById(int id)
         {
 
-            var compra = db.Compras.Include(x => x.ComprasDetalle).FirstOrDefault(x => x.Id == id);
+            var compra = db.Compras.Include(x => x.ComprasDetalle).ThenInclude(x => x.Inventario).ThenInclude(x =>x.AreaExistencias).FirstOrDefault(x => x.Id == id);
             return Json(compra);
 
         }
@@ -70,34 +71,44 @@ namespace Sora.Controllers
         [Route("api/compras/post")]
         public IActionResult Post([FromBody] Compras compra)
         {
+            var model = compra
+            .ApplyRules()
+            .validate();
+
+            if (!model.IsValid)
+                return BadRequest(model.Error);
+
 
             if (compra.Id > 0)
             {
                 //Actializar encabezado
                 var compraModificada = factory.FirstOrDefault(x => x.Id == compra.Id);
+                model = compra.validate(compraModificada);
+                if (!model.IsValid)
+                    return BadRequest(model.Error);
+
                 compraModificada.CopyAllFromExcept(compra, x => new
                 {
                     x.Id,
-                    x.EstadoId,
-                    x.Etapa
+                    x.EtapaId
                 });
 
                 factory.Save();
 
                 //eliminar registros anteriores
                 var oldComprasDetalle = factoryDetalle.GetAll(x => x.CompraId == compra.Id);
-                foreach (var item in oldComprasDetalle)
-                    factoryDetalle.Delete(item);
-                factoryDetalle.Save();
+                var idsToDelete = oldComprasDetalle.Select(x => x.InventarioId).Except(compra.ComprasDetalle.Select(x => x.InventarioId));
+                var objToDelete = oldComprasDetalle.Where(x => idsToDelete.Contains(x.InventarioId)).ToList();
+                objToDelete.ForEach(x => factoryDetalle.Delete(x));
 
-                //agregar nuevos registros
-                var detalle = compra.ComprasDetalle;
-                foreach (var item in detalle)
+                //agregar nuevos registros y actualizar                
+                foreach (var item in compra.ComprasDetalle)
                 {
-
-                    var comprasDetalle = new ComprasDetalle();
-                    comprasDetalle.CopyAllFromExcept(item, x => new { x.Id });
-                    factoryDetalle.Insert(comprasDetalle);
+                    var comprasDetalle = oldComprasDetalle.FirstOrDefault(x => x.InventarioId == item.InventarioId);
+                    if (comprasDetalle == null)
+                        factoryDetalle.Insert(item);
+                    else
+                        comprasDetalle.CopyAllFromExcept(item, x => new { x.Id, x.CompraId, x.Compra });
 
                 }
 
@@ -109,7 +120,6 @@ namespace Sora.Controllers
                 compra.EtapaId = (int)CompraEtapas.Pendiente;
                 factory.Insert(compra);
                 factory.Save();
-
             }
 
             return Json(compra);
@@ -119,11 +129,14 @@ namespace Sora.Controllers
         [Route("api/compras/descargar")]
         public IActionResult Descargar([FromBody] Compras compra)
         {
-
+            var user = this.GetAppUser();
             //Actializar encabezado
             var compraModificada = db.Compras.Include(x => x.ComprasDetalle).FirstOrDefault(x => x.Id == compra.Id);
             if (compraModificada == null)
                 return BadRequest($"No se puede encontra la compra con identificador {compra.Id}");
+
+            if (compraModificada.EstadoId == (int)Estados.Anulado)
+                return BadRequest($"No se puede hacer una descarga de una compra en estado anulado");
 
             compraModificada.CopyFrom(compra, x => new
             {
@@ -143,13 +156,21 @@ namespace Sora.Controllers
                     item.CantidadRecibida = itemEnviado.CantidadRecibida;
                     item.Costo = itemEnviado.Costo;
                     item.NuevoPrecio = itemEnviado.NuevoPrecio;
+                    item.SubTotal = itemEnviado.SubTotal;
+                    item.DescuentoAverage = itemEnviado.DescuentoAverage;
+                    item.DescuentoMonto = itemEnviado.DescuentoMonto;
+                    item.Importe = itemEnviado.Importe;
+                    item.IvaAverage = itemEnviado.IvaAverage;
+                    item.IvaMonto = itemEnviado.IvaMonto;
+                    item.Total = itemEnviado.Total;
                 }
             }
 
             //Hacer la entrada
             //Craer encabezado
             var entrada = new Entradas();
-            entrada.InitFromCompras(db, compra);
+            entrada.InitFromCompras(db, compra, user);
+
             foreach (var item in compra.ComprasDetalle)
             {
 
@@ -159,41 +180,25 @@ namespace Sora.Controllers
 
                 entrada.EntradasDetalle.Add(entradasDetalle);
 
-
                 //Actualizar existencias
-                var resumen = db.AreaExistencias
-                .FirstOrDefault(x => x.AreaId == entrada.AreaId && x.InventarioId == item.InventarioId);
-
-                if (resumen == null)
-                {
-                    var inventario = db.Inventario.Find(entradasDetalle.InventarioId);
-                    db.AreaExistencias.Add(new AreaExistencias
-                    {
-                        AreaId = entrada.AreaId,
-                        InventarioId = item.InventarioId,
-                        Existencias = entradasDetalle.Existencias,
-                        CostoPromedio = entradasDetalle.CostoPromedio,
-                        CostoReal = entradasDetalle.Costo,
-                        Precio = entradasDetalle.Precio,
-                        //Hereda de Catalogo de inventario
-                        Minimo = inventario.StockMinimo,
-                    });
-                }
-                else
-                {
-
-                    resumen.Existencias += entradasDetalle.Existencias;
-                    resumen.CostoPromedio = entradasDetalle.CostoPromedio;
-                    resumen.CostoReal = entradasDetalle.Costo;
-                    resumen.Precio = entradasDetalle.Precio;
-
-                }
+                var inventario = db.Inventario.Find(entradasDetalle.InventarioId);
+                inventario.RegisterTransactionIn(db, entradasDetalle, user, entrada.AreaId);
 
             }
 
             db.Entradas.Add(entrada);
             compra.EntradaId = entrada.Id;
-            
+            entrada.CompraId = compra.Id;
+
+            var app = db.App.FirstOrDefault();
+            if (app.GererarProcesosContables)
+            {
+                var asientosFactory = new AsientosFactory(db);
+                var result = asientosFactory.CreateFromEntrada(entrada, app); 
+                if(!result.IsValid)
+                    return BadRequest(result.Error);
+            }        
+
             db.SaveChanges();
 
             return Json(compra);

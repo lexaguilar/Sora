@@ -18,8 +18,16 @@ namespace Sora.Models.SaraModel
     public partial class InventarioEstado : ICatalogo {  }
     public partial class CompraEstado : ICatalogo {  }
     public partial class Proveedores : ICatalogo {  }
+    public partial class Clientes : ICatalogo {  }
     public partial class FormaPago : ICatalogo {  }
     public partial class Inventario : ICatalogo {  }
     public partial class CompraEtapa : ICatalogo {  }
-    public partial class Areas : ICatalogo {  }
+    public partial class Areas : ICatalogo {  } 
+    public partial class SalidaTipos : ICatalogo {  } 
+    public partial class Entidades : ICatalogo {  } 
+    public partial class EntradaTipos : ICatalogo {  } 
+    public partial class SalidaEstado : ICatalogo {  } 
+    public partial class EntradaEstado : ICatalogo {  } 
+    public partial class TipoPago : ICatalogo {  } 
+    public partial class Bancos : ICatalogo {  } 
 }

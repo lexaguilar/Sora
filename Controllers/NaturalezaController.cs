@@ -19,7 +19,8 @@ namespace Sora.Controllers
         [HttpPost("api/naturaleza/post")]
         public IActionResult Post([FromBody] Naturaleza naturaleza)
         {
-
+            naturaleza.ToUpperCase();
+            
             if (naturaleza.Id > 0)
                 factory.Update(naturaleza);
             else

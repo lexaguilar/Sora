@@ -10,6 +10,7 @@ namespace Sora.Models.SaraModel
             AreaExistencias = new HashSet<AreaExistencias>();
             ComprasDetalle = new HashSet<ComprasDetalle>();
             EntradasDetalle = new HashSet<EntradasDetalle>();
+            SalidasDetalle = new HashSet<SalidasDetalle>();
         }
 
         public int Id { get; set; }
@@ -22,6 +23,7 @@ namespace Sora.Models.SaraModel
         public int StockMinimo { get; set; }
         public int EstadoId { get; set; }
         public int UnidadMedidaId { get; set; }
+        public bool Servicio { get; set; }
 
         public virtual InventarioEstado Estado { get; set; }
         public virtual Familia Familia { get; set; }
@@ -30,5 +32,6 @@ namespace Sora.Models.SaraModel
         public virtual ICollection<AreaExistencias> AreaExistencias { get; set; }
         public virtual ICollection<ComprasDetalle> ComprasDetalle { get; set; }
         public virtual ICollection<EntradasDetalle> EntradasDetalle { get; set; }
+        public virtual ICollection<SalidasDetalle> SalidasDetalle { get; set; }
     }
 }

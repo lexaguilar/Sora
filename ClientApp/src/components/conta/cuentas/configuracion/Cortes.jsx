@@ -11,14 +11,16 @@ import {
 import Title from '../../../shared/Title';
 import { store } from '../../../../services/store';
 import uri from '../../../../utils/uri';
+import BlockHeader from '../../../shared/BlockHeader';
 
 
 
 function Cortes(props) {
-
+    const title = "Coster";
     return (
         <div className="container small">
-           <Title title="Cortes"/>
+            <Title title={title} />
+            <BlockHeader title={title} />
             <DataGrid id="gridContainer"
                 selection={{ mode: 'single' }}
                 dataSource={store({

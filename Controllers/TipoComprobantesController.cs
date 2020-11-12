@@ -15,29 +15,25 @@ namespace Sora.Controllers
 
         [Route("api/tipoComprobantes/get")]
         public IActionResult Get() => Json(factory.GetAll());
-        
+
         [Route("api/tipoComprobantes/get/{id}")]
-        public IActionResult GetById(int id){
+        public IActionResult GetById(int id)
+        {
 
             return Json(factory.GetById(id));
 
         }
 
         [HttpPost("api/tipoComprobantes/post")]
-        public IActionResult Post([FromBody] TipoComprobantes tipoComprobantes)
+        public IActionResult Post([FromBody] TipoComprobantes tipoComprobante)
         {
+            tipoComprobante.ToUpperCase();
 
-            if (tipoComprobantes.Id > 0)
-                factory.Update(tipoComprobantes);
-            else
-                factory.Insert(tipoComprobantes);
-
-            factory.Save();
-
-            return Json(tipoComprobantes);
+            factory.InsertOrUpdateAndSave(tipoComprobante, x => x.Id == tipoComprobante.Id);
+            return Json(tipoComprobante);         
 
         }
-      
+
         [HttpGet("api/tipoComprobantes/{id}/delete")]
         public IActionResult Delete(int id) => Json(new { n = factory.DeleteAndSave(id) });
     }

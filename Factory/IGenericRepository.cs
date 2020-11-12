@@ -15,6 +15,7 @@ namespace Sora.Factory
         IEnumerable<T> GetAll();
         IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate);
         T GetById(int id);
+        T FirstOrDefault();
         T FirstOrDefault(Expression<Func<T, bool>> predicate);
         void Insert(T obj);
         void InsertRange(IEnumerable<T> obj);
@@ -25,6 +26,7 @@ namespace Sora.Factory
         void Delete(T obj);
         int DeleteAndSave(int id);
         int Save();
+        bool Exists(object id);
     }
     
 

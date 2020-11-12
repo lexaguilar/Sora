@@ -15,8 +15,8 @@ namespace Sora.Controllers
     public class AsientosController : Controller
     {      
         private readonly SaraContext db;
-         private GenericFactory<Asientos> factory = null;
-         private GenericFactory<AsientosDetalle> factoryDetalle = null;
+        private GenericFactory<Asientos> factory = null;
+        private GenericFactory<AsientosDetalle> factoryDetalle = null;
         public AsientosController(SaraContext _db){
             db = _db;
             this.factory = new GenericFactory<Asientos>(db);
@@ -66,62 +66,15 @@ namespace Sora.Controllers
         [Route("api/asientos/post")]
         public IActionResult Post([FromBody] Asientos asiento){
 
-            if (asiento.Id > 0){
-                //Actializar encabezado
-                var asientoModificado = factory.FirstOrDefault(x => x.Id == asiento.Id);
-                asientoModificado.CopyFrom(asiento , x => new { 
-                    x.CorteId, 
-                    x.Fecha, 
-                    x.MonedaId, 
-                    x.Referencia,
-                    x.TipoComprobanteId, 
-                    x.Concepto,
-                    x.EstadoId,
-                    x.Observacion, 
-                    x.TipoCambio 
-                });
-                                
-                factory.Save();
+            var asientosFactory = new AsientosFactory(db);
 
-                //eliminar registros anteriores
-                var oldAsientoDetalle = factoryDetalle.GetAll(x => x.AsientoId == asiento.Id);
-                foreach (var item in oldAsientoDetalle)                
-                    factoryDetalle.Delete(item);
-                factoryDetalle.Save();
-
-                //agregar nuevos registros
-                var detalle = asiento.AsientosDetalle;
-                foreach (var item in detalle)  {
-
-                    var asientosDetalle = new AsientosDetalle();
-                    asientosDetalle.CopyAllFromExcept(item, x => new { x.Id });
-                    factoryDetalle.Insert(asientosDetalle);
-
-                }
-
-                factoryDetalle.Save();
-                
-            }
-            else{
-
-                asiento.Numero = getMax(asiento.CorteId);
-                factory.Insert(asiento);
-                factory.Save(); 
-
-            }
+            asientosFactory.Save(asiento);
 
             return Json(asiento);
 
         }
 
-        private int getMax(int corteId)
-        {
-            var maxresult = db.Asientos.Where(x => x.CorteId == corteId);//
-            if(maxresult.Count() > 0)
-                return maxresult.Max(x => x.Numero) +1 ;
-            else
-                return 1;
-        }
+        
 
         [HttpGet("api/asientos/{id}/delete")]
         public IActionResult Delete(int id)
@@ -194,11 +147,13 @@ namespace Sora.Controllers
                         && a.Fecha.Year == year 
                         && a.Fecha.Month == month                        
                         select new {
+                            a.Numero,
                             a.Fecha,
                             anio = year,
                             tc.Descripcion,
                             monto=debe? ad.Debe: ad.Haber,
-                            a.Concepto
+                            a.Concepto,
+                            a.Referencia
                         };
 
             return Json(result.Where(x => x.monto > 0));

@@ -12,7 +12,6 @@ import {
 }
     from 'devextreme-react/data-grid';
 import { DataGrid } from 'devextreme-react';
-import numeral from 'numeral'
 import { connect } from 'react-redux';
 import uri from "../../../utils/uri";
 import { store } from "../../../services/store";
@@ -25,6 +24,8 @@ import Title from "../../shared/Title";
 
 class Inventario extends Component {
 
+   
+
     constructor(props) {
         super(props)
 
@@ -32,6 +33,8 @@ class Inventario extends Component {
         this.dataGrid = null;
         this.onRowDblClick = this.onRowDblClick.bind(this);
         this.onToolbarPreparing = this.onToolbarPreparing.bind(this);
+
+        console.log('inventario');
 
     }
 
@@ -61,21 +64,13 @@ class Inventario extends Component {
         })
     }
 
-    // onRowPrepared(e) {
-    //     if (e.rowType == 'data') {
-    //         if (e.data.estadoId == estadoAsiento.anulado) {
-    //             e.rowElement.classList.add('asiento-anulado');
-    //         }
-    //     }
-    // }
-
     onRowDblClick(e) {
         this.dataGrid.instance.editRow(e.rowIndex);
     }
 
     render() {
         let remoteOperations = true;
-        const title = "Inventario"
+        const title = "Inventario";
         this.store = store(
             {
                 uri: uri.inventario,
@@ -118,7 +113,7 @@ class Inventario extends Component {
                             allowDeleting={true}
                             allowAdding={true}
                         >
-                            <Popup title="Inventario" showTitle={true} width={400} height={450}>
+                            <Popup title="Inventario" showTitle={true} width={400} height={480}>
                             </Popup>
                             <Form>
                                 <Item itemType="group" colCount={1} colSpan={2} >
@@ -130,6 +125,7 @@ class Inventario extends Component {
                                     <Item dataField="unidadMedidaId" editorOptions={editorOptions}/>
                                     <Item dataField="stockMinimo" editorOptions={editorOptions}/>
                                     <Item dataField="iva" editorType="dxSwitch" editorOptions={{...editorOptions, ...{switchedOffText:"NO",switchedOnText:"SI",}}}/>
+                                    <Item dataField="servicio" editorType="dxSwitch" editorOptions={{...editorOptions, ...{switchedOffText:"NO",switchedOnText:"SI",}}}/>
                                     <Item dataField="estadoId" editorOptions={editorOptions}/>                                
                                 </Item>                           
                             </Form>
@@ -141,9 +137,9 @@ class Inventario extends Component {
                         </Column>
                         <Column dataField="descripcion" >
                             <RequiredRule message="Esta dato es requerido" />
-                            <StringLengthRule max={250} message="Maximo 250 caracteres" />
+                            <StringLengthRule max={230} message="Maximo 250 caracteres" />
                         </Column>
-                        <Column dataField="familiaId" width={150} caption="Familia">
+                        <Column dataField="familiaId" width={100} caption="Familia">
                             <RequiredRule message="Esta dato es requerido" />
                             <Lookup dataSource={createStore('familia')} valueExpr="id" displayExpr="descripcion" />
                         </Column>
@@ -158,7 +154,8 @@ class Inventario extends Component {
                         <Column dataField="stockMinimo" width={80} dataType="number">
                             <RequiredRule message="Esta dato es requerido" />
                         </Column>
-                        <Column dataField="iva" caption="Aplica IVA" width={60} dataType="boolean"/>
+                        <Column dataField="iva" caption="Aplica IVA" width={70} dataType="boolean"/>
+                        <Column dataField="servicio" caption="Serviocio ?" width={80} dataType="boolean"/>
                         <Column dataField="estadoId" caption="Estado" width={80}>
                             <RequiredRule message="Esta dato es requerido" />
                             <Lookup disabled={true} dataSource={createStore('inventarioEstado')} valueExpr="id" displayExpr="descripcion" />

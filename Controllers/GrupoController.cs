@@ -19,7 +19,8 @@ namespace Sora.Controllers
         [HttpPost("api/grupos/post")]
         public IActionResult Post([FromBody] Grupos grupos)
         {
-
+            grupos.ToUpperCase();
+            
             if (grupos.Id > 0)
                 factory.Update(grupos);
             else

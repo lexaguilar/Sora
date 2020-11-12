@@ -15,7 +15,7 @@ import { defaultCompra, defaultComprasDetalle } from '../../../data/compra';
 import { updateCompra } from '../../../store/compra/compraActions';
 import Resumen from '../../shared/Resumen';
 
-class Nuevo extends React.Component {
+class Descarga extends React.Component {
   constructor(props) {
     super(props);
 
@@ -35,9 +35,11 @@ class Nuevo extends React.Component {
     this.save = this.save.bind(this);
 
     this.state = {
-      compra: Object.assign({}, defaultCompra),
-      comprasDetalle: []
-    };
+      compra: { ...defaultCompra },
+      comprasDetalle: [],
+      monedaId: 0,
+      saving: false,
+    };    
 
   }
 
@@ -79,16 +81,25 @@ class Nuevo extends React.Component {
 
     if (compra.id > 0) {
       http(uri.compras.getById(compra.id)).asGet().then(r => {
+
+        let detalleWithPrice = r.comprasDetalle.map(x => {
+          let existencia = x.inventario.areaExistencias.find(i => i.areaId == 1);
+          x.ultimoPrecio = existencia ? existencia.precio : 0;
+          return x;
+        });
+
+        console.log(detalleWithPrice);
+
         this.setState({
           compra: {
             ...r
           },
-          comprasDetalle: r.comprasDetalle,
+          comprasDetalle: detalleWithPrice,
         })
       })
     } else {
       this.setState({
-        compra: Object.assign({}, defaultCompra),
+        compra: {...defaultCompra},
         comprasDetalle: []
       });
     }
@@ -98,7 +109,7 @@ class Nuevo extends React.Component {
   onHiding({ cancel }) {
 
     this.setState({
-      compra: Object.assign({}, defaultCompra),
+      compra: {...defaultCompra},
       comprasDetalle: []
     });
 
@@ -131,14 +142,20 @@ class Nuevo extends React.Component {
 
         compra.comprasDetalle = detalle;
 
+        this.setState({ saving: true });
         http(uri.compras.descargar).asPost(compra).then(r => {
+
           notify({ message: "Registro guardado correctamente" });
+          this.setState({ saving: false });
           this.onHiding({ cancel: true });
 
+        }).catch(message => {
+          this.setState({ saving: false });
+          notify({ message }, 'error');
         });
       } 
       else
-        notify({ message: "Debe de registrar al menos un productp" }, 'error');
+        notify({ message: "Debe de registrar al menos un producto" }, 'error');
     }
 
   }
@@ -309,7 +326,7 @@ class Nuevo extends React.Component {
                   selectTextOnEditStart={true}
                   useIcons={true}
                 />
-                <Column dataField="inventarioId" caption="Inventario" cssClass='cellDetail' fixed={true}>
+                <Column dataField="inventarioId" caption="Inventario" cssClass='cellDetail' fixed={true} allowEditing={editable}>
                   <Lookup
                     dataSource={createStore('inventario')}
                     valueExpr="id"
@@ -319,7 +336,7 @@ class Nuevo extends React.Component {
                 </Column>
                 <Column dataField="cantidadSolicitada" allowEditing={false} caption="Cant. Soli" dataType="number" width={75}></Column>
                 <Column dataField="cantidadRecibida" caption="Cant. Rec" dataType="number" width={75} setCellValue={this.setCellValueFromCant}></Column>
-                <Column dataField="costo" width={70} dataType="number" setCellValue={this.setCellValueFromCosto}></Column>
+                <Column dataField="costo" width={70} dataType="number" setCellValue={this.setCellValueFromCosto} cellRender={cellRender}></Column>
                 <Column dataField="subTotal" width={80} allowEditing={false} dataType="number" cellRender={cellRender}></Column>
                 <Column dataField="descuentoAverage" caption="Desc" width={70} dataType="number" customizeText={customizeTextAsPercent} setCellValue={this.setCellValueFromDesc}></Column>
                 <Column dataField="importe" width={75} allowEditing={false} dataType="number" cellRender={cellRender}></Column>
@@ -332,21 +349,22 @@ class Nuevo extends React.Component {
             </GroupItem>
             <GroupItem colCount={1}>
               <div className="resumen">
-                <Resumen title="Sub total" value={this.state.compra.subTotal} />
-                <Resumen title="Descuento" value={this.state.compra.descuento} />
-                <Resumen title="Iva" value={this.state.compra.iva} />
-                <Resumen title="Total" value={this.state.compra.total} />
+              <Resumen title="Sub total" value={this.state.compra.subTotal} monedaId={this.state.compra.monedaId} />
+                <Resumen title="Descuento" value={this.state.compra.descuento} monedaId={this.state.compra.monedaId} />
+                <Resumen title="Iva" value={this.state.compra.iva} monedaId={this.state.compra.monedaId} />
+                <Resumen title="Total" value={this.state.compra.total} monedaId={this.state.compra.monedaId} />
               </div>
             </GroupItem>
           </Form>
           <Button
             width={120}
-            text="Guardar"
+            text={this.state.saving ? 'Guardando' : 'Guardar'}
             type="success"
             icon="save"
             stylingMode="contained"
             className="m-1"
             onClick={this.save}
+            disabled={this.state.saving}
           />
         </Popup>
       </div>
@@ -362,4 +380,4 @@ const mapDispatchToPros = ({
   updateCompra
 });
 
-export default connect(mapStateToProps, mapDispatchToPros)(Nuevo);
+export default connect(mapStateToProps, mapDispatchToPros)(Descarga);

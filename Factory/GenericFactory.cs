@@ -34,12 +34,17 @@ namespace Sora.Factory
 
         public IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate)
         {
-            return entity.Where(predicate).ToArray();
+            return entity.Where(predicate).AsNoTracking().ToArray();
         }
 
         public T GetById(int id)
         {
             return entity.Find(id);
+        }
+
+        public T FirstOrDefault()
+        {
+            return entity.FirstOrDefault();
         }
 
         public T FirstOrDefault(Expression<Func<T, bool>> predicate)
@@ -72,6 +77,19 @@ namespace Sora.Factory
             }
         }
 
+        public void InsertOrUpdate(T obj, Expression<Func<T, bool>> predicate){
+            if(Exists(predicate))
+                Update(obj);
+            else
+                Insert(obj);
+        }
+
+         public int InsertOrUpdateAndSave(T obj,Expression<Func<T, bool>> predicate){
+             
+            InsertOrUpdate(obj, predicate);
+            return Save();
+        }
+
         public void Delete(int id)
         {
             T existing = entity.Find(id);
@@ -93,6 +111,10 @@ namespace Sora.Factory
             T existing = entity.Find(id);
             entity.Remove(existing);
             return db.SaveChanges();
+        }
+
+        public bool Exists(Expression<Func<T, bool>> predicate){
+            return entity.Any(predicate);
         }
     }
 }

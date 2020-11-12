@@ -19,7 +19,8 @@ class LibroMayor extends React.Component {
         this.state = {
             id: 0,
             anio: 0,
-            naturalezaId: 0
+            naturalezaId: 0,
+            cuenta:''
         }
         this.onValueChanged = this.onValueChanged.bind(this);
         this.onAnioChanged = this.onAnioChanged.bind(this);
@@ -30,7 +31,8 @@ class LibroMayor extends React.Component {
         let cuenta = data.component.option('selectedItem');
         this.setState({
             id: cuenta ? data.value : 0,
-            naturalezaId : cuenta ? cuenta.naturalezaId : 0
+            naturalezaId : cuenta ? cuenta.naturalezaId : 0,         
+            cuenta:  cuenta ? `${cuenta.numero} - ${cuenta.descripcion}` : ''
         });
     }
 
@@ -44,14 +46,15 @@ class LibroMayor extends React.Component {
     onCellDblClick(e){
 
         let { updateLibroMayor } = this.props;
-
+        
         updateLibroMayor(
             {
                 id: this.state.id, 
                 year: this.state.anio,
                 mes: e.data.periodoId,
                 debe: e.column.dataField == 'debe' ? true : false,
-                open: true
+                open: true,
+                cuenta:this.state.cuenta,
             }
         );
     }
@@ -68,11 +71,11 @@ class LibroMayor extends React.Component {
                     return d;
                 })
             });
-
+        const title = "Libro mayor";
         return (
             <div className="container medium">
-                <Title title="Libro mayor" />
-                <BlockHeader title ="Libro mayor" />
+                <Title title={title} />
+                <BlockHeader title = {title} />
                 <Detalle />
                 <div className="dx-field" style={{width: 600}}>
                     <div className="dx-field-label">Cuenta contable</div>

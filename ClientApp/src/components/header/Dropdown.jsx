@@ -86,8 +86,6 @@ class Dropdown extends Component {
 }
 
 Dropdown.propTypes = {
-    /** title */
-    title: PropTypes.node.isRequired,
     /** array of menu items */
     items: PropTypes.array.isRequired,
     /** default: false */

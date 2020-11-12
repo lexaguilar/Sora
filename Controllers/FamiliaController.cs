@@ -19,7 +19,8 @@ namespace Sora.Controllers
         [HttpPost("api/familia/post")]
         public IActionResult Post([FromBody] Familia familia)
         {
-
+            familia.ToUpperCase();
+            
             if (familia.Id > 0)
                 factory.Update(familia);
             else
