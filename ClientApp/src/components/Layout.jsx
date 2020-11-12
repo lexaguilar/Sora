@@ -25,7 +25,7 @@ import Familia from './inv/familia/Familia';
 import Inventario from './inv/inventario/Inventario';
 import Proveedores from './inv/entidades/Proveedores';
 import Compras from './inv/compras';
-import Facturas from './inv/facturas';
+import Facturas from './inv/facturas/Index';
 import Kardex from './inv/reportes/Kardex';
 import Clientes from './inv/entidades/Clientes';
 import MobileHeader from './mobile/MobileHeader';
