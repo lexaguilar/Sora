@@ -23,18 +23,17 @@ import Catalogo from './shared/Catalogos';
 import { _path } from '../data/headerNavigation';
 import Familia from './inv/familia/Familia';
 import Inventario from './inv/inventario/Inventario';
-// import Proveedores from './inv/entidades/Proveedores';
+import Proveedores from './inv/entes/Proveedores';
 import Compras from './inv/compras';
 import Facturas from './inv/facturas/Index';
 import Kardex from './inv/reportes/Kardex';
-import Clientes from './inv/entidades/Clientes';
+import Clientes from './inv/entes/Clientes';
 import MobileHeader from './mobile/MobileHeader';
 import App from './app/Index';
 import Bancos from './conta/bancos/Index';
 import PrivateRoute from './header/PrivateRouter';
 import Login from './app/login';
 import Logout from './app/logout';
-import Servicios from './inv/servicios';
 
 function Layout(props) {
     const { match, headerLayout } = props;
@@ -76,7 +75,7 @@ function Layout(props) {
                         <PrivateRoute exact path={`${_path.CONTA}/libro/mayor`} component={LibroMayor} />       
                         <PrivateRoute exact path={`${_path.INV}/inventario`} component={Inventario} />              
                         <PrivateRoute exact path={`${_path.INV}/familia`} component={Familia} />                    
-                        {/* <PrivateRoute exact path={`${_path.INV}/proveedores`} component={Proveedores} />                     */}
+                        <PrivateRoute exact path={`${_path.INV}/proveedores`} component={Proveedores} />                     
                         <PrivateRoute exact path={`${_path.INV}/clientes`} component={Clientes} />                    
                         <PrivateRoute exact path={`${_path.INV}/compras`} component={Compras} />                    
                         <PrivateRoute exact path={`${_path.INV}/facturas`} component={Facturas} />                    
