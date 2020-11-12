@@ -85,4 +85,6 @@ function Proveedores() {
 
 };
 
-export default Proveedores; //connect(mapStateToProps, mapDispatchToProps)(GridSprintStart);
+export default Proveedores; 
+
+//connect(mapStateToProps, mapDispatchToProps)(GridSprintStart);
