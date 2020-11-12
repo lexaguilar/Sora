@@ -75,6 +75,7 @@ export default class InventarioDDBComponent extends React.Component {
         this.setState({ currentValue: e.selectedRowKeys[0] });
         this.props.data.setValue(this.state.currentValue);
         if (e.selectedRowKeys.length > 0) {
+            console.log(e.selectedRowsData[0]);
             if (e.selectedRowsData[0].existencias == 0) {
 
                 e.component.deselectRows(e.selectedRowKeys);

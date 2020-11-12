@@ -52,7 +52,7 @@ export default class Root extends Component {
                     <Route
                         path="/app"
                         render={(props) => (
-                            <Layout {...props} headerLayout='caja'/>
+                            <Layout {...props} headerLayout='app'/>
                         )}
                     />
                     <Redirect to='/conta'/>

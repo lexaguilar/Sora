@@ -6,7 +6,7 @@ const factura = {
     editable: true
 };
 
-export default function facturaeducer(state = factura, { type, payload }) {
+export default function facturaReducer(state = factura, { type, payload }) {
     switch (type) {
         case GET_FACTURA_ID:
 

@@ -23,6 +23,7 @@ namespace Sora.Models.SaraModel
         public int StockMinimo { get; set; }
         public int EstadoId { get; set; }
         public int UnidadMedidaId { get; set; }
+        public bool Servicio { get; set; }
 
         public virtual InventarioEstado Estado { get; set; }
         public virtual Familia Familia { get; set; }

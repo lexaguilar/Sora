@@ -9,7 +9,9 @@ export const estadoAsiento = {...estadoGeneric };
 
 export const estadoSalida = {...estadoGeneric };
 
-export const estadoEntrada = {...estadoGeneric };
+export const estadoEntrada = {...estadoGeneric }; 
+
+export const estadoServicio = {...estadoGeneric }; 
 
 export const estadoCompra = {...estadoGeneric };
 

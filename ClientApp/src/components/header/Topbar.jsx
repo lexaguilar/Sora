@@ -22,7 +22,7 @@ function Topbar(props) {
     const accountLinks = [
         { title: 'Editar Perfil', url: '/account/profile' },
         { title: 'Password', url: '/account/password' },
-        { title: 'Salir', url: '/account/login' },
+        { title: 'Salir', url: '/app/logout' },
     ];
 
     const linksList = links.map((item, index) => (

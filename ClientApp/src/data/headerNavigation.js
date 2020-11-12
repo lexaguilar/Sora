@@ -74,8 +74,9 @@ const menuConta = [{
         submenu: {
             type: 'menu',
             menu: [
-                { title: 'Bancos', url: `${_path.CONTA}/` },
-                { title: 'Cheques', url: `${_path.CONTA}/` },
+                { title: 'Bancos', url: `${_path.CONTA}/banco/index` },
+                { title: 'Conciliación', url: `${_path.CONTA}/banco/conciliacion` },
+                { title: 'Cheques', url: `${_path.CONTA}/banco/cheques` },
             ],
         },
     },
@@ -117,7 +118,7 @@ const menuInv = [{
         layout: 'inv',
         title: 'Inventario',
         url: `${_path.INV}/inventario`
-    },
+    },  
     {
         layout: 'inv',
         title: 'Catalogos',

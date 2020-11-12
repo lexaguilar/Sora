@@ -26,6 +26,7 @@ const uri = {
     tipoPago: createProxyBase('tipoPago'),
     compras: createProxyBase('compras'),
     salidas: createProxyBase('salidas'),
+    servicios: createProxyBase('servicios'),
 };
 
 uri.compras.descargar = `compras/descargar`;

@@ -6,8 +6,6 @@ import * as actions from '../../store/user/userActions';
 
 function Login(props) {
 
-    console.log(props);
-
     const dispatch = useDispatch();
     const [user, setUser] = useState({ username: "", password: "" });
 
